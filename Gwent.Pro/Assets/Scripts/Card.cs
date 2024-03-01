@@ -8,26 +8,44 @@ namespace LogicalSide
     public class Card: ScriptableObject
     {
         // Properties
-        string CardName {get;}
+        public string CardName {get;}
         public string Faction { get; }// Means what deck is using
-        public string Type { get; }// Means 
+        public string Type { get; }// Means what kind of unity is it
         public string Description { get; }
-        public int Pwr { get; set; }
+        public bool Increased=false;
+        public Player Owner { get; set; }
+        public int Pwr 
+        {
+            get {  return Pwr; } 
+            set
+            {
+                Debug.Log("All Right set");
+                Owner.TotalPower -= Pwr;
+                Debug.Log("All Right TotalPwr");
+                Pwr = value;
+                Debug.Log("All Right Pwr");
+                Owner.TotalPower += Pwr;
+            }
+                
+        }
         public int OriginPwr { get; }
         public Sprite Appearence { get; set; }
-        public Effe
+        public Effects Eff; 
 
         //Constructor
-        public Card(string Cardname,string Faction, string Description, int Pwr)
+        public Card(string Cardname,string Faction, string Description, int Pwr, Effects Eff)
         {
             this.CardName = Cardname;
             this.Faction = Faction;
             this.Description = Description;
             this.Pwr = Pwr;
+            this.OriginPwr = Pwr;
+            this.Eff = Eff;
+            this.Eff.AssociatedCard = this;
         }
         
 
-        // Methods
+        // Static Methods
         
     }
 }

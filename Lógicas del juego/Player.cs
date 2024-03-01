@@ -9,11 +9,12 @@ namespace LogicalSide
     public class Player
     {
         public List<Card> Deck = new List<Card>();
+        public string Faction;
         public int TotalPower=0;
         public bool Surrended=false;
-        public Player() 
+        public Player(string Faction) 
         {
-            //Deck= MainObjects.Generate(Faction);
+            this.Faction = Faction;
         }
     }
 }
