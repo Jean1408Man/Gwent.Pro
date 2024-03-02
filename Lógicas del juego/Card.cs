@@ -11,9 +11,10 @@ namespace LogicalSide
         public string CardName {get;}
         public string Faction { get; }// Means what deck is using
         public string Type { get; }// Means what kind of unity is it(Leader, silver, etc)
-        public (bool M,bool R, bool S) Atk_Rg;
+        public string Atk_Rg;
         public bool OnPlay = false;
         public string Description { get; }
+        public Tablero Board;
         public Player Owner { get; set; }
         public int _Pwr;
         public int Pwr 
@@ -35,11 +36,11 @@ namespace LogicalSide
             }
         }
         public int OriginPwr { get; }
-        //public Sprite Appearence { get; set; }
+        //public Sprite Appearence {get; set;}
         public Effects Eff; 
 
         //Constructor
-        public Card(string Cardname,string Faction, string Description, int Pwr,string Type,  Effects Eff, (bool M, bool R, bool S) Atk_Rg)
+        public Card(string Cardname,string Faction, string Description, int Pwr,string Type,  Effects Eff, string Atk_Rg, Tablero Board, Player Owner)
         {
             this.CardName = Cardname;
             this.Faction = Faction;
@@ -50,8 +51,25 @@ namespace LogicalSide
             this.Eff.AssociatedCard = this;
             this.Type = Type;
             this.Atk_Rg = Atk_Rg;
+            this.Board = Board;
+            this.Owner = Owner;
         }
-        
+        public void PlayCard(string Rg)
+        {//Añade la carta al tablero usando su referencia
+            List<Card> GameZone=Board.Map[GameManager.BoardRange(this.Owner, Rg)];
+            if (this.Atk_Rg.IndexOf(Rg) != -1 && Owner.Hand.Contains(this))//Comprueba que la carta puede ser jugada en esa zona y si el jugador tiene la carta en su poder
+            {
+                if (GameZone == null)
+                {
+                    GameZone = new List<Card>
+                    {
+                        this
+                    };
+                }
+                else if(GameZone.Count<6)
+                GameZone.Add(this);
+            }
+        } 
 
         //Methods
         

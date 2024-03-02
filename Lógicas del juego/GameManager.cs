@@ -1,5 +1,5 @@
-﻿using Lógicas_del_juego;
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,30 +12,78 @@ namespace LogicalSide
     {
         // Properties
         public List<Card> AllCards= new List<Card>();
-        public static Tablero Board;
+        public Tablero Board;
+        Player P1, P2;
+        static Dictionary<string, int> RangeMap1 = new Dictionary<string, int>()
+        {
+            ["M"] = 2,
+            ["R"] = 1,
+            ["S"] = 0,
+        };
+        static Dictionary<string, int> RangeMap2 = new Dictionary<string, int>()
+        {
+            ["M"] = 3,
+            ["R"] = 4,
+            ["S"] = 5,
+        };
+        public static int BoardRange(Player player, string Rg)
+        {
+            if (player.DownBoard)
+                return RangeMap1[Rg];
+            else
+                return RangeMap2[Rg];
+        }
 
-        public GameManager()
+        public GameManager(Player P1, Player P2)
         {
-            InitializeProperties();
+            this.P1 = P1;
+            this.P2 = P2;
             Board = new Tablero();
+            InitializeProperties();
         }
-        public void InitializeProperties()
-        {
-            //Initialize Faction Sweet Kids
-            AllCards.Add(new Card("The Hall Guardian", "Sweet Kids", "You'll never pass if you don't have a permission", 5,"Silver", new HallDog(),(true,false,false)));
-            AllCards.Add(new Card("1", "Sweet Kids", "You'll never pass if you don't have a permission", 1,"Silver", new HallDog(),(true,false,false)));
-            AllCards.Add(new Card("2", "Sweet Kids", "You'll never pass if you don't have a permission", 2,"Silver", new HallDog(),(true,false,false)));
-            AllCards.Add(new Card("3", "Sweet Kids", "You'll never pass if you don't have a permission", 3,"Silver", new HallDog(),(true,false,false)));
-            AllCards.Add(new Card("4", "Sweet Kids", "You'll never pass if you don't have a permission", 4,"Silver", new HallDog(),(true,false,false)));
-            AllCards.Add(new Card("5", "Sweet Kids", "You'll never pass if you don't have a permission", 5,"Silver", new HallDog(),(true,false,false)));
-            AllCards.Add(new Card("6", "Sweet Kids", "You'll never pass if you don't have a permission", 6,"Silver", new HallDog(),(true,false,false)));
-            //Initialize Faction 
-        }
+        
         public void Generate(Player owner)
         {
             for (int i = 0; i < AllCards.Count; i++)
                 if (AllCards[i].Faction == owner.Faction)
                     owner.Deck.Add(AllCards[i]);
+        }
+        public void InitializeProperties()
+        {
+            AllCardsFrom(P1);
+            AllCardsFrom(P2);
+        }
+        public void AllCardsFrom(Player player)
+        {//Inizialize Particular Cards
+            switch(player.Faction)
+            {
+                case "Cartman Boys":
+                    player.Deck.Add(new Card("Erick Cartman", "Cartman Boys", "Is truly evil in many creative ways", 0, "Leader", new HallDog(), "M", Board, player));
+                    player.Deck.Add(new Card("Hall Dog1", "Cartman Boys", "You'll never pass if you don't have a permission", 1, "Silver", new HallDog(), "M", Board, player));
+                    player.Deck.Add(new Card("Hall Dog2", "Cartman Boys", "You'll never pass if you don't have a permission", 2, "Silver", new HallDog(), "M", Board, player));
+                    player.Deck.Add(new Card("Hall Dog3", "Cartman Boys", "You'll never pass if you don't have a permission", 3, "Silver", new HallDog(), "M", Board, player));
+                    player.Deck.Add(new Card("Hall Dog4", "Cartman Boys", "You'll never pass if you don't have a permission", 4, "Silver", new HallDog(), "M", Board, player));
+                    player.Deck.Add(new Card("Hall Dog5", "Cartman Boys", "You'll never pass if you don't have a permission", 5, "Silver", new HallDog(), "M", Board, player));
+                    player.Deck.Add(new Card("Hall Dog6", "Cartman Boys", "You'll never pass if you don't have a permission", 6, "Silver", new HallDog(), "M", Board, player));
+                    player.Deck.Add(new Card("Hall Dog1", "Cartman Boys", "You'll never pass if you don't have a permission", 1, "Silver", new HallDog(), "M", Board, player));
+                    player.Deck.Add(new Card("Hall Dog2", "Cartman Boys", "You'll never pass if you don't have a permission", 2, "Silver", new HallDog(), "M", Board, player));
+                    player.Deck.Add(new Card("Hall Dog3", "Cartman Boys", "You'll never pass if you don't have a permission", 3, "Silver", new HallDog(), "M", Board, player));
+                    player.Deck.Add(new Card("Hall Dog4", "Cartman Boys", "You'll never pass if you don't have a permission", 4, "Silver", new HallDog(), "M", Board, player));
+                    player.Deck.Add(new Card("Hall Dog5", "Cartman Boys", "You'll never pass if you don't have a permission", 5, "Silver", new HallDog(), "M", Board, player));
+                    player.Deck.Add(new Card("Hall Dog6", "Cartman Boys", "You'll never pass if you don't have a permission", 6, "Silver", new HallDog(), "M", Board, player));
+                    break;
+                case "Stan and Kyle's crew":
+                    player.Deck.Add(new Card("Rain0", "School Devils", "You'll never pass if you don't have a permission", 0, "Silver", new Rain(), "M", Board, player));
+                    player.Deck.Add(new Card("Rain1", "School Devils", "You'll never pass if you don't have a permission", 1, "Silver", new Rain(), "M", Board, player));
+                    player.Deck.Add(new Card("Rain2", "School Devils", "You'll never pass if you don't have a permission", 2, "Silver", new Rain(), "M", Board, player));
+                    player.Deck.Add(new Card("Rain3", "School Devils", "You'll never pass if you don't have a permission", 3, "Silver", new Rain(), "M", Board, player));
+                    player.Deck.Add(new Card("Rain4", "School Devils", "You'll never pass if you don't have a permission", 4, "Silver", new Rain(), "M", Board, player));
+                    player.Deck.Add(new Card("Rain5", "School Devils", "You'll never pass if you don't have a permission", 5, "Silver", new Rain(), "M", Board, player));
+                    player.Deck.Add(new Card("Rain6", "School Devils", "You'll never pass if you don't have a permission", 6, "Silver", new Rain(), "M", Board, player));
+                    break;
+                   
+            }
+            //Ading 
         }
     }
 }

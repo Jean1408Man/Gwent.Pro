@@ -5,15 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lógicas_del_juego
+namespace LogicalSide
 {
     public class Tablero
     {
-        public Card[,] Map;
+        public List<Card>[] Map;
         public (int X, int Y) Dim = (6,6);
         public Tablero() 
         {
-            Map = new Card[Dim.X, Dim.Y];
+            Map = new List<Card>[Dim.Y];
         }
     }
 }
