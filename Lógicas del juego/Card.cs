@@ -14,7 +14,7 @@ namespace LogicalSide
         public abstract string Description { get; }
         public abstract Tablero Board {  get; set; }
         public abstract Player Owner { get; set; }
-        public abstract Effects Eff { get; set;}
+        public abstract string Eff { get; set;}
         public abstract void PlayCard(string Rg);
     }
     public class UnityCard: Card //ScriptableObject
@@ -50,10 +50,10 @@ namespace LogicalSide
         }
         public int OriginPwr { get; }
         //public Sprite Appearence {get; set;}
-        public override Effects Eff { get; set; } 
+        public override string Eff { get; set; } 
 
         //Constructor
-        public UnityCard(string Cardname,string Faction, string Description, int Pwr,string Type,  Effects Eff, string Atk_Rg, Tablero Board, Player Owner)
+        public UnityCard(string Cardname,string Faction, string Description, int Pwr,string Type,  string Eff, string Atk_Rg, Tablero Board, Player Owner)
         {
             this.CardName = Cardname;
             this.Faction = Faction;
@@ -61,7 +61,6 @@ namespace LogicalSide
             this.Pwr = Pwr;
             this.OriginPwr = Pwr;
             this.Eff = Eff;
-            Eff.AssociatedCard = this;
             this.Type = Type;
             this.Atk_Rg = Atk_Rg;
             this.Board = Board;
@@ -82,7 +81,7 @@ namespace LogicalSide
                 else if (GameZone.Count < 6)
                 {
                     GameZone.Add(this);
-                    this.Eff.Act();
+                    Effects.Efectos[Eff].Invoke(this);
                     this.OnPlay = true;
                 }
                 foreach (WeatherCard weather in Board.Weather)
@@ -104,14 +103,13 @@ namespace LogicalSide
         public override string Description { get; }
         public override Tablero Board { get; set; }
         public override Player Owner { get; set; }
-        public override Effects Eff { get; set; }
+        public override string Eff { get; set; }
 
-        public WeatherCard(string Cardname, string Description,Effects Eff, string Atk_Rg, Tablero Board, Player Owner)
+        public WeatherCard(string Cardname, string Description,string Eff, string Atk_Rg, Tablero Board, Player Owner)
         {
             this.CardName = Cardname;
             this.Description = Description;
             this.Eff = Eff;
-            this.Eff.AssociatedCard = this;
             this.Atk_Rg = Atk_Rg;
             this.Board = Board;
             this.Owner = Owner;
@@ -120,7 +118,7 @@ namespace LogicalSide
         {//Añade la carta a la zona de climas si es posible
             if (Owner.Hand.Contains(this) && Board.Weather.Count<=2)
             {
-                this.Eff.Act();
+                Effects.Efectos[Eff].Invoke(this);
                 Board.Weather.Add(this);
             }
         }

@@ -14,7 +14,6 @@ namespace LogicalSide
             Player2.DownBoard = false;
             GM = new GameManager(Player1, Player2);
             Player1.SetUpPlayer();
-            GM.Board.Weather.Add(new WeatherCard("Mal tiempo", "Uuuuuuu", new Rain(), "MS", GM.Board, Player1));
             Player1.Deck[1].PlayCard("M");
             Player1.Deck[1].PlayCard("M");
             Player1.Deck[1].PlayCard("M");

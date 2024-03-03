@@ -6,32 +6,36 @@ using System.Threading.Tasks;
 
 namespace LogicalSide
 {
-    public abstract class Effects
+    public class Effects
     {
-        public Card AssociatedCard { get; set; }
-        public abstract void Act();
-    }
-    public class HallDog: Effects 
-    {
-        public UnityCard AssociatedCard { get; set; }
-        public override void Act()
+        public static Dictionary<string, Action<Card>> Efectos = new Dictionary<string, Action<Card>>
         {
-            AssociatedCard.Pwr += 2;
+            {"HallDog", HallDog },
+            {"Smug", Smug }
+        };
+        public static void HallDog(Card card)
+        {
+            UnityCard unityCard = card as UnityCard;
+            if (unityCard != null)
+            {
+                unityCard.Pwr += 2;
+            }
         }
-    }
-    public class Rain : Effects
-    {
-        public WeatherCard AssociatedCard { get; set; }
-        public override void Act()
+        public static void Smug(Card card)
         {
-            List<UnityCard> GameZone = AssociatedCard.Board.Map[GameManager.BoardRange(AssociatedCard.Owner, AssociatedCard.Atk_Rg)];
+            WeatherCard weatherCard = card as WeatherCard;
+            if (weatherCard!= null)
+            {
+                List<UnityCard> GameZone = weatherCard.Board.Map[GameManager.BoardRange(weatherCard.Owner, weatherCard.Atk_Rg)];
                 if (GameZone != null)
                 {
-                    foreach (UnityCard unity in AssociatedCard.Board.Map[GameManager.BoardRange(AssociatedCard.Owner, AssociatedCard.Atk_Rg)])//Recorre las cartas d la fila que afecta
+                    foreach (UnityCard unity in weatherCard.Board.Map[GameManager.BoardRange(weatherCard.Owner, weatherCard.Atk_Rg)])//Recorre las cartas d la fila que afecta
                     {
                         unity.Pwr -= 1;
                     }
                 }
+            }
+            
         }
     }
 }
