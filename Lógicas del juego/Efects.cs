@@ -8,12 +8,12 @@ namespace LogicalSide
 {
     public abstract class Effects
     {
-        public abstract Card AssociatedCard { get; set; }
+        public Card AssociatedCard { get; set; }
         public abstract void Act();
     }
     public class HallDog: Effects 
     {
-        public override Card AssociatedCard { get; set; }
+        public UnityCard AssociatedCard { get; set; }
         public override void Act()
         {
             AssociatedCard.Pwr += 2;
@@ -21,10 +21,17 @@ namespace LogicalSide
     }
     public class Rain : Effects
     {
-        public override Card AssociatedCard { get; set; }
+        public WeatherCard AssociatedCard { get; set; }
         public override void Act()
         {
-            AssociatedCard.Pwr -= 2;
+            List<UnityCard> GameZone = AssociatedCard.Board.Map[GameManager.BoardRange(AssociatedCard.Owner, AssociatedCard.Atk_Rg)];
+                if (GameZone != null)
+                {
+                    foreach (UnityCard unity in AssociatedCard.Board.Map[GameManager.BoardRange(AssociatedCard.Owner, AssociatedCard.Atk_Rg)])//Recorre las cartas d la fila que afecta
+                    {
+                        unity.Pwr -= 1;
+                    }
+                }
         }
     }
 }

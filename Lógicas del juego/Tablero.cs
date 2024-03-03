@@ -9,11 +9,13 @@ namespace LogicalSide
 {
     public class Tablero
     {
-        public List<Card>[] Map;
+        public List<UnityCard>[] Map;
+        public List<WeatherCard> Weather;
         public (int X, int Y) Dim = (6,6);
         public Tablero() 
         {
-            Map = new List<Card>[Dim.Y];
+            Map = new List<UnityCard>[Dim.Y];
+            Weather= new List<WeatherCard>();
         }
     }
 }

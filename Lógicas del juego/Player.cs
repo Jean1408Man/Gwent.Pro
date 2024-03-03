@@ -10,6 +10,8 @@ namespace LogicalSide
     {
         public List<Card> Deck = new List<Card>();
         public List<Card> Hand = new List<Card>();
+        public List<Card> Cementery;
+
         public LeaderCard Leader_Card;
         public struct LeaderCard
         {
@@ -29,6 +31,7 @@ namespace LogicalSide
         public Player(string Faction) 
         {
             this.Faction = Faction;
+            Cementery= new List<Card>();
         }
         public void SetUpPlayer()
         {
