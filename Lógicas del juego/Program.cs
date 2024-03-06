@@ -10,15 +10,19 @@ namespace LogicalSide
             GameManager GM;
             Player Player1 = new Player("Cartman Boys");
             Player1.DownBoard = true;
-            Player Player2 = new Player("School Devils");
+            Player Player2 = new Player("Stan and Kyle's crew");
             Player2.DownBoard = false;
             GM = new GameManager(Player1, Player2);
             Player1.SetUpPlayer();
-            Player1.Deck[1].PlayCard("M");
-            Player1.Deck[1].PlayCard("M");
-            Player1.Deck[1].PlayCard("M");
-            Player1.Deck[1].PlayCard("M");
-            Player1.Deck[1].PlayCard("M");
+            Player2.SetUpPlayer();
+            Player1.Hand[0].PlayCard('M');
+            Player1.Hand[0].PlayCard('M');
+            Player1.Hand[0].PlayCard('M');
+            Player1.Hand[0].PlayCard('M');
+            Player2.Hand[0].PlayCard('M');
+            Player2.Hand[1].PlayCard('M');
+            Player1.Hand[0].PlayCard('M');
+
             for (int i = 0; i < GM.Board.Dim.Y; i++)
             {
                 if (GM.Board.Map[i] != null)
@@ -26,13 +30,28 @@ namespace LogicalSide
                     {
                         if (GM.Board.Map[i][j] != null)
                         {
-                            Console.Write(GM.Board.Map[i][j].Pwr);
+                            UnityCard unityCard = GM.Board.Map[i][j] as UnityCard;
+                            if (unityCard!=null)
+                            {
+                                Console.Write(unityCard.Pwr);
+                            }
+                            else
+                            {
+                                DecoyCard decoy = GM.Board.Map[i][j] as DecoyCard;
+                                if (decoy != null)
+                                {
+                                    Console.Write(decoy.Pwr);
+                                }
+                            }
+                            
                         }
                         Console.WriteLine();
                     }
 
             }
+            Console.WriteLine();
             //for(int i = 0; i < Player1.Deck.Count; i++)
+
             //{
             //    Console.WriteLine(Player1.Deck[i].CardName);
             //}
