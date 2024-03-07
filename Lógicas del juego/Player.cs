@@ -55,12 +55,9 @@ namespace LogicalSide
         //}
         private void AsignHand() 
         {
-            for(int i = 0; i < 10; i++)
-            {
-                Hand.Add(Deck[i]);
-            }
+            Steal(10);
         }
-        public void Robar(int veces)
+        public void Steal(int veces)
         {//Robar del Deck
             for (int i = 0; i < veces; i++)
             {

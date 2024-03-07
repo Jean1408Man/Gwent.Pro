@@ -13,6 +13,7 @@ namespace LogicalSide
         public abstract string Atk_Rg { get; set; }
         public abstract (int index,char value) currentRg { get; set;}
         public abstract bool OnPlay { get; set; }
+        public abstract int Pwr { get; set; }
         public abstract string Description { get; }
         public abstract Tablero Board {  get; set; }
         public abstract Player Owner { get; set; }
@@ -35,7 +36,7 @@ namespace LogicalSide
         public override string AttributeCard { get; set; }
         public int _Pwr;
 
-        public int Pwr 
+        public override int Pwr 
         {
             get
             {
@@ -120,6 +121,7 @@ namespace LogicalSide
         public override Player Owner { get; set; }
         public override string Eff { get; set; }
         public override string AttributeCard { get; set; }
+        public override int Pwr {  get; set; }
 
         public WeatherCard(string Cardname, string Description,string Eff, string Atk_Rg,string AttributeCard, Tablero Board, Player Owner)
         {
@@ -137,6 +139,7 @@ namespace LogicalSide
             {
                 OnPlay=true;
                 Effects.Efectos[Eff].Invoke(this);
+                Owner.Hand.Remove(this);
                 currentRg = (GameManager.BoardRange(this.Owner.DownBoard, Rg),Rg);
                 Board.Weather.Add(this);
             }
@@ -153,6 +156,7 @@ namespace LogicalSide
         public override Player Owner { get; set; }
         public override string Eff { get; set; }
         public override string AttributeCard { get; set; }
+        public override int Pwr { get; set; }
 
         public RaiseCard(string Cardname, string Description, string Eff, string Atk_Rg, string AttributeCard, Tablero Board, Player Owner)
         {
@@ -170,6 +174,7 @@ namespace LogicalSide
             {
                 OnPlay = true;
                 currentRg = (GameManager.BoardRange(Owner.DownBoard, Rg), Rg);
+                this.Owner.Hand.Remove(this);
                 Effects.Efectos[Eff].Invoke(this);
                 Board.Raise[currentRg.index]= this;
             }
@@ -187,7 +192,7 @@ namespace LogicalSide
         public override string Eff { get; set; }
         public override string AttributeCard { get; set; }
         public int _Pwr=0;
-        public int Pwr
+        public override int Pwr
         {
             get
             {
@@ -222,13 +227,13 @@ namespace LogicalSide
         }
         public override void PlayCard(char Rg)
         {//IMPORTANTE, ANTES DE USAR UN DECOY ASIGNAR EXCHANGE 
-            if(Owner.Hand.Contains(this) && !OnPlay && Exchange != null)
-            for (int i = 0; i < this.Atk_Rg.Length; i++)
-            if (this.Atk_Rg[i] == Rg)
+            if (Owner.Hand.Contains(this) && !OnPlay && Atk_Rg.IndexOf(Rg) != -1)
             {
                 OnPlay = true;
                 currentRg = (GameManager.BoardRange(this.Owner.DownBoard, Rg), Rg);
-                Effects.Efectos[Eff].Invoke(this);
+                if (Exchange != null)
+                    Effects.Efectos[Eff].Invoke(this);
+
             }
         }
     }

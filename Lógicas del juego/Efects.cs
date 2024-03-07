@@ -11,7 +11,12 @@ namespace LogicalSide
         public static Dictionary<string, Action<Card>> Efectos = new Dictionary<string, Action<Card>>
         {
             {"HallDog", HallDog },
-            {"Smug", Smug }
+            {"Smug", Smug },
+            {"Raise", Raise },
+            {"Decoy", Decoy },
+            {"Most Pwr",MostPwr},
+            {"Less Pwr Rival", LessPwrRval}
+
         };
         public static void HallDog(Card card)
         {//A toda carta del campo contrario que sea "kid" se le disminuye su poder en 1 
@@ -123,6 +128,106 @@ namespace LogicalSide
                 }
             }
         }
+        public static void MostPwr(Card card)
+        {
+            Card Temp= null;
+            int? BoardPos = null;
+            Random random = new Random();
+            for(int i = 0;i<6; i++)
+            {
+                List<Card> Gamezone = card.Board.Map[i];
+                if(Gamezone != null)
+                {
+                    for(int j = 0; j < Gamezone.Count; j++)
+                    {
+                        if (Gamezone[j]!= null)
+                        {
+                            if (Temp == null) {
+                                Temp = Gamezone[j];
+                                BoardPos= i;
+                            }
+                            else
+                            {
+                                if (Gamezone[j].Pwr > Temp.Pwr)
+                                {
+                                    Temp= Gamezone[j];
+                                    BoardPos= i;
+                                }
+                                else if (Gamezone[j].Pwr== Temp.Pwr)
+                                {
+                                    int al= random.Next(2);
+                                    if(al==0)
+                                    {
+                                        Temp = Gamezone[j];
+                                        BoardPos = i;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (BoardPos != null)
+            { 
+                card.Board.Map[Convert.ToInt32(BoardPos)].Remove(Temp);
+                Temp.Owner.Cementery.Add(Temp);
+            }
+        }
+        public static void LessPwrRval(Card card)
+        {
+            Card Temp = null;
+            int? BoardPos= null;
+            Random random = new Random();
+            int k = 0;
+            if (card.Owner.DownBoard)
+            {
+                k = 3;
+            }
+            for(int i = k; i < k+3; i++)
+            {
+                List<Card> Gamezone = card.Board.Map[i];
+                if (Gamezone != null)
+                {
+                    for (int j = 0; j < Gamezone.Count; j++)
+                    {
+                        if (Gamezone[j] != null)
+                        {
+                            if (Temp == null)
+                            {
+                                Temp = Gamezone[j];
+                                BoardPos = i;
+                            }
+                            else
+                            {
+                                if (Gamezone[j].Pwr < Temp.Pwr)
+                                {
+                                    Temp = Gamezone[j];
+                                    BoardPos = i;
+                                }
+                                else if (Gamezone[j].Pwr == Temp.Pwr)
+                                {
+                                    int al = random.Next(2);
+                                    if (al == 0)
+                                    {
+                                        Temp = Gamezone[j];
+                                        BoardPos = i;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (BoardPos != null)
+            {
+                card.Board.Map[Convert.ToInt32(BoardPos)].Remove(Temp);
+                Temp.Owner.Cementery.Add(Temp);
+            }
+        }
+        public static void Steal(Card card)
+        {
+            card.Owner.Steal(1);
+        } 
 
     }
 }

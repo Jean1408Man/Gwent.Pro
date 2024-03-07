@@ -20,7 +20,7 @@ namespace LogicalSide
             Player1.Hand[0].PlayCard('M');
             Player1.Hand[0].PlayCard('M');
             Player2.Hand[0].PlayCard('M');
-            Player2.Hand[1].PlayCard('M');
+            Player2.Hand[0].PlayCard('M');
             Player1.Hand[0].PlayCard('M');
 
             for (int i = 0; i < GM.Board.Dim.Y; i++)
