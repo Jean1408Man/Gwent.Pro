@@ -15,30 +15,14 @@ namespace LogicalSide
             {"Raise", Raise },
             {"Decoy", Decoy },
             {"Most Pwr",MostPwr},
-            {"Less Pwr Rival", LessPwrRval}
+            {"Less Pwr Rival", LessPwrRval},
+            {"Stealer", Steal },
+            {"SeaMen", SeaMen }
 
         };
         public static void HallDog(Card card)
-        {//A toda carta del campo contrario que sea "kid" se le disminuye su poder en 1 
-            UnityCard unityCard = card as UnityCard;
-            if (unityCard != null)
-            {
-                List<Card> GameZone = unityCard.Board.Map[GameManager.BoardRange(!unityCard.Owner.DownBoard, unityCard.currentRg.value)];
-                if (GameZone != null)
-                {
-                    foreach (Card cd in GameZone)//Recorre las cartas d la fila que afecta
-                    {
-                        if (cd is UnityCard)
-                        {
-                            unityCard = cd as UnityCard;
-                            if (unityCard != null)
-                                if (unityCard.Type != "Golden")
-                                    unityCard.Pwr -= 1;
-                        }
-                    }
-                }
-
-            }
+        {// 
+            
         }
         public static void Smug(Card card)
         {//Smug se comporta como efecto Clima Genérico, puede tomar cualquier cualquier rango y actuar sobre él(incluso puede actuar sobre más de 1) 
@@ -228,6 +212,26 @@ namespace LogicalSide
         {
             card.Owner.Steal(1);
         } 
+        public static void SeaMen(Card card)
+        {//Este efecto incrementa el poder de la carta lanzada en 1 x cada carta igual a ella en el campo en ese momento
+            int counter = 0;
+            for (int i = 0; i < 6; i++)
+            {
+                List<Card> Gamezone = card.Board.Map[i];
+                if (Gamezone != null)
+                {
+                    for (int j = 0; j < Gamezone.Count; j++)
+                    {
+                        if (Gamezone[j] != null)
+                        {
+                            if (card.CardName == Gamezone[j].CardName)
+                                counter++;
+                        }
+                    }
+                }
+            }
+            card.Pwr += counter;
+        }
 
     }
 }
