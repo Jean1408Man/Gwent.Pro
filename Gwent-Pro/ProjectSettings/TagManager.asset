@@ -3,7 +3,17 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - C
+  - Card
+  - LeaderZone
+  - M
+  - R
+  - S
+  - AM
+  - AR
+  - AS
+  - GM
   layers:
   - Default
   - TransparentFX

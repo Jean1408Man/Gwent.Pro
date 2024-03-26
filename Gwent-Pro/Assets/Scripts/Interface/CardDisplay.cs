@@ -9,19 +9,33 @@ namespace LogicalSide
 {
     public class CardDisplay : MonoBehaviour
     {
-        public CardTemplate cardTemplate;
-        public TMP_Text Pwr;
-        public TMP_Text DescriptionText;
+        public Card cardTemplate;
+        public TextMeshProUGUI PwrTxt;
+        public TextMeshProUGUI DescriptionText;
         public Image ArtworkImg;
-        public Transform objetoVacio;
+        bool activated=false;
 
 
-        void Start()
+        void Update()
         {
-            Pwr.text = cardTemplate.Pwr.ToString();
+            if (cardTemplate.Pwr != 0)
+            { 
+                PwrTxt.text = cardTemplate.Pwr.ToString();
+                cardTemplate.PwrText = PwrTxt;
+            }
+            else
+                PwrTxt.text = "";
             DescriptionText.text = cardTemplate.description;
-            ArtworkImg.sprite = cardTemplate.Artwork; 
-
+            ArtworkImg.sprite = cardTemplate.Artwork;
+        }
+        public void LeaderOnClick()
+        {
+            Efectos efectos= GameObject.Find("Effects").GetComponent<Efectos>();
+            if (efectos != null&& !activated)
+            {
+                efectos.ListEffects["Planet"].Invoke(cardTemplate);
+                activated = true;
+            }
         }
 
 
