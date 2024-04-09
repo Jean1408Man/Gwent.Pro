@@ -115,7 +115,7 @@ public class Efectos: MonoBehaviour
             }
         }
     }
-    public void PlayCrad(Card card)
+    public void PlayCard(Card card)
     {
         string rg = card.current_Rg;
         int increase = 0;
@@ -135,6 +135,10 @@ public class Efectos: MonoBehaviour
             increase++;
         }
         card.Pwr = card.Pwr+increase;
+        if (GM.Turn1)
+            GM.PlayerSurr = false;
+        else
+            GM.OponentSurr = false;
     }
 
     public void Decoy(Card card)
@@ -162,6 +166,31 @@ public class Efectos: MonoBehaviour
         //            }
         //        }
         //    }
+    }
+    public void RestartCard(GameObject Card, GameObject Place, bool home)
+    {
+        Card card = Card.GetComponent<CardDisplay>().cardTemplate;
+        Restart(card);
+        if (home)
+        {
+            Card.GetComponent<CardDrag>().Played = false;
+            GameObject Hand;
+            if (card.DownBoard)
+                Hand = GameObject.FindWithTag("P");
+            else
+                Hand = GameObject.FindWithTag("E");
+            Card.transform.SetParent(Hand.transform, false);
+        }
+    }
+    private void Restart(Card card)
+    {
+        card.Pwr = 0;
+        card.current_Rg = "";
+        card.Pwr = card.OriginPwr;
+    }
+    public void ToCementery()
+    {
+        //foreach () ;  
     }
     public void MostPwr(Card card)
     {

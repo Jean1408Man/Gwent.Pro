@@ -12,6 +12,7 @@ public class Player1Deck : MonoBehaviour
     public Transform playerZone; // El lugar donde se colocará la carta del jugador
     public Transform Leaderzone;
     public List<Card> deck; // Tu lista de cartas
+    public List<Card> cement;
     
     // Método para instanciar la última carta del mazo
     public bool Instanciate(Card card, Transform zone, GameObject prefab)
@@ -43,6 +44,8 @@ public class Player1Deck : MonoBehaviour
     {
         System.Random random = new System.Random();
         Instanciate(deck[0],Leaderzone, prefabLeader);
+        if(Leaderzone.name == "LeaderplaceEnemy")
+            Leaderzone.transform.GetChild(0).Rotate(0, 0, 180);
         int n = deck.Count;
         while (n > 0)
         {
