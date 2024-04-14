@@ -7,13 +7,13 @@ using UnityEngine.UI;
 namespace LogicalSide
 {
     [CreateAssetMenu(fileName ="New Card", menuName = "Card")]
-    public class Card : ScriptableObject
+    public class Card: ScriptableObject
     {
         public Sprite Artwork;
         public string Name;
         public int Id;
         private int _pwr; // Campo de respaldo
-
+        public bool Removable;
         public int Pwr
         {
             get { return _pwr; }
@@ -28,6 +28,7 @@ namespace LogicalSide
                 }
                 PwrText.text = _pwr.ToString();
             }
+
         }
 
         public int OriginPwr;
@@ -41,7 +42,7 @@ namespace LogicalSide
         public TextMeshProUGUI PwrText= new();
         
 
-        public Card(bool DownBoard ,string name , int id ,int pwr, string description,TypeUnit unit,string type ,string Eff,string atk_Rg, Sprite Img)
+        public Card(bool DownBoard ,string name , int id ,int pwr, string description,TypeUnit unit,string type ,string Eff,string atk_Rg, Sprite Img, bool Removable)
         {
             this.Name = name;
             this.Id = id;
@@ -54,6 +55,8 @@ namespace LogicalSide
             this.unit = unit;
             this.Eff = Eff;
             this.DownBoard = DownBoard;
+            this.Removable = Removable;
+
         }
         public void Assign(Card card)
         {

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 619793311340112039}
   - component: {fileID: 5713955722006025234}
   - component: {fileID: 3146061269255077927}
+  - component: {fileID: -7872211984837388489}
   m_Layer: 5
   m_Name: Dropzones
   m_TagString: M1
@@ -174,3 +175,15 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &-7872211984837388489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3493966895998174621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0ce0792507e4ba48908ed9942b61f51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

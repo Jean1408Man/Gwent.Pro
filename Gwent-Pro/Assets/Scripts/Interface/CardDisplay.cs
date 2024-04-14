@@ -21,23 +21,35 @@ namespace LogicalSide
         private void Start()
         {
             GM = GameObject.Find("GameManager").GetComponent<GameManager>();
-            Playerzone = GameObject.Find("Player Hand");
+            Playerzone = GameObject.FindWithTag("P");
             Enemyzone = GameObject.Find("Enemy Hand");
         }
 
         void Update()
         {
-            if (cardTemplate.Pwr != 0)
-            { 
-                PwrTxt.text = cardTemplate.Pwr.ToString();
-                cardTemplate.PwrText = PwrTxt;
+            if (cardTemplate == null)
+            {
+                Debug.Log("nullll");
+                GameObject debug = gameObject;
             }
             else
-                PwrTxt.text = "";
-            DescriptionText.text = cardTemplate.description;
-            ArtworkImg.sprite = cardTemplate.Artwork;
-            if(cardTemplate.DownBoard!= GM.Turn1 && (transform.parent == Playerzone|| transform.parent == Enemyzone))
-                Back.gameObject.SetActive(true);
+            {
+                if (cardTemplate.Pwr != 0)
+                {
+                    PwrTxt.text = cardTemplate.Pwr.ToString();
+                    cardTemplate.PwrText = PwrTxt;
+                }
+                else
+                    PwrTxt.text = "";
+                DescriptionText.text = cardTemplate.description;
+                ArtworkImg.sprite = cardTemplate.Artwork;
+                if (cardTemplate.DownBoard != GM.Turn && (transform.parent == Playerzone || transform.parent == Enemyzone))
+                    Back.gameObject.SetActive(true);
+            }
+        }
+        public void Checkout()
+        {
+            
         }
         public void LeaderOnClick()
         {

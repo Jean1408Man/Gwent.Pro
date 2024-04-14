@@ -43,7 +43,10 @@ public class CardDrag : MonoBehaviour
                     if (disp.cardTemplate.type != "D")
                     {
                         transform.SetParent(dropzone.transform, false);
-                        disp.cardTemplate.current_Rg = dropzone.tag;
+                        if (disp.cardTemplate.type.IndexOf("C") == -1&& disp.cardTemplate.type.IndexOf("A") == -1)
+                            disp.cardTemplate.current_Rg = dropzone.tag;
+                        else
+                            disp.cardTemplate.current_Rg = disp.cardTemplate.Atk_Rg;
                     }
                     else
                     {
@@ -60,7 +63,7 @@ public class CardDrag : MonoBehaviour
                         efectos.PlayCard(disp.cardTemplate);
                     efectos.ListEffects[disp.cardTemplate.Eff].Invoke(disp.cardTemplate);
                     GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
-                    GM.Turn1= !GM.Turn1;
+                    GM.Turn= !GM.Turn;
                 }
             }
             if(!Played)
@@ -74,7 +77,7 @@ public class CardDrag : MonoBehaviour
     private bool IsPosible(CardDisplay disp)
     {
         GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
-        if(disp.cardTemplate.DownBoard == GM.Turn1)
+        if(disp.cardTemplate.DownBoard == GM.Turn)
         if (disp.cardTemplate.type.IndexOf("C") == -1)
             if (disp.cardTemplate.type.IndexOf("A") == -1)
             {
@@ -127,6 +130,7 @@ public class CardDrag : MonoBehaviour
         {
             CardDisplay card = gameObject.GetComponent<CardDisplay>();
             Big = Instantiate(BigCardPrefab, zoneBig, Quaternion.identity);
+            GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
             Big.transform.SetParent(Visualizer.transform, worldPositionStays: true);
             Big.transform.position = zoneBig;
             CardDisplay disp = Big.GetComponent<CardDisplay>();

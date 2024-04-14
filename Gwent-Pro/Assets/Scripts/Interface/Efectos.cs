@@ -3,6 +3,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Efectos: MonoBehaviour 
@@ -59,8 +61,12 @@ public class Efectos: MonoBehaviour
             {"Raise", Raise },
             {"None", None },
             {"Decoy", Decoy },
-            {"Planet", Planet }
-
+            {"Planet", Planet },
+            {"Most Pwr", MostPwr},
+            {"Less Pwr", LessPwr},
+            {"Colmena", Colmena},
+            {"Zone Cleaner", ZoneCleaner},
+            {"Steal", Stealer}
         };
     }
     public void None(Card card)
@@ -74,46 +80,15 @@ public class Efectos: MonoBehaviour
     }
     public void Weather(Card card)
     {//Efecto Clima Genérico
-
-        GameObject GameZone = RangeMap[(card.DownBoard, card.Atk_Rg)];
-        if (GameZone != null)
-        {
-            foreach (Transform cardTransform in GameZone.transform)
-            {
-                CardDisplay disp = cardTransform.GetComponent<CardDisplay>();
-                if (disp != null && disp.cardTemplate.unit == TypeUnit.Silver)
-                {
-                    disp.cardTemplate.Pwr -= 1;
-                }
-            }
-        }
-        GameZone = RangeMap[(!card.DownBoard, card.Atk_Rg)];
-        if(GameZone != null) 
-        { 
-            foreach (Transform cardTransform in GameZone.transform)
-            {
-                CardDisplay disp = cardTransform.GetComponent<CardDisplay>();
-                if (disp != null && disp.cardTemplate.unit == TypeUnit.Silver)
-                {
-                    disp.cardTemplate.Pwr -= 1;
-                }
-            }
-        }
+        GameObject C = RangeMap[(card.DownBoard, card.current_Rg)];
+        C.GetComponent<DropProp>().DropStatus(-1,card);
+        C = RangeMap[(!card.DownBoard, card.current_Rg)];
+        C.GetComponent<DropProp>().DropStatus(-1, card);
     }
     public void Raise(Card card)
     {
-        GameObject GameZone = RangeMap[(card.DownBoard, card.Atk_Rg)];
-        if (GameZone != null)
-        {
-            foreach (Transform cardTransform in GameZone.transform)
-            {
-                CardDisplay disp = cardTransform.GetComponent<CardDisplay>();
-                if (disp != null && disp.cardTemplate.unit == TypeUnit.Silver)
-                {
-                    disp.cardTemplate.Pwr += 1;
-                }
-            }
-        }
+        GameObject C = RangeMap[(card.DownBoard, card.current_Rg)];
+        C.GetComponent<DropProp>().DropStatus(+1, card);
     }
     public void PlayCard(Card card)
     {
@@ -121,21 +96,10 @@ public class Efectos: MonoBehaviour
         int increase = 0;
         GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
         GM.AddScore(card.DownBoard, card.Pwr);
-        if( card.unit == TypeUnit.Silver)
-        foreach(Transform game in C.transform)
-        {
-            CardDisplay disp = game.GetComponent<CardDisplay>();
-            if (disp != null && disp.cardTemplate.Atk_Rg== rg)
-            {
-                    increase--;
-            }
-        }
-        foreach(Transform game in RaiseMap[(card.DownBoard, rg)].transform)
-        {
-            increase++;
-        }
+        GameObject C = RangeMap[(card.DownBoard, card.current_Rg)];
+        increase= C.GetComponent<DropProp>().weather+ C.GetComponent<DropProp>().raised;
         card.Pwr = card.Pwr+increase;
-        if (GM.Turn1)
+        if (GM.Turn)
             GM.PlayerSurr = false;
         else
             GM.OponentSurr = false;
@@ -146,11 +110,11 @@ public class Efectos: MonoBehaviour
         //    DecoyCard decoy = card as DecoyCard;
         //    if (decoy != null)
         //    {
-        //        List<Card> GameZone = decoy.Board.Map[decoy.currentRg.index];
-        //        if (GameZone != null)
+        //        List<Card> C = decoy.Board.Map[decoy.currentRg.index];
+        //        if (C != null)
         //        {
         //            UnityCard unity;
-        //            foreach (Card cd in GameZone)//Recorre las cartas d la fila que afecta
+        //            foreach (Card cd in C)//Recorre las cartas d la fila que afecta
         //            {
         //                if (cd is UnityCard)
         //                {
@@ -159,8 +123,8 @@ public class Efectos: MonoBehaviour
         //                    {
         //                        card.Owner.Hand.Remove(decoy);
         //                        card.Owner.Hand.Add(unity);
-        //                        GameZone.Remove(unity);
-        //                        GameZone.Add(decoy);
+        //                        C.Remove(unity);
+        //                        C.Add(decoy);
         //                    }
         //                }
         //            }
@@ -183,134 +147,217 @@ public class Efectos: MonoBehaviour
         }
     }
     private void Restart(Card card)
-    {
+    {//Jugando con el set de Card para que actualice automaticamente el score
         card.Pwr = 0;
         card.current_Rg = "";
         card.Pwr = card.OriginPwr;
     }
     public void ToCementery()
     {
-        //foreach () ;  
+        PlayerDeck DeckP= GameObject.Find("Deck").GetComponent<PlayerDeck>();
+        PlayerDeck DeckE = GameObject.Find("DeckEnemy").GetComponent<PlayerDeck>();
+        PlayerDeck Current;
+        GameObject card;
+        foreach (GameObject C in RangeMap.Values)
+        {
+            if (C == P1M || C == P1R || C == P1S || C == P1AM || C == P1AR || C == P1AS)
+                Current = DeckP;
+            else
+                Current = DeckE;
+            
+            for (int i = 0; i< C.transform.childCount; i++)
+            {
+                card = C.transform.GetChild(i).gameObject;
+                CardDisplay disp = card.GetComponent<CardDisplay>();
+                if (disp != null)
+                {
+                    Restart(disp.cardTemplate);
+                    if (disp.cardTemplate.Removable)
+                    {
+                        Current.cement.Add(disp.cardTemplate);
+                        Destroy(card);
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < C.transform.childCount; i++)
+        {
+            card = C.transform.GetChild(i).gameObject;
+            CardDisplay disp = card.GetComponent<CardDisplay>();
+            if (disp.cardTemplate.DownBoard==true)
+                Current = DeckP;
+            else
+                Current = DeckE;
+            if (disp != null)
+            {
+                Restart(disp.cardTemplate);
+                if (disp.cardTemplate.Removable)
+                {
+                    Current.cement.Add(disp.cardTemplate);
+                    Destroy(card);
+                }
+            }
+        }
     }
     public void MostPwr(Card card)
     {
-        //Card Temp = null;
-        //int? BoardPos = null;
-        //Random random = new Random();
-        //for (int i = 0; i < 6; i++)
-        //{
-        //    List<Card> Gamezone = card.Board.Map[i];
-        //    if (Gamezone != null)
-        //    {
-        //        for (int j = 0; j < Gamezone.Count; j++)
-        //        {
-        //            if (Gamezone[j] != null)
-        //            {
-        //                if (Temp == null)
-        //                {
-        //                    Temp = Gamezone[j];
-        //                    BoardPos = i;
-        //                }
-        //                else
-        //                {
-        //                    if (Gamezone[j].Pwr > Temp.Pwr)
-        //                    {
-        //                        Temp = Gamezone[j];
-        //                        BoardPos = i;
-        //                    }
-        //                    else if (Gamezone[j].Pwr == Temp.Pwr)
-        //                    {
-        //                        int al = random.Next(2);
-        //                        if (al == 0)
-        //                        {
-        //                            Temp = Gamezone[j];
-        //                            BoardPos = i;
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
-        //if (BoardPos != null)
-        //{
-        //    card.Board.Map[Convert.ToInt32(BoardPos)].Remove(Temp);
-        //    Temp.Owner.Cementery.Add(Temp);
-        //}
+        GameObject Bigger = null;
+        GameObject Var= null;
+        Card disp = null;
+        Card dispvar = null;
+        System.Random random = new();
+        foreach(GameObject Gamezone in RangeMap.Values)
+        {
+            
+            for(int i = 0;i< Gamezone.transform.childCount;i++)
+            {
+                if (Bigger == null)
+                {
+                    Bigger = Gamezone.transform.GetChild(i).gameObject;
+                    disp = Bigger.GetComponent<CardDisplay>().cardTemplate;
+                }
+                else
+                {
+                    Var= Gamezone.transform.GetChild(i).gameObject;
+                    dispvar= Var.GetComponent<CardDisplay>().cardTemplate;
+                    if (dispvar.type == "U"&& dispvar.Removable&& dispvar!=card)
+                    {
+                        if (dispvar.Pwr > disp.Pwr)
+                        {
+                            disp = dispvar;
+                            Bigger = Var;
+                        }
+                        else if (dispvar.Pwr == disp.Pwr)
+                        {
+                            int var = random.Next(0, 1);
+                            if(var == 0)
+                            {
+                                Bigger = Var;
+                                disp= dispvar;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if(Bigger != null&& disp != null&& card!=disp)
+        {
+            PlayerDeck Current= Decking(disp.DownBoard);
+            Restart(disp);
+            Current.cement.Add(disp);
+            Destroy(Bigger);
+        }
     }
-    //public static void LessPwrRval(Card card)
-    //{
-    //    Card Temp = null;
-    //    int? BoardPos = null;
-    //    Random random = new Random();
-    //    int k = 0;
-    //    if (card.Owner.DownBoard)
-    //    {
-    //        k = 3;
-    //    }
-    //    for (int i = k; i < k + 3; i++)
-    //    {
-    //        List<Card> Gamezone = card.Board.Map[i];
-    //        if (Gamezone != null)
-    //        {
-    //            for (int j = 0; j < Gamezone.Count; j++)
-    //            {
-    //                if (Gamezone[j] != null)
-    //                {
-    //                    if (Temp == null)
-    //                    {
-    //                        Temp = Gamezone[j];
-    //                        BoardPos = i;
-    //                    }
-    //                    else
-    //                    {
-    //                        if (Gamezone[j].Pwr < Temp.Pwr)
-    //                        {
-    //                            Temp = Gamezone[j];
-    //                            BoardPos = i;
-    //                        }
-    //                        else if (Gamezone[j].Pwr == Temp.Pwr)
-    //                        {
-    //                            int al = random.Next(2);
-    //                            if (al == 0)
-    //                            {
-    //                                Temp = Gamezone[j];
-    //                                BoardPos = i;
-    //                            }
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
-    //    if (BoardPos != null)
-    //    {
-    //        card.Board.Map[Convert.ToInt32(BoardPos)].Remove(Temp);
-    //        Temp.Owner.Cementery.Add(Temp);
-    //    }
-    //}
-    //public static void Steal(Card card)
-    //{
-    //    card.Owner.Steal(1);
-    //}
-    //public static void SeaMen(Card card)
-    //{//Este efecto incrementa el poder de la carta lanzada en 1 x cada carta igual a ella en el campo en ese momento
-    //    int counter = 0;
-    //    for (int i = 0; i < 6; i++)
-    //    {
-    //        List<Card> Gamezone = card.Board.Map[i];
-    //        if (Gamezone != null)
-    //        {
-    //            for (int j = 0; j < Gamezone.Count; j++)
-    //            {
-    //                if (Gamezone[j] != null)
-    //                {
-    //                    if (card.CardName == Gamezone[j].CardName)
-    //                        counter++;
-    //                }
-    //            }
-    //        }
-    //    }
-    //    card.Pwr += counter;
-    //}
+    public PlayerDeck Decking(bool DownBoard)
+    {
+        if(DownBoard)
+            return GameObject.Find("Deck").GetComponent<PlayerDeck>();
+        else
+            return GameObject.Find("DeckEnemy").GetComponent<PlayerDeck>();
+    }
+    public void LessPwr(Card card)
+    {
+        GameObject Bigger = null;
+        GameObject Var = null;
+        Card disp = null;
+        Card dispvar = null;
+        System.Random random = new();
+        foreach (GameObject Gamezone in RangeMap.Values)
+        {
+
+            for (int i = 0; i < Gamezone.transform.childCount; i++)
+            {
+                if (Bigger == null)
+                {
+                    Bigger = Gamezone.transform.GetChild(i).gameObject;
+                    disp = Bigger.GetComponent<CardDisplay>().cardTemplate;
+                }
+                else
+                {
+                    Var = Gamezone.transform.GetChild(i).gameObject;
+                    dispvar = Var.GetComponent<CardDisplay>().cardTemplate;
+                    if (dispvar.type == "U" && dispvar.Removable && dispvar != card)
+                    {
+                        if (dispvar.Pwr < disp.Pwr)
+                        {
+                            disp = dispvar;
+                            Bigger = Var;
+                        }
+                        else if (dispvar.Pwr == disp.Pwr)
+                        {
+                            int var = random.Next(0, 1);
+                            if (var == 0)
+                            {
+                                Bigger = Var;
+                                disp = dispvar;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (Bigger != null && disp != null)
+        {
+            PlayerDeck Current = Decking(disp.DownBoard);
+            Restart(disp);
+            Current.cement.Add(disp);
+            Destroy(Bigger);
+        }
+    }
+    public void Stealer(Card card)
+    {
+        Decking(card).InstanciateLastOnDeck(1);
+    }
+    public void Colmena(Card card)
+    {
+        int increase=0;
+        Card dispvar = null;
+        System.Random random = new();
+        foreach (GameObject Gamezone in RangeMap.Values)
+        {
+            for (int i = 0; i < Gamezone.transform.childCount; i++)
+            {
+                dispvar=Gamezone.transform.GetChild(i).gameObject.GetComponent<CardDisplay>().cardTemplate;
+                if (dispvar != null&& dispvar.Name== card.Name&& dispvar!=card)
+                {
+                    increase++;
+                }
+            }
+        }
+        card.Pwr += increase;
+    }
+    public void ZoneCleaner(Card card)
+    {//No depurado!!!!!
+        GameObject Me = RangeMap[(card.DownBoard, card.current_Rg)];
+        int childs = 0;
+        GameObject Target = null;
+        Card dispvar = null;
+
+        System.Random random = new();
+        foreach (GameObject Gamezone in RangeMap.Values)
+        {
+            if(Gamezone!=Me&& Gamezone.transform.childCount> childs)
+            {
+                childs= Gamezone.transform.childCount;
+                Target = Gamezone;
+            }
+            
+        }
+        if (Target != null && childs>0)
+        {
+            for (int i = 0; i < Target.transform.childCount; i++)
+            {
+                Me = Target.transform.GetChild(i).gameObject;
+                dispvar = Me.GetComponent<CardDisplay>().cardTemplate;
+                if(dispvar.Removable)
+                {
+                    PlayerDeck Current = Decking(dispvar.DownBoard);
+                    Restart(dispvar);
+                    Current.cement.Add(dispvar);
+                    Destroy(Me);
+                }
+            }
+
+        }
+    }
 }
