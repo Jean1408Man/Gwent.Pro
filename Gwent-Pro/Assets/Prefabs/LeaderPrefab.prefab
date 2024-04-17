@@ -112,6 +112,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LeaderPrefab
       objectReference: {fileID: 0}
+    - target: {fileID: 8389824397379620764, guid: 9594645e91a5fb1428d6603d9a577173, type: 3}
+      propertyPath: m_TagString
+      value: LeaderCard
+      objectReference: {fileID: 0}
     - target: {fileID: 8464157495241519836, guid: 9594645e91a5fb1428d6603d9a577173, type: 3}
       propertyPath: Played
       value: 1

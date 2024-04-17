@@ -20,6 +20,7 @@ TagManager:
   - E
   - DP
   - DE
+  - LeaderCard
   layers:
   - Default
   - TransparentFX

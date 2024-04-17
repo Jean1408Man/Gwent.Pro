@@ -8,108 +8,131 @@ using Unity.VisualScripting;
 
 public class CardDrag : MonoBehaviour
 {
+    
     private bool IsDragging= false;
     public bool Played= false;
     private Vector2 startPos;
     private bool IsOverZone= false;
     private GameObject dropzone;
+    private List<GameObject> dropzones = new List<GameObject>();
     private Efectos efectos;
+    private Card AssociatedCard;
+    private GameManager GM;
     void Start()
     // Start is called before the first frame update
     {
         efectos = GameObject.Find("Effects").GetComponent<Efectos>();
 
         Visualizer = GameObject.Find("Visualizer");
+        AssociatedCard = gameObject.GetComponent<CardDisplay>().cardTemplate;
+        GM = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
+    #region Drag
     public void StartDrag()
     {
-        if (Played == false)
+        startPos = gameObject.transform.position;
+        if (!Played && GM.WhichPlayer(AssociatedCard.DownBoard).SetedUp)
         {
-            startPos = gameObject.transform.position;
-            IsDragging = true;
-            BigCardDestroy();
+            if (AssociatedCard.DownBoard == GM.Turn)
+            {
+                startPos = gameObject.transform.position;
+                IsDragging = true;
+                BigCardDestroy();
+            }
         }
     }
     public void EndDrag()
     {
-        IsDragging = false;
         if (!Played)
         {
-            CardDisplay disp = gameObject.GetComponent<CardDisplay>();
-            if (IsOverZone && dropzone != null)// Verificar si el collider no es nulo y corresponde a una Dropzone
+            IsDragging = false;
+            dropzone = IsPosible();
+            if (dropzone != null)
             {
-                if (IsPosible(disp))
+                if (AssociatedCard.type != "D")
                 {
-                    if (disp.cardTemplate.type != "D")
-                    {
+                    if (AssociatedCard.Eff != "Light")
                         transform.SetParent(dropzone.transform, false);
-                        if (disp.cardTemplate.type.IndexOf("C") == -1&& disp.cardTemplate.type.IndexOf("A") == -1)
-                            disp.cardTemplate.current_Rg = dropzone.tag;
-                        else
-                            disp.cardTemplate.current_Rg = disp.cardTemplate.Atk_Rg;
-                    }
+                    if (AssociatedCard.type.IndexOf("C") == -1 && AssociatedCard.type.IndexOf("A") == -1)
+                        AssociatedCard.current_Rg = dropzone.tag;
                     else
                     {
-                        //Es un Decoy, regreso la carta a la mano
-                        CardDisplay exchange=dropzone.GetComponent<CardDisplay>();
-                        disp.cardTemplate.current_Rg=exchange.cardTemplate.current_Rg;
-                        Transform drop= dropzone.transform.parent;
-                        transform.SetParent(drop.transform, false);
-                        efectos.RestartCard(dropzone, null, true);
-                    }
-                    Played = true;
-                    
-                    if(disp.cardTemplate.type== "U")
-                        efectos.PlayCard(disp.cardTemplate);
-                    efectos.ListEffects[disp.cardTemplate.Eff].Invoke(disp.cardTemplate);
-                    GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
-                    GM.Turn= !GM.Turn;
-                }
-            }
-            if(!Played)
-            {
-                transform.position = startPos;
-                IsOverZone = false;
-                dropzone= null;
-            }
-        }
-    }
-    private bool IsPosible(CardDisplay disp)
-    {
-        GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
-        if(disp.cardTemplate.DownBoard == GM.Turn)
-        if (disp.cardTemplate.type.IndexOf("C") == -1)
-            if (disp.cardTemplate.type.IndexOf("A") == -1)
-            {
-                if (disp.cardTemplate.type.IndexOf('D') == -1)
-                {
-                    if (dropzone.transform.childCount < 6 && disp.cardTemplate.Atk_Rg.IndexOf(dropzone.tag) != -1 && efectos.RangeMap[(disp.cardTemplate.DownBoard, dropzone.tag)] == dropzone)
-                    {
-                        return true;
+                        AssociatedCard.current_Rg = AssociatedCard.Atk_Rg;
                     }
                 }
                 else
                 {
-                    if (dropzone.tag == "Card")
-                        return true;
+                    //Es un Decoy, regreso la carta a la mano
+                    CardDisplay exchange = dropzone.GetComponent<CardDisplay>();
+                    AssociatedCard.current_Rg = exchange.cardTemplate.current_Rg;
+                    Transform drop = dropzone.transform.parent;
+                    transform.SetParent(drop.transform, false);
+                    efectos.RestartCard(dropzone, null, true);
                 }
+                Played = true;
+
+                if (AssociatedCard.type == "U")
+                    efectos.PlayCard(AssociatedCard);
+                efectos.ListEffects[AssociatedCard.Eff].Invoke(AssociatedCard);
+                GM.Turn = !GM.Turn;
+                if (AssociatedCard.Eff == "Light")
+                {
+                    PlayerDeck deck = efectos.Decking(AssociatedCard.DownBoard);
+                    deck.cement.Add(AssociatedCard);
+                    Destroy(gameObject);
+                }
+                
+            }
+        }
+        if (!Played)
+        {
+            transform.position = startPos;
+            IsOverZone = false;
+            dropzone = null;
+        }
+    }
+    private GameObject IsPosible()
+    {
+        foreach(GameObject drop in dropzones)
+        if (AssociatedCard.type.IndexOf("C") == -1)
+            if (AssociatedCard.type.IndexOf("A") == -1)
+            {
+                if (AssociatedCard.type.IndexOf('D') == -1)
+                {
+                    if (drop.transform.childCount < 6 && AssociatedCard.Atk_Rg.IndexOf(drop.tag) != -1 && efectos.RangeMap[(AssociatedCard.DownBoard, drop.tag)] == drop)
+                    {
+                        return drop;
+                    }
+                }
+                else
+                {
+                    if (drop.tag == "Card"&& drop.transform.parent.tag!="P"&& drop.transform.parent.tag != "E")
+                        {
+                            if(drop.GetComponent<CardDisplay>().cardTemplate.DownBoard== AssociatedCard.DownBoard)
+                                return drop;
+
+                        }
+                    }
             }
             else
             {
-                if (dropzone.tag==disp.cardTemplate.type && efectos.RangeMap[(disp.cardTemplate.DownBoard, dropzone.tag)] == dropzone)
-                    return true;
+                if (drop.tag == AssociatedCard.type && efectos.RangeMap[(AssociatedCard.DownBoard, drop.tag)] == drop)
+                    return drop;
             }
         else
         {
-            if (dropzone.transform.childCount < 3&& dropzone.tag=="C")
-                return true;
+            if ((drop.transform.childCount < 3 && drop.tag == "C") || (drop.tag != "P" && AssociatedCard.Eff == "Light"))
+                return drop;
         }
-        return false;
+        return null;
     }
     public void OnCollisionEnter2D(Collision2D collision)
     {
-        IsOverZone = true;
-        dropzone= collision.gameObject;
+        dropzones.Insert(0,collision.gameObject);
+    }
+    public void OnCollisionExit2D(Collision2D collision)
+    {
+        dropzones.Remove(collision.gameObject);
     }
     void Update()
     {
@@ -118,19 +141,19 @@ public class CardDrag : MonoBehaviour
             transform.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
         }
     }
+    #endregion
 
-
+    #region BigCard
     public GameObject BigCardPrefab;
     GameObject Big;
     public GameObject Visualizer;
     public Vector3 zoneBig= new Vector3(1800, 300);
     public void BigCardProduce() 
     {
-        if (!IsDragging)
+        if (!IsDragging&&( gameObject.tag=="LeaderCard"||(gameObject.tag=="Card" && !gameObject.transform.GetChild(3).gameObject.activeSelf)))
         {
             CardDisplay card = gameObject.GetComponent<CardDisplay>();
             Big = Instantiate(BigCardPrefab, zoneBig, Quaternion.identity);
-            GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
             Big.transform.SetParent(Visualizer.transform, worldPositionStays: true);
             Big.transform.position = zoneBig;
             CardDisplay disp = Big.GetComponent<CardDisplay>();
@@ -145,4 +168,26 @@ public class CardDrag : MonoBehaviour
     {
         Destroy(Big);
     }
+    #endregion
+    public void CardExchange()
+    {
+        Player P = GM.WhichPlayer(AssociatedCard.DownBoard);
+        if (GM.Turn == AssociatedCard.DownBoard) 
+        {
+            if (!P.SetedUp)
+            {
+                BigCardDestroy();
+                PlayerDeck Deck = efectos.Decking(AssociatedCard.DownBoard);
+                Deck.deck.Insert(0,AssociatedCard);
+                Deck.InstanciateLastOnDeck(1, true);
+                P.cardsExchanged++;
+                Destroy(gameObject);
+                if (P.cardsExchanged == 2)
+                {
+                    GM.Teller.text="";
+                }
+            }
+        }
+    }
+    
 }

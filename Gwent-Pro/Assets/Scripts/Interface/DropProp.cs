@@ -8,7 +8,6 @@ namespace LogicalSide
     {
         public int raised;
         public int weather;
-        
         public bool enable;
         
         public void DropStatus(int diff, Card card)
@@ -26,18 +25,6 @@ namespace LogicalSide
                     disp.cardTemplate.Pwr += diff;
                 }
             }
-        }
-
-
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
         }
         
     }

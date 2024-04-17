@@ -17,29 +17,19 @@ public class PlayerDeck : MonoBehaviour
     public List<Card> cement;
     
     // Método para instanciar la última carta del mazo
-    public bool Instanciate(Card card, Transform zone, GameObject prefab)
+    public void Instanciate(Card card, Transform zone, GameObject prefab)
     {
-        if (deck.Count > 0&& zone.childCount<=9)
-        {
-            GameObject instanciaCarta = Instantiate(prefab, zone);
-            CardDisplay disp=instanciaCarta.GetComponent<CardDisplay>();
-            disp.cardTemplate = card;
-            disp.ArtworkImg = instanciaCarta.transform.GetChild(0).GetComponent<Image>();
-            if(disp.ArtworkImg!= null)
-            disp.DescriptionText = instanciaCarta.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-            disp.PwrTxt = instanciaCarta.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
-            deck.Remove(card);
-            return true;
-        }
-        else
-        {
-            Debug.LogWarning("El mazo está vacío.");
-            return false;
-        }
+        GameObject instanciaCarta = Instantiate(prefab, zone);
+        CardDisplay disp=instanciaCarta.GetComponent<CardDisplay>();
+        disp.cardTemplate = card;
+        disp.ArtworkImg = instanciaCarta.transform.GetChild(0).GetComponent<Image>();
+        disp.DescriptionText = instanciaCarta.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+        disp.PwrTxt = instanciaCarta.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
+        deck.Remove(card);
     }
-    public void InstanciateLastOnDeck( int n)
+    public void InstanciateLastOnDeck( int n, bool exception)
     {
-        if (deck.Count > 0 && playerZone.childCount <= 9&& n>0)
+        if (deck.Count > 0 && (playerZone.childCount <= 9 || exception )&& n>0)
         {
             Card card = deck[deck.Count - 1];
             GameObject instanciaCarta = Instantiate(prefabCarta, playerZone);
@@ -54,13 +44,13 @@ public class PlayerDeck : MonoBehaviour
             {
                 playerZone.GetChild(playerZone.childCount - 1).Rotate(0, 0, 180);
             }
-            InstanciateLastOnDeck(n - 1);
+            InstanciateLastOnDeck(n - 1, exception);
         }
     }
     public void OnClick()
     {
         if(deck.Count > 0)
-        InstanciateLastOnDeck(1);
+        InstanciateLastOnDeck(1,false);
     }
     public void Shuffle(List<Card> deck)
     {
@@ -75,6 +65,7 @@ public class PlayerDeck : MonoBehaviour
             int k = random.Next(n + 1);
             (deck[n], deck[k]) = (deck[k], deck[n]);
         }
+        InstanciateLastOnDeck(10,false);
     }
 
 }
