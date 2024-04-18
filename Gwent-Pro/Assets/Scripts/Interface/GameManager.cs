@@ -53,15 +53,12 @@ public class GameManager : MonoBehaviour
             }
             if (Turn)
             {
-                if (P1.SetedUp == false)
-                {
-                    P1.SetedUp = false;
-                }
+                P1.SetedUp = P1.SetedUp;
                 SendPrincipal("Turno de " + P1.name);
             }
             else
             {
-                if (P2.SetedUp == false) { P2.SetedUp = false;}
+                P2.SetedUp = P2.SetedUp;
                 SendPrincipal("Turno de " + P2.name);
             }
             VisibilityGM();
@@ -348,10 +345,6 @@ public class GameManager : MonoBehaviour
     bool IsMessaging = false;
     public void Send(string message, TextMeshProUGUI Mess)
     {
-        if (Mess == Message)
-        {
-            Teller.gameObject.SetActive(false);
-        }
         Mess.gameObject.SetActive(true);
         Mess.text = message;
         
