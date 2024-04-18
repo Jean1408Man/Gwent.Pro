@@ -32,7 +32,7 @@ namespace LogicalSide
                 Deck.Add(new Card(P.P, "Mago Tecnologico", 16, 3, "No tiene efecto especial", P, TypeUnit.Silver, "U", "None", "M" + "R", Resources.Load<Sprite>("16"), true));
                 Deck.Add(new Card(P.P, "Nave de Sacrificio", 17, 0, "Efecto Señuelo,puedes cambiarla por cualquiera que hayas jugado", P, TypeUnit.None, "D", "Decoy", "M" + "R" + "S", Resources.Load<Sprite>("17"), true));
                 Deck.Add(new Card(P.P, "Nebulosa Energetica", 18, 0, "Carta Clima, afecta Distancia", P, TypeUnit.None, "C", "Weather", "R", Resources.Load<Sprite>("18"), true));
-                Deck.Add(new Card(P.P, "Tecnologo Cuantico", 19, 3, "Limpia la zona con mas unidades", P, TypeUnit.Golden, "U", "Zone Cleaner", "M" + "R" + "S", Resources.Load<Sprite>("19"), true));
+                Deck.Add(new Card(P.P, "Tecnologo Cuantico", 19, 3, "Limpia la zona con mas unidades", P, TypeUnit.Silver, "U", "Zone Cleaner", "M" + "R" + "S", Resources.Load<Sprite>("19"), true));
                 Deck.Add(new Card(P.P, "Tonico Espacial", 20, 0, "Carta Aumento, actúa sobre Distancia", P, TypeUnit.None, "AR", "Raise", "R", Resources.Load<Sprite>("20"), true));
                 Deck.Add(new Card(P.P, "Tormenta de Gusano", 21, 0, "Carta Clima, afecta a Asedio", P, TypeUnit.None, "C", "Weather", "S", Resources.Load<Sprite>("21"), true));
                 Deck.Add(new Card(P.P, "Espada Laser", 22, 0, "Carta Aumento, actúa sobre Cuerpo a Cuerpo", P, TypeUnit.None, "AM", "Raise", "M", Resources.Load<Sprite>("22"), true));
@@ -62,12 +62,12 @@ namespace LogicalSide
                 Deck.Add(new Card(P.P, "Espectro de Fuego", 13, 3, "Elimina la carta más débil", P, TypeUnit.Golden, "U", "Less Pwr", "M", Resources.Load<Sprite>("_09"), true));
                 Deck.Add(new Card(P.P, "Pulpo de Yud", 14, 3, "Iguala el poder d todas las cartas al promedio entre ellas", P, TypeUnit.Silver, "U", "Media", "S", Resources.Load<Sprite>("_10"), true));
                 Deck.Add(new Card(P.P, "Serpiente de Zitharus", 15, 3, "No tiene efecto especial", P, TypeUnit.Golden, "U", "None", "R" + "S", Resources.Load<Sprite>("_11"), true));
-                Deck.Add(new Card(P.P, "Fenrir", 16, 3, "No tiene efecto especial", P, TypeUnit.Silver, "U", "None", "M" + "R", Resources.Load<Sprite>("_12"), true));
+                Deck.Add(new Card(P.P, "Fenrir", 16, 3, "Carta de campo, con efecto Aumento", P, TypeUnit.Silver, "U", "Raise", "M" + "R", Resources.Load<Sprite>("_12"), true));
                 Deck.Add(new Card(P.P, "Teletransportador", 17, 0, "Efecto Señuelo,puedes cambiarla po cualquiera que hayas jugado", P, TypeUnit.None, "D", "Decoy", "M" + "R" + "S", Resources.Load<Sprite>("_13"), true));
                 Deck.Add(new Card(P.P, "Nebulosa Energética", 18, 0, "Carta Clima, afecta a Distancia", P, TypeUnit.None, "C", "Weather", "R", Resources.Load<Sprite>("_14"), true));
-                Deck.Add(new Card(P.P, "Los Trillizos", 19, 3, "Limpia la zona con más unidades", P, TypeUnit.Golden, "U", "Zone Cleaner", "M" + "R" + "S", Resources.Load<Sprite>("_15"), true));
+                Deck.Add(new Card(P.P, "Los Trillizos", 19, 3, "Limpia la zona con más unidades", P, TypeUnit.Silver, "U", "Zone Cleaner", "M" + "R" + "S", Resources.Load<Sprite>("_15"), true));
                 Deck.Add(new Card(P.P, "Tonico Espacial", 20, 0, "Carta Aumento, actúa sobre Distancia", P, TypeUnit.None, "AR", "Raise", "R", Resources.Load<Sprite>("_16"), true));
-                Deck.Add(new Card(P.P, "Tormenta de Gusano", 21, 0, "Brilloso", P, TypeUnit.None, "C", "Weather", "S", Resources.Load<Sprite>("_17"), true));
+                Deck.Add(new Card(P.P, "Tormenta de Gusano", 21, 0, "Carta Clima, afecta a Asedio", P, TypeUnit.None, "C", "Weather", "S", Resources.Load<Sprite>("_17"), true));
                 Deck.Add(new Card(P.P, "Espada Laser", 22, 0, "Carta Aumento, actúa sobre Cuerpo a Cuerpo", P, TypeUnit.None, "AM", "Raise", "M", Resources.Load<Sprite>("_18"), true));
                 Deck.Add(new Card(P.P, "Bendicion de Houla", 23, 0, "Carta Aumento, actúa sobre Asedio", P, TypeUnit.None, "AS", "Raise", "S", Resources.Load<Sprite>("_19"), true));
                 Deck.Add(new Card(P.P, "Luz", 24, 0, "Despeja todo el mal tiempo de la Batalla",P, TypeUnit.None, "C", "Light", "M" + "R" + "S", Resources.Load<Sprite>("_20"), true));

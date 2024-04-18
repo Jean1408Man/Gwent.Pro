@@ -21,6 +21,7 @@ TagManager:
   - DP
   - DE
   - LeaderCard
+  - Visualizer
   layers:
   - Default
   - TransparentFX

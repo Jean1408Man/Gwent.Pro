@@ -70,7 +70,7 @@ public class CardDrag : MonoBehaviour
                     AssociatedCard.current_Rg = exchange.cardTemplate.current_Rg;
                     Transform drop = dropzone.transform.parent;
                     transform.SetParent(drop.transform, false);
-                    //efectos.ListEffects[AssociatedCard.Eff](exchange.cardTemplate);
+                    efectos.Decoy(exchange.cardTemplate);
                     efectos.RestartCard(dropzone, null, true);
                 }
                 Played = true;

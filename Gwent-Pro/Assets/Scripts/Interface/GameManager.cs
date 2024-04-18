@@ -53,10 +53,15 @@ public class GameManager : MonoBehaviour
             }
             if (Turn)
             {
+                if (P1.SetedUp == false)
+                {
+                    P1.SetedUp = false;
+                }
                 SendPrincipal("Turno de " + P1.name);
             }
             else
             {
+                if (P2.SetedUp == false) { P2.SetedUp = false;}
                 SendPrincipal("Turno de " + P2.name);
             }
             VisibilityGM();
@@ -88,27 +93,21 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
-        if ( SMS.Count>0)
+        if (SMS != null)
         {
-            Send(SMS.Peek(), Message);
-        }
-        if (Input.anyKey&& SMS.Count!=0)
-        {
-            GetPrincipal();
-            Delay(1);
-        }
-        if ((Turn == true && P1.SetedUp == false) || (Turn == false && P2.SetedUp == false))
-        {
-            ButtonOK.SetActive(true);
-            Teller.gameObject.SetActive(true);
-            TellerPanel.SetActive(true);
+            if (SMS.Count > 0)
+            {
+                Send(SMS.Peek(), Message);
+            }
+            if (Input.anyKey && SMS.Count != 0)
+            {
+                GetPrincipal();
+                Delay(1);
+            }
         }
         else
-        {
-            ButtonOK.SetActive(false);
-            Teller.gameObject.SetActive(false);
-            TellerPanel.SetActive(false);
-        }
+            SMS = new();
+        
     }
     private void Textos()
     {
@@ -367,7 +366,7 @@ public class GameManager : MonoBehaviour
     {
         SMS.Enqueue(s);
         Message.gameObject.SetActive(true);
-        MessagePanel.gameObject.SetActive(true);
+        MessagePanel.SetActive(true);
     }
     public string GetPrincipal()
     {
@@ -412,8 +411,44 @@ public class Player: ScriptableObject
     public int lifes;
     public bool Surrender;
     public bool P;
-    public bool SetedUp;
-    private int _cards;
+    private bool _seted;
+    public bool SetedUp
+    {
+        get
+        {
+            return _seted;
+        }
+        set
+        {
+            _seted= value;GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
+            if(!_seted && GM.Turn== P)
+            {
+                GM.ButtonOK.SetActive(true);
+                GM.Teller.gameObject.SetActive(true);
+                GM.TellerPanel.SetActive(true);
+            }
+            else
+            {
+                GM.ButtonOK.SetActive(false);
+                GM.Teller.gameObject.SetActive(false);
+                GM.TellerPanel.SetActive(false);
+            }
+        }
+    }
+    //    if ((Turn == true && P1.SetedUp == false) || (Turn == false && P2.SetedUp == false))
+    //        {
+    //            ButtonOK.SetActive(true);
+    //            Teller.gameObject.SetActive(true);
+    //            TellerPanel.SetActive(true);
+    //        }
+    //        else
+    //            GM.ButtonOK.SetActive(false);
+    //            GM.Teller.gameObject.SetActive(false);
+    //            GM.TellerPanel.SetActive(false);
+//{
+//    
+//}
+private int _cards;
     #endregion
 
     #region EffectProps
@@ -433,7 +468,6 @@ public class Player: ScriptableObject
             if (_cards == 2)
             {
                 SetedUp = true;
-                
             }
         }
     }

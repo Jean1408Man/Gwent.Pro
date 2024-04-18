@@ -62,7 +62,6 @@ namespace LogicalSide
             {"Weather", Weather },
             {"Raise", Raise },
             {"None", None },
-            {"Decoy", Decoy },
             {"Planet", Planet },
             {"Most Pwr", MostPwr},
             {"Less Pwr", LessPwr},
@@ -185,6 +184,7 @@ namespace LogicalSide
             if (Bigger != null && disp != null && card != disp)
             {
                 PlayerDeck Current = Decking(disp.DownBoard);
+                Decoy(disp);
                 Restart(disp);
                 Current.AddToCement(disp);
                 Destroy(Bigger);
@@ -240,6 +240,7 @@ namespace LogicalSide
             if (Bigger != null && disp != null)
             {
                 PlayerDeck Current = Decking(disp.DownBoard);
+                Decoy(disp);
                 Restart(disp);
                 Current.AddToCement(disp);
                 Destroy(Bigger);
@@ -293,11 +294,10 @@ namespace LogicalSide
             Card dispvar;
             foreach (GameObject Gamezone in RangeMap.Values)
             {
-                if(Gamezone.tag.IndexOf("A")==-1)
                 for (int i = 0; i < Gamezone.transform.childCount; i++)
                 {
                     dispvar = Gamezone.transform.GetChild(i).gameObject.GetComponent<CardDisplay>().cardTemplate;
-                    if (dispvar != null && dispvar.Name == card.Name && dispvar != card)
+                    if (dispvar != null && dispvar.Name == card.Name)
                     {
                         increase++;
                     }
@@ -333,6 +333,7 @@ namespace LogicalSide
                     if (dispvar.Removable)
                     {
                         PlayerDeck Current = Decking(dispvar.DownBoard);
+                        Decoy(dispvar);
                         Restart(dispvar);
                         Current.AddToCement(dispvar);
                         Destroy(Me);
@@ -405,6 +406,15 @@ namespace LogicalSide
             PlayerDeck DeckE = GameObject.Find("DeckEnemy").GetComponent<PlayerDeck>();
             PlayerDeck Current;
             GameObject card;
+            foreach (GameObject GameZone in RangeMap.Values)
+            {
+                DropProp drop = GameZone.GetComponent<DropProp>();
+                if (drop != null)
+                {
+                    drop.weather = 0;
+                    drop.raised = 0;
+                }
+            }
             foreach (GameObject C in RangeMap.Values)
             {
                 if (C == P1M || C == P1R || C == P1S || C == P1AM || C == P1AR || C == P1AS)
@@ -429,6 +439,7 @@ namespace LogicalSide
                         {
                             disp.cardTemplate.Pwr = disp.cardTemplate.OriginPwr;
                             disp.cardTemplate.Removable = true;
+                            ListEffects[disp.cardTemplate.Eff](disp.cardTemplate);
                         }
                     }
                 }
@@ -451,15 +462,7 @@ namespace LogicalSide
                         disp.cardTemplate.Removable = true;
                 }
             }
-            foreach(GameObject GameZone in RangeMap.Values)
-            {
-                DropProp drop= GameZone.GetComponent<DropProp>();
-                if (drop != null)
-                {
-                    drop.weather = 0;
-                    drop.raised = 0;
-                }
-            }
+            
         }
         #endregion
 
