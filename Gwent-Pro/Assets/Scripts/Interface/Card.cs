@@ -9,11 +9,13 @@ namespace LogicalSide
     [CreateAssetMenu(fileName ="New Card", menuName = "Card")]
     public class Card: ScriptableObject
     {
+        public Player Owner;
         public Sprite Artwork;
         public string Name;
         public int Id;
         private int _pwr; // Campo de respaldo
         public bool Removable;
+        int debugg = 0;
         public int Pwr
         {
             get { return _pwr; }
@@ -26,7 +28,12 @@ namespace LogicalSide
                 {
                     GM.AddScore(DownBoard,_pwr-provi);
                 }
+                if(PwrText!=null)
                 PwrText.text = _pwr.ToString();
+                else
+                {
+                    debugg = 5;
+                }
             }
 
         }
@@ -42,7 +49,7 @@ namespace LogicalSide
         public TextMeshProUGUI PwrText= new();
         
 
-        public Card(bool DownBoard ,string name , int id ,int pwr, string description,TypeUnit unit,string type ,string Eff,string atk_Rg, Sprite Img, bool Removable)
+        public Card(bool DownBoard ,string name , int id ,int pwr, string description,Player Owner,TypeUnit unit,string type ,string Eff,string atk_Rg, Sprite Img, bool Removable)
         {
             this.Name = name;
             this.Id = id;
@@ -56,7 +63,7 @@ namespace LogicalSide
             this.Eff = Eff;
             this.DownBoard = DownBoard;
             this.Removable = Removable;
-
+            this.Owner = Owner;
         }
         public void Assign(Card card)
         {

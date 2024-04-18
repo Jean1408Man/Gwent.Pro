@@ -17,6 +17,7 @@ namespace LogicalSide
         public static SavedData Instance;
         public TMP_InputField Name1;
         public TMP_InputField Name2;
+        public bool debug = false;
 
 
         void Awake()

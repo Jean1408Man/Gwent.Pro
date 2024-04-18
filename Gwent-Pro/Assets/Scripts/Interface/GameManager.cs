@@ -8,8 +8,12 @@ using LogicalSide;
 using UnityEngine.UIElements;
 using System;
 using JetBrains.Annotations;
+using System.Diagnostics;
+using System.Threading;
 public class GameManager : MonoBehaviour
 {
+    public GameObject PanelWinner;
+    public TextMeshProUGUI WinnerTxt;
     public GameObject Visualizer;
     public GameObject Eff;
     public GameObject World;
@@ -27,11 +31,16 @@ public class GameManager : MonoBehaviour
     public GameObject prefabCard;
     public GameObject prefabLeader;
     private bool _Turn=true;
+    public MenuGM Sounds;
     public Player P1;
     public Player P2;
     public GameObject PlayerZone;
     public GameObject EnemyZone;
     public bool CardFilter = false;
+
+
+    private Queue<string> SMS;
+
     public bool Turn
     {
         get { return _Turn;}
@@ -44,13 +53,11 @@ public class GameManager : MonoBehaviour
             }
             if (Turn)
             {
-                Send("Turno de " + P1.name, Message);
-                MessagePanel.SetActive(true);
+                SendPrincipal("Turno de " + P1.name);
             }
             else
             {
-                Send("Turno de " + P2.name, Message);
-                MessagePanel.SetActive(true);
+                SendPrincipal("Turno de " + P2.name);
             }
             VisibilityGM();
             Textos();
@@ -59,12 +66,13 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        SMS = new();
         SavedData data= null;
         if (GameObject.Find("SoundManager")!= null)
         {
             data = GameObject.Find("SoundManager").GetComponent<SavedData>();
         }
-        if (data != null)
+        if (data != null && !data.debug)
         {
             P1 = new Player(data.faction_1, data.name_1, true);
             P2 = new Player(data.faction_2, data.name_2,false);
@@ -75,15 +83,19 @@ public class GameManager : MonoBehaviour
             P2 = new Player(1, "Deiny",false);
         }
         SetupPLayers();
-        
+        Sounds = GameObject.Find("Menus").GetComponent<MenuGM>();
         Turn = true;
     }
     private void Update()
     {
-        if (IsMessaging && Input.anyKey)
+        if ( SMS.Count>0)
         {
-            EndMessage(Message);
-            MessagePanel.SetActive(false);
+            Send(SMS.Peek(), Message);
+        }
+        if (Input.anyKey&& SMS.Count!=0)
+        {
+            GetPrincipal();
+            Delay(1);
         }
         if ((Turn == true && P1.SetedUp == false) || (Turn == false && P2.SetedUp == false))
         {
@@ -100,7 +112,7 @@ public class GameManager : MonoBehaviour
     }
     private void Textos()
     {
-        if (WhichPlayer(Turn).SetedUp != true&& Message)
+        if (WhichPlayer(Turn).SetedUp != true)
         {
             Teller.gameObject.SetActive(true);
             Send("Puedes descartar hasta dos cartas de tu mano haciendo click sobre ellas en este momento, si estás conforme con tu mano puedes pulsar el botón OK", Teller);
@@ -119,7 +131,7 @@ public class GameManager : MonoBehaviour
         if (deck != null )
         {
             PlayerDeck setup = deck.GetComponent<PlayerDeck>();
-            setup.deck = CardDataBase.GetDeck(true, P1.faction);
+            setup.deck = CardDataBase.GetDeck(P1);
             setup.Shuffle(setup.deck);
         }
         deck = GameObject.Find("DeckEnemy");
@@ -127,7 +139,7 @@ public class GameManager : MonoBehaviour
         if (deck != null)
         {
             PlayerDeck setup = deck.GetComponent<PlayerDeck>();
-            setup.deck = CardDataBase.GetDeck(false, P2.faction);
+            setup.deck = CardDataBase.GetDeck(P2);
             setup.Shuffle(setup.deck);
         }
     }
@@ -178,26 +190,129 @@ public class GameManager : MonoBehaviour
     int indexP =0; int indexE=0;
     public void EndRound()
     {
-        int diff= Convert.ToInt32(Pwrplayer.text) - Convert.ToInt32(Pwroponent.text);
-        if (diff <= 0)
-        {
-            playerLifes.transform.GetChild(indexP).gameObject.SetActive(false);
-            indexP++;
-        }
-        if(diff>=0)
+        #region AlwaysWin
+        int diff = Convert.ToInt32(Pwrplayer.text) - Convert.ToInt32(Pwroponent.text);
+        if (diff > 0)
         {
             oponentlifes.transform.GetChild(indexE).gameObject.SetActive(false);
             indexE++;
+            SendPrincipal((P1.name + " Ganó la ronda"));
+            Turn = true;
+            
         }
-        if(indexE==2|| indexP==2)
-            EndGame(indexE,indexP);
+        else if(diff<0)
+        {
+            playerLifes.transform.GetChild(indexP).gameObject.SetActive(false);
+            indexP++;
+            SendPrincipal(P2.name + " Ganó la ronda");
+            Turn =false;
+        }
+        else
+        {
+            bool alwayswin=false;
+            string result = "";
+            bool turno=false;
+            if (P1.AlwaysAWinner == true)
+            {
+                oponentlifes.transform.GetChild(indexE).gameObject.SetActive(false);
+                indexE++;
+                result = ((P1.name + " Ganó la ronda"));
+                turno = true;
+            }
+            else
+            {
+                alwayswin= !alwayswin;
+            }
+            if (P2.AlwaysAWinner == true)
+            {
+                playerLifes.transform.GetChild(indexP).gameObject.SetActive(false);
+                indexP++;
+                result= ((P2.name + " Ganó la ronda"));
+                turno = false;
+            }
+            else
+            {
+                alwayswin = !alwayswin;
+            }
+            if (!alwayswin)
+            {
+                if (!P1.AlwaysAWinner)
+                {
+                    playerLifes.transform.GetChild(indexP).gameObject.SetActive(false);
+                    indexP++;
+                    oponentlifes.transform.GetChild(indexE).gameObject.SetActive(false);
+                    indexE++;
+                    turno = true;
+                }
+                SendPrincipal(("Ronda Empatada"));
+            }
+            else
+            { 
+                SendPrincipal(result); 
+            }
+            Turn = turno;
+        }
+        #endregion
+        if (indexE == indexP && indexP == 2)
+            EndGame("Ambos");
+        else if (indexP == 2)
+            EndGame(P2.name);
+        else if (indexE == 2)
+            EndGame(P1.name); 
+        #region Not Removable
+        string res = ""; bool b;
+        if (P1.RandomizedNotRem)
+        {
+            Efectos ef= Eff.GetComponent<Efectos>();
+            b= ef.RandomizedRem(P1);
+            if(b)
+            res=P1.name + " ha mantenido una de sus cartas en el campo aleatoriamente debido al efecto de su lider";
+        }
+        if (P2.RandomizedNotRem)
+        {
+            Efectos ef = Eff.GetComponent<Efectos>();
+            b=ef.RandomizedRem(P2);
+            if(b)
+            res=(P2.name + " ha mantenido una de sus cartas en el campo aleatoriamente debido al efecto de su lider");
+        }
+        if(P2.RandomizedNotRem&& P1.RandomizedNotRem)
+            SendPrincipal("Ambos jugadores han mantenido una de sus cartas en el campo aleatoriamente debido al efecto de sus líderes");
+        else
+            if(res!="")
+                SendPrincipal(res);
         Eff.GetComponent<Efectos>().ToCementery();
-
+        #endregion
+        #region Stealer
+        string r = "";
         PlayerDeck deck = GameObject.Find("Deck").GetComponent<PlayerDeck>();
-        deck.InstanciateLastOnDeck(2, false);
+        if (P1.Stealer)
+        {
+            deck.InstanciateLastOnDeck(3, false);
+            r = P1.name + " ha robado una carta de más gracias al efecto de su lider";
+        }
+        else
+        {
+            deck.InstanciateLastOnDeck(2, false);
+        }
         deck = GameObject.Find("DeckEnemy").GetComponent<PlayerDeck>();
-        deck.InstanciateLastOnDeck(2, false);
+        if (P2.Stealer)
+        { 
+            deck.InstanciateLastOnDeck(3, false);
+            r = P2.name + " ha robado una carta de más gracias al efecto de su lider";
+        }
+        else
+            deck.InstanciateLastOnDeck(2, false);
+        if (P1.Stealer && P2.Stealer)
+            r = "Ambos jugadores han robado una carta de más gracias al efecto de su lider";
+        if(r!= "")
+        {
+            SendPrincipal(r);
+        }
+        #endregion
         VisibilityGM();
+        Send("", EffTeller);
+        P1.Surrender = false;
+        P2.Surrender = false;
     }
     public void PassedTurn()
     {
@@ -208,41 +323,69 @@ public class GameManager : MonoBehaviour
         if (P1.Surrender && P2.Surrender)
             EndRound();
         else
-        if (Turn)
         {
-            Turn = false;
+            if (Turn)
+            {
+                Turn = false;
+            }
+            else
+            {
+                Turn = true;
+            }
+            Send("Tu oponente pasó turno", EffTeller);
         }
-        else
-        {
-            Turn = true;
-        }
-        Debug.Log("Turnos Cambiados");
-
+        
     }
-    public void EndGame(int indexE, int indexP)
+    public void EndGame(string winner)
     {
-        SceneManager.LoadScene(0);   
+        if (winner == "Ambos")
+            WinnerTxt.text= "El juego acaba en empate";
+        else
+            WinnerTxt.text = winner+ " ganó la partida";
+        PanelWinner.SetActive(true);   
     }
     #endregion
     #region Messaging
     bool IsMessaging = false;
     public void Send(string message, TextMeshProUGUI Mess)
     {
-        if(Mess!=Teller)
+        if (Mess == Message)
         {
-            indexE = 0;
+            Teller.gameObject.SetActive(false);
         }
         Mess.gameObject.SetActive(true);
-        IsMessaging = true;
         Mess.text = message;
-        if(Mess== Message)
-            Teller.gameObject.SetActive(false);
+        
     }
     public void EndMessage(TextMeshProUGUI Mess) 
     {
         Mess.gameObject.SetActive(false);
         Mess.text = "";
         Teller.gameObject.SetActive(true);
+    }
+    public void SendPrincipal(string s)
+    {
+        SMS.Enqueue(s);
+        Message.gameObject.SetActive(true);
+        MessagePanel.gameObject.SetActive(true);
+    }
+    public string GetPrincipal()
+    {
+        if (SMS.Count == 1)
+        {
+            MessagePanel.gameObject.SetActive(false);
+        }
+        return SMS.Dequeue();
+    }
+    private IEnumerator WaitForNextClick()
+    {
+        // Espera hasta que no haya ninguna tecla presionada
+        while (Input.anyKey)
+        {
+            
+            yield return null;
+        }
+        GetPrincipal();
     }
     public void OK()
     {
@@ -258,15 +401,12 @@ public class GameManager : MonoBehaviour
     }
     public void Delay(float seconds)
     {
-        StartCoroutine(DelayInternal(seconds));
-    }
-    private IEnumerator DelayInternal(float s)
-    {
-        yield return new WaitForSeconds(s);
+        Thread.Sleep(Convert.ToInt32(seconds*1000));
     }
 }
 public class Player: ScriptableObject
 {
+    #region UsualProps
     public int faction;
     public string name;
     public int lifes;
@@ -274,6 +414,13 @@ public class Player: ScriptableObject
     public bool P;
     public bool SetedUp;
     private int _cards;
+    #endregion
+
+    #region EffectProps
+    public bool Stealer;
+    public bool AlwaysAWinner;
+    public bool RandomizedNotRem;
+    #endregion
     public int cardsExchanged 
     {
         get
@@ -292,6 +439,7 @@ public class Player: ScriptableObject
     }
     public Player(int faction, string name, bool b)
     {
+
         this.name = name;
         this.faction = faction;
         Surrender = false;

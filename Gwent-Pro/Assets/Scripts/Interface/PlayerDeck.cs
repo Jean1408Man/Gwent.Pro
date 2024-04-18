@@ -1,4 +1,5 @@
 using LogicalSide;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -19,13 +20,16 @@ public class PlayerDeck : MonoBehaviour
     // Método para instanciar la última carta del mazo
     public void Instanciate(Card card, Transform zone, GameObject prefab)
     {
-        GameObject instanciaCarta = Instantiate(prefab, zone);
-        CardDisplay disp=instanciaCarta.GetComponent<CardDisplay>();
-        disp.cardTemplate = card;
-        disp.ArtworkImg = instanciaCarta.transform.GetChild(0).GetComponent<Image>();
-        disp.DescriptionText = instanciaCarta.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-        disp.PwrTxt = instanciaCarta.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
-        deck.Remove(card);
+        if (deck.Count > 0 && (playerZone.childCount <= 9))
+        {
+            GameObject instanciaCarta = Instantiate(prefab, zone);
+            CardDisplay disp = instanciaCarta.GetComponent<CardDisplay>();
+            disp.cardTemplate = card;
+            disp.ArtworkImg = instanciaCarta.transform.GetChild(0).GetComponent<Image>();
+            disp.DescriptionText = instanciaCarta.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+            disp.PwrTxt = instanciaCarta.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
+            deck.Remove(card);
+        }
     }
     public void InstanciateLastOnDeck( int n, bool exception)
     {
@@ -46,6 +50,20 @@ public class PlayerDeck : MonoBehaviour
             }
             InstanciateLastOnDeck(n - 1, exception);
         }
+    }
+    public void AddToCement(Card card)
+    {
+        gameObject.transform.GetChild(0).gameObject.SetActive(true);
+        cement.Add(card);
+    }
+    public void GetFromCement()
+    {
+        if (cement.Count > 0)
+        {
+            Instanciate(cement[cement.Count-1],PlayerHand.transform,prefabCarta);
+        }
+        if(cement.Count==0)
+            gameObject.transform.GetChild(0).gameObject.SetActive(false);
     }
     public void OnClick()
     {

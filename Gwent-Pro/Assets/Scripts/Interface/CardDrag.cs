@@ -12,7 +12,6 @@ public class CardDrag : MonoBehaviour
     private bool IsDragging= false;
     public bool Played= false;
     private Vector2 startPos;
-    private bool IsOverZone= false;
     private GameObject dropzone;
     private List<GameObject> dropzones = new List<GameObject>();
     private Efectos efectos;
@@ -49,6 +48,10 @@ public class CardDrag : MonoBehaviour
             dropzone = IsPosible();
             if (dropzone != null)
             {
+                if(AssociatedCard.Eff== "Light")
+                {
+                    Debug.Log("Light");
+                }
                 if (AssociatedCard.type != "D")
                 {
                     if (AssociatedCard.Eff != "Light")
@@ -67,18 +70,21 @@ public class CardDrag : MonoBehaviour
                     AssociatedCard.current_Rg = exchange.cardTemplate.current_Rg;
                     Transform drop = dropzone.transform.parent;
                     transform.SetParent(drop.transform, false);
+                    //efectos.ListEffects[AssociatedCard.Eff](exchange.cardTemplate);
                     efectos.RestartCard(dropzone, null, true);
                 }
                 Played = true;
 
                 if (AssociatedCard.type == "U")
                     efectos.PlayCard(AssociatedCard);
-                efectos.ListEffects[AssociatedCard.Eff].Invoke(AssociatedCard);
+                GM.Sounds.PlaySoundButton();
+                if(AssociatedCard.type!="D")
+                    efectos.ListEffects[AssociatedCard.Eff].Invoke(AssociatedCard);
                 GM.Turn = !GM.Turn;
                 if (AssociatedCard.Eff == "Light")
                 {
                     PlayerDeck deck = efectos.Decking(AssociatedCard.DownBoard);
-                    deck.cement.Add(AssociatedCard);
+                    deck.AddToCement(AssociatedCard);
                     Destroy(gameObject);
                 }
                 
@@ -87,8 +93,8 @@ public class CardDrag : MonoBehaviour
         if (!Played)
         {
             transform.position = startPos;
-            IsOverZone = false;
             dropzone = null;
+            GM.Sounds.PlayError();
         }
     }
     private GameObject IsPosible()
@@ -150,6 +156,8 @@ public class CardDrag : MonoBehaviour
     public Vector3 zoneBig= new Vector3(1800, 300);
     public void BigCardProduce() 
     {
+        if(Big!=null)
+            BigCardDestroy();
         if (!IsDragging&&( gameObject.tag=="LeaderCard"||(gameObject.tag=="Card" && !gameObject.transform.GetChild(3).gameObject.activeSelf)))
         {
             CardDisplay card = gameObject.GetComponent<CardDisplay>();

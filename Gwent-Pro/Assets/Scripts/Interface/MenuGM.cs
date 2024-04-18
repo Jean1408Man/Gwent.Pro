@@ -29,13 +29,28 @@ public class MenuGM : MonoBehaviour
         VolumeFX.onValueChanged.AddListener(ChangeVolumeFX);
         FXsource = GameObject.Find("SoundManager").GetComponent<AudioSource>();
         SoundGM = GameObject.Find("SoundManager").GetComponent<SavedData>();
+        FXsource = SoundGM.GetComponent<AudioSource>();
     }
-    
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if(MainPanel.activeSelf)
+            {
+                MainPanel.SetActive(false);
+            }
+            else
+            OpenPanel(MainPanel);
+        }
+    }
+
     public void OpenPanel(GameObject panel)
     {
         MainPanel.SetActive(false);
         OptionsPanel.SetActive(false);
+        if(PanelP1 != null)
         PanelP1.SetActive(false);
+        if(PanelP2 != null)
         PanelP2.SetActive(false);
         
         panel.SetActive(true);
@@ -52,10 +67,15 @@ public class MenuGM : MonoBehaviour
         else
             PlayError();
     }
-    public void Play()
+    public void Play(bool debug)
     {
-        if (SoundGM.faction_2 != 0 && SoundGM.name_2 != "")
+        if ((SoundGM.faction_2 != 0 && SoundGM.name_2 != ""))
             SceneManager.LoadScene(1);
+        else if (debug)
+        {
+            SoundGM.debug = true;
+            SceneManager.LoadScene(1);
+        }
         else
             PlayError();
     }
@@ -94,5 +114,17 @@ public class MenuGM : MonoBehaviour
     public void PlayError()
     {
         FXsource.PlayOneShot(ErrorSound);
+    }
+    public void GoToMain()
+    {
+        SceneManager.LoadScene(0);
+    }
+    void HandleKeyPressed(KeyCode key)
+    {
+        if (key == KeyCode.Escape)
+        {
+            // Aquí puedes agregar la lógica que deseas ejecutar cuando se presiona Escape
+            Debug.Log("Se presionó la tecla Escape");
+        }
     }
 }
