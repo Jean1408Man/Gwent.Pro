@@ -24,7 +24,7 @@ namespace LogicalSide
                 Deck.Add(new Card(P.P, "Clon de Combate", 8, 3, "Su poder incrementa en presencia de otro clon", P, TypeUnit.Silver, "U", "Colmena", "M", Resources.Load<Sprite>("8"), true));
                 Deck.Add(new Card(P.P, "Dragon Espacial", 9, 3, "No tiene efecto especial", P, TypeUnit.Silver, "U", "None", "M" + "R", Resources.Load<Sprite>("9"), true));
                 Deck.Add(new Card(P.P, "Dragon Espacial", 10, 3, "No tiene efecto especial", P, TypeUnit.Silver, "U", "None", "M" + "R", Resources.Load<Sprite>("10"), true));
-                Deck.Add(new Card(P.P, "Estrella Binaria", 11, 3, "Genera confusion en tu adversario, permite robar una carta", P, TypeUnit.Silver, "U", "Steal", "R" + "S", Resources.Load<Sprite>("11"), true));
+                Deck.Add(new Card(P.P, "Estrella Binaria", 11, 3, "Genera confusión en tu adversario, permite robar una carta", P, TypeUnit.Silver, "U", "Steal", "R" + "S", Resources.Load<Sprite>("11"), true));
                 Deck.Add(new Card(P.P, "Guardian", 12, 3, "Elimina la carta de mayor Poder", P, TypeUnit.Golden, "U", "Most Pwr", "M", Resources.Load<Sprite>("12"), true));
                 Deck.Add(new Card(P.P, "Ingeniero Estelar", 13, 3, "Eliminará la carta más débil", P, TypeUnit.Golden, "U", "Less Pwr", "S", Resources.Load<Sprite>("13"), true));
                 Deck.Add(new Card(P.P, "Mago del Tiempo", 14, 3, "Iguala el poder d todas las cartas al promedio entre ellas", P, TypeUnit.Silver, "U", "Media", "R" + "S", Resources.Load<Sprite>("14"), true));
@@ -57,13 +57,13 @@ namespace LogicalSide
                 Deck.Add(new Card(P.P, "Multibrazos", 8, 3, "Su poder incrementa en presencia de otro Multibrazos", P, TypeUnit.Silver, "U", "Colmena", "M"+ "R", Resources.Load<Sprite>("_07"), true));
                 Deck.Add(new Card(P.P, "Reptil Lunar", 9, 3, "No tiene efecto especial", P, TypeUnit.Silver, "U", "None", "S" + "R", Resources.Load<Sprite>("_21"), true));
                 Deck.Add(new Card(P.P, "Reptil Lunar", 10, 3, "No tiene efecto especial", P, TypeUnit.Silver, "U", "None", "S" + "R", Resources.Load<Sprite>("_21"), true));
-                Deck.Add(new Card(P.P, "Laura", 11, 3, "Genera confusion en tu adversario, permite robar una carta", P, TypeUnit.Silver, "U", "Steal", "R" + "S", Resources.Load<Sprite>("_08"), true));
+                Deck.Add(new Card(P.P, "Laura", 11, 3, "Genera confusión en tu adversario, permite robar una carta", P, TypeUnit.Silver, "U", "Steal", "R" + "S", Resources.Load<Sprite>("_08"), true));
                 Deck.Add(new Card(P.P, "Golem", 12, 3, "Elimina la carta de mayor Poder", P, TypeUnit.Golden, "U", "Most Pwr", "M", Resources.Load<Sprite>("_06"), true));
                 Deck.Add(new Card(P.P, "Espectro de Fuego", 13, 3, "Elimina la carta más débil", P, TypeUnit.Golden, "U", "Less Pwr", "M", Resources.Load<Sprite>("_09"), true));
                 Deck.Add(new Card(P.P, "Pulpo de Yud", 14, 3, "Iguala el poder d todas las cartas al promedio entre ellas", P, TypeUnit.Silver, "U", "Media", "S", Resources.Load<Sprite>("_10"), true));
                 Deck.Add(new Card(P.P, "Serpiente de Zitharus", 15, 3, "No tiene efecto especial", P, TypeUnit.Golden, "U", "None", "R" + "S", Resources.Load<Sprite>("_11"), true));
                 Deck.Add(new Card(P.P, "Fenrir", 16, 3, "Carta de campo, con efecto Aumento", P, TypeUnit.Silver, "U", "Raise", "M" + "R", Resources.Load<Sprite>("_12"), true));
-                Deck.Add(new Card(P.P, "Teletransportador", 17, 0, "Efecto Señuelo,puedes cambiarla po cualquiera que hayas jugado", P, TypeUnit.None, "D", "Decoy", "M" + "R" + "S", Resources.Load<Sprite>("_13"), true));
+                Deck.Add(new Card(P.P, "Teletransportador", 17, 0, "Efecto Señuelo,puedes cambiarla por cualquiera que hayas jugado", P, TypeUnit.None, "D", "Decoy", "M" + "R" + "S", Resources.Load<Sprite>("_13"), true));
                 Deck.Add(new Card(P.P, "Nebulosa Energética", 18, 0, "Carta Clima, afecta a Distancia", P, TypeUnit.None, "C", "Weather", "R", Resources.Load<Sprite>("_14"), true));
                 Deck.Add(new Card(P.P, "Los Trillizos", 19, 3, "Limpia la zona con menos unidades", P, TypeUnit.Silver, "U", "Zone Cleaner", "M" + "R" + "S", Resources.Load<Sprite>("_15"), true));
                 Deck.Add(new Card(P.P, "Tonico Espacial", 20, 0, "Carta Aumento, actúa sobre Distancia", P, TypeUnit.None, "AR", "Raise", "R", Resources.Load<Sprite>("_16"), true));

@@ -27,6 +27,8 @@ public class MenuGM : MonoBehaviour
     public GameObject ButtonAliens2;
     public GameObject ButtonAliens1;
     public GameObject ButtonCelestial1;
+    public GameObject Mixto1;
+    public GameObject Mixto2;
     private void Awake()
     {
         Volume.onValueChanged.AddListener(ChangeVolumeMaster);
@@ -90,12 +92,21 @@ public class MenuGM : MonoBehaviour
         {
             ButtonCelestial2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono1");
             ButtonAliens2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens");
+            ButtonAliens2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto");
         }
         else if (Faction == 2)
         {
             ButtonCelestial2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono");
             ButtonAliens2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens1");
+            ButtonAliens2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto");
         }
+        else if (Faction == 3)
+        {
+            ButtonCelestial2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono");
+            ButtonAliens2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens");
+            ButtonAliens2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto1");
+        }
+
     }
     public void Faction1OnClick(int Faction)
     {
@@ -104,11 +115,19 @@ public class MenuGM : MonoBehaviour
         {
             ButtonCelestial1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono1");
             ButtonAliens1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens");
+            ButtonAliens1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto");
         }
         else if (Faction == 2)
         {
             ButtonCelestial1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono");
             ButtonAliens1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens1");
+            ButtonAliens1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto");
+        }
+        else if (Faction == 3)
+        {
+            ButtonCelestial1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono");
+            ButtonAliens1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens");
+            ButtonAliens1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto1");
         }
     }
     public void NameCompleted(int P)

@@ -30,17 +30,5 @@ namespace LogicalSide
                 ArtworkImg.sprite = cardTemplate.Artwork;
             }
         }
-        public void LeaderOnClick()
-        {
-            Efectos efectos= GameObject.Find("Effects").GetComponent<Efectos>();
-            if (efectos != null&& !activated)
-            {
-                efectos.ListEffects[cardTemplate.Eff].Invoke(cardTemplate);
-                activated = true;
-            }
-        }
-
-
-
     }
 }

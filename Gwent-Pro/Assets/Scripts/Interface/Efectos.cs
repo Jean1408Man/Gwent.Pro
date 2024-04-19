@@ -146,7 +146,7 @@ namespace LogicalSide
                     {
                         Var = Gamezone.transform.GetChild(i).gameObject;
                         dispvar = Var.GetComponent<CardDisplay>().cardTemplate;
-                        if ((dispvar.type == "U" || dispvar.type == "D") && dispvar.Removable && dispvar != card)
+                        if ((dispvar.type == "U" || dispvar.type == "D") && dispvar.Removable)
                         {
                             Bigger = Gamezone.transform.GetChild(i).gameObject;
                             disp = Bigger.GetComponent<CardDisplay>().cardTemplate;
@@ -156,7 +156,7 @@ namespace LogicalSide
                     {
                         Var = Gamezone.transform.GetChild(i).gameObject;
                         dispvar = Var.GetComponent<CardDisplay>().cardTemplate;
-                        if ((dispvar.type == "U" || dispvar.type=="D")&& dispvar.Removable && dispvar != card)
+                        if ((dispvar.type == "U" || dispvar.type=="D")&& dispvar.Removable)
                         {
                             if (dispvar.Pwr > disp.Pwr)
                             {
@@ -176,7 +176,7 @@ namespace LogicalSide
                     }
                 }
             }
-            if (Bigger != null && disp != null && card != disp)
+            if (Bigger != null && disp != null)
             {
                 PlayerDeck Current = Decking(disp.DownBoard);
                 Decoy(disp);
@@ -203,7 +203,7 @@ namespace LogicalSide
                     {
                         Var = Gamezone.transform.GetChild(i).gameObject;
                         dispvar = Var.GetComponent<CardDisplay>().cardTemplate;
-                        if ((dispvar.type == "U" || dispvar.type == "D") && dispvar.Removable && dispvar != card)
+                        if ((dispvar.type == "U" || dispvar.type == "D") && dispvar.Removable)
                         {
                             Bigger = Gamezone.transform.GetChild(i).gameObject;
                             disp = Bigger.GetComponent<CardDisplay>().cardTemplate;
@@ -213,7 +213,7 @@ namespace LogicalSide
                     {
                         Var = Gamezone.transform.GetChild(i).gameObject;
                         dispvar = Var.GetComponent<CardDisplay>().cardTemplate;
-                        if ((dispvar.type == "U" || dispvar.type == "D") && dispvar.Removable && dispvar != card)
+                        if ((dispvar.type == "U" || dispvar.type == "D") && dispvar.Removable)
                         {
                             if (dispvar.Pwr < disp.Pwr)
                             {
@@ -305,7 +305,7 @@ namespace LogicalSide
         }
         public void ZoneCleanerMax(Card card)
         {//Este efecto es la misma idea del expuesto en el pdf, solo me parecio mejor eliminar la zona mas poblada, en caso de que quieran probar su funcionamiento para el otro caso basta cambiar el signo > por <
-            GameObject Me = RangeMap[(card.DownBoard, card.current_Rg)];
+            GameObject Me;
             int childs = 0;
             GameObject Target = null;
             Card dispvar = null;
@@ -313,7 +313,7 @@ namespace LogicalSide
             System.Random random = new();
             foreach (GameObject Gamezone in RangeMap.Values)
             {
-                if (Gamezone != Me && Gamezone.transform.childCount > childs && Gamezone.tag.IndexOf("A")==-1)
+                if (Gamezone.transform.childCount > childs && Gamezone.tag.IndexOf("A")==-1)
                 {
                     childs = Gamezone.transform.childCount;
                     Target = Gamezone;
@@ -341,8 +341,8 @@ namespace LogicalSide
             GM.Send("Tu oponente ha jugado una carta cuyo efecto elimina la zona más poblada del campo(fuera de la zona propia)", GM.EffTeller);
         }
         public void ZoneCleaner(Card card)
-        {//Este efecto es la misma idea del expuesto en el pdf, solo me parecio mejor eliminar la zona mas poblada, en caso de que quieran probar su funcionamiento para el otro caso basta cambiar el signo > por <
-            GameObject Me = RangeMap[(card.DownBoard, card.current_Rg)];
+        {
+            GameObject Me;
             int childs = int.MaxValue;
             GameObject Target = null;
             Card dispvar = null;
@@ -350,7 +350,7 @@ namespace LogicalSide
             System.Random random = new();
             foreach (GameObject Gamezone in RangeMap.Values)
             {
-                if (Gamezone != Me && Gamezone.transform.childCount!=0 && Gamezone.transform.childCount < childs && Gamezone.tag.IndexOf("A") == -1)
+                if (Gamezone.transform.childCount!=0 && Gamezone.transform.childCount < childs && Gamezone.tag.IndexOf("A") == -1)
                 {
                     childs = Gamezone.transform.childCount;
                     Target = Gamezone;
@@ -439,6 +439,7 @@ namespace LogicalSide
             PlayerDeck DeckE = GameObject.Find("DeckEnemy").GetComponent<PlayerDeck>();
             PlayerDeck Current;
             GameObject card;
+            List<Card> Permanents = new List<Card>();
             foreach (GameObject GameZone in RangeMap.Values)
             {
                 DropProp drop = GameZone.GetComponent<DropProp>();
@@ -470,13 +471,12 @@ namespace LogicalSide
                         }
                         else
                         {
-                            disp.cardTemplate.Pwr = disp.cardTemplate.OriginPwr;
-                            disp.cardTemplate.Removable = true;
-                            ListEffects[disp.cardTemplate.Eff](disp.cardTemplate);
+                            Permanents.Add(disp.cardTemplate);
                         }
                     }
                 }
             }
+
             for (int i = 0; i < C.transform.childCount; i++)
             {
                 card = C.transform.GetChild(i).gameObject;
@@ -484,18 +484,17 @@ namespace LogicalSide
                 Current = Decking(disp.cardTemplate.DownBoard);
                 if (disp != null)
                 {
-                    
-                    if (disp.cardTemplate.Removable)
-                    {
-                        Restart(disp.cardTemplate);
-                        Current.AddToCement(disp.cardTemplate);
-                        Destroy(card);
-                    }
-                    else
-                        disp.cardTemplate.Removable = true;
+                    Restart(disp.cardTemplate);
+                    Current.AddToCement(disp.cardTemplate);
+                    Destroy(card);
                 }
             }
-            
+            foreach (Card disp in Permanents)
+            {
+                disp.Pwr = disp.OriginPwr;
+                disp.Removable = true;
+                ListEffects[disp.Eff](disp);
+            }
         }
         #endregion
 
