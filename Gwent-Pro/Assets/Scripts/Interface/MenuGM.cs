@@ -23,6 +23,10 @@ public class MenuGM : MonoBehaviour
     public AudioClip ErrorSound;
     public AudioSource FXsource;
     public SavedData SoundGM;
+    public GameObject ButtonCelestial2;
+    public GameObject ButtonAliens2;
+    public GameObject ButtonAliens1;
+    public GameObject ButtonCelestial1;
     private void Awake()
     {
         Volume.onValueChanged.AddListener(ChangeVolumeMaster);
@@ -82,10 +86,30 @@ public class MenuGM : MonoBehaviour
     public void Faction2OnClick(int Faction)
     {
         SoundGM.faction_2 = Faction;
+        if(Faction == 1)
+        {
+            ButtonCelestial2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono1");
+            ButtonAliens2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens");
+        }
+        else if (Faction == 2)
+        {
+            ButtonCelestial2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono");
+            ButtonAliens2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens1");
+        }
     }
     public void Faction1OnClick(int Faction)
     {
         SoundGM.faction_1 = Faction;
+        if (Faction == 1)
+        {
+            ButtonCelestial1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono1");
+            ButtonAliens1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens");
+        }
+        else if (Faction == 2)
+        {
+            ButtonCelestial1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono");
+            ButtonAliens1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens1");
+        }
     }
     public void NameCompleted(int P)
     {

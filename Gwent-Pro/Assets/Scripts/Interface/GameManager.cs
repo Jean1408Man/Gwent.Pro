@@ -190,11 +190,11 @@ public class GameManager : MonoBehaviour
         int diff = Convert.ToInt32(Pwrplayer.text) - Convert.ToInt32(Pwroponent.text);
         if (diff > 0)
         {
+            //Gana el P1
             oponentlifes.transform.GetChild(indexE).gameObject.SetActive(false);
             indexE++;
             SendPrincipal((P1.name + " Ganó la ronda"));
             Turn = true;
-            
         }
         else if(diff<0)
         {
@@ -441,7 +441,7 @@ public class Player: ScriptableObject
 //{
 //    
 //}
-private int _cards;
+    private int _cards;
     #endregion
 
     #region EffectProps

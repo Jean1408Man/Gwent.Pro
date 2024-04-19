@@ -57,7 +57,7 @@ namespace LogicalSide
                 [(false, "AR")] = P2AR,
                 [(false, "AM")] = P2AM,
             };
-        ListEffects = new Dictionary<string, Action<Card>>()
+            ListEffects = new Dictionary<string, Action<Card>>()
         {
             {"Weather", Weather },
             {"Raise", Raise },
@@ -109,10 +109,7 @@ namespace LogicalSide
             increase = C.GetComponent<DropProp>().weather + C.GetComponent<DropProp>().raised;
             if(card.unit!= TypeUnit.Golden)
             card.Pwr = card.Pwr + increase;
-            if (GM.Turn)
-                GM.P1.Surrender = false;
-            else
-                GM.P2.Surrender = false;
+            
         }
         public void Decoy(Card card)
         {//Este efecto realmente establece las dropzones
@@ -133,8 +130,6 @@ namespace LogicalSide
             GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
             GM.Send("Tu oponente ha jugado una carta de señuelo", GM.EffTeller);
         }
-        
-       
         public void MostPwr(Card card)
         {
             GameObject Bigger = null;
@@ -149,19 +144,19 @@ namespace LogicalSide
                 {
                     if (Bigger == null)
                     {
-                        Bigger = Gamezone.transform.GetChild(i).gameObject;
-                        if (Bigger.GetComponent<CardDisplay>().cardTemplate != card)
+                        Var = Gamezone.transform.GetChild(i).gameObject;
+                        dispvar = Var.GetComponent<CardDisplay>().cardTemplate;
+                        if ((dispvar.type == "U" || dispvar.type == "D") && dispvar.Removable && dispvar != card)
                         {
+                            Bigger = Gamezone.transform.GetChild(i).gameObject;
                             disp = Bigger.GetComponent<CardDisplay>().cardTemplate;
                         }
-                        else
-                            Bigger = null;
                     }
                     else
                     {
                         Var = Gamezone.transform.GetChild(i).gameObject;
                         dispvar = Var.GetComponent<CardDisplay>().cardTemplate;
-                        if (dispvar.type == "U" && dispvar.Removable && dispvar != card)
+                        if ((dispvar.type == "U" || dispvar.type=="D")&& dispvar.Removable && dispvar != card)
                         {
                             if (dispvar.Pwr > disp.Pwr)
                             {
@@ -192,7 +187,6 @@ namespace LogicalSide
             GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
             GM.Send("Tu oponente ha jugado una carta cuyo efecto elimina la carta con mayor poder del campo", GM.EffTeller);
         }
-        
         public void LessPwr(Card card)
         {
             GameObject Bigger = null;
@@ -207,17 +201,19 @@ namespace LogicalSide
                 {
                     if (Bigger == null)
                     {
-                        Bigger = Gamezone.transform.GetChild(i).gameObject;
-                        if (Bigger.GetComponent<CardDisplay>().cardTemplate != card)
+                        Var = Gamezone.transform.GetChild(i).gameObject;
+                        dispvar = Var.GetComponent<CardDisplay>().cardTemplate;
+                        if ((dispvar.type == "U" || dispvar.type == "D") && dispvar.Removable && dispvar != card)
+                        {
+                            Bigger = Gamezone.transform.GetChild(i).gameObject;
                             disp = Bigger.GetComponent<CardDisplay>().cardTemplate;
-                        else
-                            Bigger = null;
+                        }
                     }
                     else
                     {
                         Var = Gamezone.transform.GetChild(i).gameObject;
                         dispvar = Var.GetComponent<CardDisplay>().cardTemplate;
-                        if (dispvar.type == "U" && dispvar.Removable && dispvar != card)
+                        if ((dispvar.type == "U" || dispvar.type == "D") && dispvar.Removable && dispvar != card)
                         {
                             if (dispvar.Pwr < disp.Pwr)
                             {
@@ -259,7 +255,7 @@ namespace LogicalSide
                 for (int i = 0; i < Gamezone.transform.childCount; i++)
                 {
                     dispvar = Gamezone.transform.GetChild(i).gameObject.GetComponent<CardDisplay>().cardTemplate;
-                    if (dispvar != null&& dispvar.type=="U")
+                    if (dispvar != null&& (dispvar.type=="U" || dispvar.type == "D"))
                     {
                         totalPwr += dispvar.Pwr;
                         cant++;
@@ -273,7 +269,7 @@ namespace LogicalSide
                 for (int i = 0; i < Gamezone.transform.childCount; i++)
                 {
                     dispvar = Gamezone.transform.GetChild(i).gameObject.GetComponent<CardDisplay>().cardTemplate;
-                    if (dispvar != null && dispvar.type == "U")
+                    if (dispvar != null && (dispvar.type == "U" || dispvar.type == "D") && dispvar.unit== TypeUnit.Silver)
                     {
                         dispvar.Pwr = media;
                     }
@@ -307,7 +303,7 @@ namespace LogicalSide
             GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
             GM.Send("Tu oponente ha jugado una carta cuyo efecto provoca un aumento en el poder de dicha carta si exiten más cartas iguales a ella en el campo", GM.EffTeller);
         }
-        public void ZoneCleaner(Card card)
+        public void ZoneCleanerMax(Card card)
         {//Este efecto es la misma idea del expuesto en el pdf, solo me parecio mejor eliminar la zona mas poblada, en caso de que quieran probar su funcionamiento para el otro caso basta cambiar el signo > por <
             GameObject Me = RangeMap[(card.DownBoard, card.current_Rg)];
             int childs = 0;
@@ -330,7 +326,7 @@ namespace LogicalSide
                 {
                     Me = Target.transform.GetChild(i).gameObject;
                     dispvar = Me.GetComponent<CardDisplay>().cardTemplate;
-                    if (dispvar.Removable)
+                    if (dispvar.Removable&& dispvar.unit!= TypeUnit.Golden)
                     {
                         PlayerDeck Current = Decking(dispvar.DownBoard);
                         Decoy(dispvar);
@@ -342,7 +338,43 @@ namespace LogicalSide
 
             }
             GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
-            GM.Send("Tu oponente ha jugado una carta cuyo efecto elimina la zona mas poblada del campo", GM.EffTeller);
+            GM.Send("Tu oponente ha jugado una carta cuyo efecto elimina la zona más poblada del campo(fuera de la zona propia)", GM.EffTeller);
+        }
+        public void ZoneCleaner(Card card)
+        {//Este efecto es la misma idea del expuesto en el pdf, solo me parecio mejor eliminar la zona mas poblada, en caso de que quieran probar su funcionamiento para el otro caso basta cambiar el signo > por <
+            GameObject Me = RangeMap[(card.DownBoard, card.current_Rg)];
+            int childs = int.MaxValue;
+            GameObject Target = null;
+            Card dispvar = null;
+
+            System.Random random = new();
+            foreach (GameObject Gamezone in RangeMap.Values)
+            {
+                if (Gamezone != Me && Gamezone.transform.childCount!=0 && Gamezone.transform.childCount < childs && Gamezone.tag.IndexOf("A") == -1)
+                {
+                    childs = Gamezone.transform.childCount;
+                    Target = Gamezone;
+                }
+            }
+            if (Target != null && childs > 0)
+            {
+                for (int i = 0; i < Target.transform.childCount; i++)
+                {
+                    Me = Target.transform.GetChild(i).gameObject;
+                    dispvar = Me.GetComponent<CardDisplay>().cardTemplate;
+                    if (dispvar.Removable && dispvar.unit != TypeUnit.Golden)
+                    {
+                        PlayerDeck Current = Decking(dispvar.DownBoard);
+                        Decoy(dispvar);
+                        Restart(dispvar);
+                        Current.AddToCement(dispvar);
+                        Destroy(Me);
+                    }
+                }
+
+            }
+            GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
+            GM.Send("Tu oponente ha jugado una carta cuyo efecto elimina la zona menos poblada del campo(no incluye la propia)", GM.EffTeller);
         }
         public void Light(Card card)
         {
@@ -353,7 +385,9 @@ namespace LogicalSide
                 {
                     for (int i = 0; i < Gamezone.transform.childCount; i++)
                     {
-                        Gamezone.transform.GetChild(i).GetComponent<CardDisplay>().cardTemplate.Pwr -= props.weather;
+                        Card disp = Gamezone.transform.GetChild(i).GetComponent<CardDisplay>().cardTemplate;
+                        if (disp.unit == TypeUnit.Silver&& disp.type!="D")
+                            disp.Pwr -= props.weather;
                     }
                     props.weather = 0;
                 }
@@ -370,7 +404,6 @@ namespace LogicalSide
             GM.Send("Tu oponente ha jugado una carta cuyo efecto elimina los climas del campo", GM.EffTeller);
         }
         #endregion
-
         #region Utilities
         public void RestartCard(GameObject Card, GameObject Place, bool home)
         {

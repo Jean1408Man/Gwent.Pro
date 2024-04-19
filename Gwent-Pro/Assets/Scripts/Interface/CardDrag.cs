@@ -74,18 +74,23 @@ public class CardDrag : MonoBehaviour
                     efectos.RestartCard(dropzone, null, true);
                 }
                 Played = true;
-
+                if (GM.Turn)
+                    GM.P1.Surrender = false;
+                else
+                    GM.P2.Surrender = false;
                 if (AssociatedCard.type == "U")
                     efectos.PlayCard(AssociatedCard);
                 GM.Sounds.PlaySoundButton();
                 if(AssociatedCard.type!="D")
                     efectos.ListEffects[AssociatedCard.Eff].Invoke(AssociatedCard);
+
                 GM.Turn = !GM.Turn;
                 if (AssociatedCard.Eff == "Light")
                 {
                     PlayerDeck deck = efectos.Decking(AssociatedCard.DownBoard);
                     deck.AddToCement(AssociatedCard);
                     Destroy(gameObject);
+
                 }
                 
             }
