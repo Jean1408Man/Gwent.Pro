@@ -146,7 +146,7 @@ namespace LogicalSide
                     {
                         Var = Gamezone.transform.GetChild(i).gameObject;
                         dispvar = Var.GetComponent<CardDisplay>().cardTemplate;
-                        if ((dispvar.type == "U" || dispvar.type == "D") && dispvar.Removable)
+                        if ((dispvar.type == "U" || dispvar.type == "D") && dispvar.unit == TypeUnit.Silver && dispvar.Removable)
                         {
                             Bigger = Gamezone.transform.GetChild(i).gameObject;
                             disp = Bigger.GetComponent<CardDisplay>().cardTemplate;
@@ -156,7 +156,7 @@ namespace LogicalSide
                     {
                         Var = Gamezone.transform.GetChild(i).gameObject;
                         dispvar = Var.GetComponent<CardDisplay>().cardTemplate;
-                        if ((dispvar.type == "U" || dispvar.type=="D")&& dispvar.Removable)
+                        if ((dispvar.type == "U" || dispvar.type=="D")&& dispvar.unit == TypeUnit.Silver && dispvar.Removable)
                         {
                             if (dispvar.Pwr > disp.Pwr)
                             {
@@ -203,7 +203,7 @@ namespace LogicalSide
                     {
                         Var = Gamezone.transform.GetChild(i).gameObject;
                         dispvar = Var.GetComponent<CardDisplay>().cardTemplate;
-                        if ((dispvar.type == "U" || dispvar.type == "D") && dispvar.Removable)
+                        if ((dispvar.type == "U" || dispvar.type == "D") && dispvar.unit == TypeUnit.Silver && dispvar.Removable)
                         {
                             Bigger = Gamezone.transform.GetChild(i).gameObject;
                             disp = Bigger.GetComponent<CardDisplay>().cardTemplate;
@@ -213,7 +213,7 @@ namespace LogicalSide
                     {
                         Var = Gamezone.transform.GetChild(i).gameObject;
                         dispvar = Var.GetComponent<CardDisplay>().cardTemplate;
-                        if ((dispvar.type == "U" || dispvar.type == "D") && dispvar.Removable)
+                        if ((dispvar.type == "U" || dispvar.type == "D") && dispvar.unit == TypeUnit.Silver && dispvar.Removable)
                         {
                             if (dispvar.Pwr < disp.Pwr)
                             {
