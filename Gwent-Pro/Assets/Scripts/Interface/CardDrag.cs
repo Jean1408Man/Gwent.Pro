@@ -29,14 +29,17 @@ public class CardDrag : MonoBehaviour
     #region Drag
     public void StartDrag()
     {
-        startPos = gameObject.transform.position;
-        if (!Played && GM.WhichPlayer(AssociatedCard.DownBoard).SetedUp)
+        if (!IsDragging)
         {
-            if (AssociatedCard.DownBoard == GM.Turn)
+            startPos = gameObject.transform.position;
+            if (!Played && GM.WhichPlayer(AssociatedCard.DownBoard).SetedUp)
             {
-                startPos = gameObject.transform.position;
-                IsDragging = true;
-                BigCardDestroy();
+                if (AssociatedCard.DownBoard == GM.Turn)
+                {
+                    startPos = gameObject.transform.position;
+                    IsDragging = true;
+                    BigCardDestroy();
+                }
             }
         }
     }
@@ -127,7 +130,7 @@ public class CardDrag : MonoBehaviour
             }
             else
             {
-                if (drop.tag == AssociatedCard.type && efectos.RangeMap[(AssociatedCard.DownBoard, drop.tag)] == drop)
+                if (drop.tag == AssociatedCard.type && efectos.RangeMap[(AssociatedCard.DownBoard, drop.tag)] == drop&& drop.transform.childCount<1)
                     return drop;
             }
         else

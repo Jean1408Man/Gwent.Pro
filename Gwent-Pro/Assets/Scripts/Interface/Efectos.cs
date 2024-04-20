@@ -491,9 +491,16 @@ namespace LogicalSide
             }
             foreach (Card disp in Permanents)
             {
-                disp.Pwr = disp.OriginPwr;
+                //Primero verifico que en el otro terreno no haya quedado en juego un clima casualmente
+                int increase = 0;
+                disp.Pwr= disp.OriginPwr;
+                GameObject C = RangeMap[(disp.DownBoard, disp.current_Rg)];
+                increase = C.GetComponent<DropProp>().weather + C.GetComponent<DropProp>().raised;
+                if (disp.unit != TypeUnit.Golden)
+                    disp.Pwr = disp.Pwr + increase;
                 disp.Removable = true;
-                ListEffects[disp.Eff](disp);
+                if(disp.Eff== "Weather"|| disp.Eff== "Raise"|| disp.Eff == "Colmena")
+                    ListEffects[disp.Eff](disp);
             }
         }
         #endregion
@@ -509,7 +516,7 @@ namespace LogicalSide
                 for (int i = 0; i < Gamezone.transform.childCount; i++)
                 {
                     dispvar = Gamezone.transform.GetChild(i).gameObject.GetComponent<CardDisplay>().cardTemplate;
-                    if (dispvar != null && dispvar.type == "U" && dispvar.Owner== Player)
+                    if (dispvar != null && (dispvar.type == "U"|| dispvar.type== "D" )&& dispvar.Owner== Player)
                     {
                         cant++;
                     }
@@ -524,7 +531,7 @@ namespace LogicalSide
                     for (int i = 0; i < Gamezone.transform.childCount; i++)
                     {
                         dispvar = Gamezone.transform.GetChild(i).gameObject.GetComponent<CardDisplay>().cardTemplate;
-                        if (dispvar != null && dispvar.type == "U" && dispvar.Owner == Player)
+                        if (dispvar != null && (dispvar.type == "U" || dispvar.type == "D") && dispvar.Owner == Player)
                         {
                             if (cant2 == cant)
                             {

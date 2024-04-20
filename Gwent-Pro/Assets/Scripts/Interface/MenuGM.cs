@@ -92,19 +92,19 @@ public class MenuGM : MonoBehaviour
         {
             ButtonCelestial2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono1");
             ButtonAliens2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens");
-            ButtonAliens2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto");
+            Mixto2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto");
         }
         else if (Faction == 2)
         {
             ButtonCelestial2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono");
             ButtonAliens2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens1");
-            ButtonAliens2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto");
+            Mixto2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto");
         }
         else if (Faction == 3)
         {
             ButtonCelestial2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono");
             ButtonAliens2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens");
-            ButtonAliens2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto1");
+            Mixto2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto1");
         }
 
     }
@@ -115,19 +115,19 @@ public class MenuGM : MonoBehaviour
         {
             ButtonCelestial1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono1");
             ButtonAliens1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens");
-            ButtonAliens1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto");
+            Mixto1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto");
         }
         else if (Faction == 2)
         {
             ButtonCelestial1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono");
             ButtonAliens1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens1");
-            ButtonAliens1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto");
+            Mixto1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto");
         }
         else if (Faction == 3)
         {
             ButtonCelestial1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono");
             ButtonAliens1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens");
-            ButtonAliens1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto1");
+            Mixto1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto1");
         }
     }
     public void NameCompleted(int P)
@@ -169,5 +169,9 @@ public class MenuGM : MonoBehaviour
             // Aquí puedes agregar la lógica que deseas ejecutar cuando se presiona Escape
             Debug.Log("Se presionó la tecla Escape");
         }
+    }
+    public void Exit()
+    {
+        Application.Quit();
     }
 }

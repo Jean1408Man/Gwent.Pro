@@ -20,33 +20,45 @@ public class PlayerDeck : MonoBehaviour
     // Método para instanciar la última carta del mazo
     public void Instanciate(Card card, Transform zone, GameObject prefab)
     {
-        if (deck.Count > 0 && (playerZone.childCount <= 9))
+        if (deck.Count > 0 )
         {
-            GameObject instanciaCarta = Instantiate(prefab, zone);
-            CardDisplay disp = instanciaCarta.GetComponent<CardDisplay>();
-            disp.cardTemplate = card;
-            disp.ArtworkImg = instanciaCarta.transform.GetChild(0).GetComponent<Image>();
-            disp.DescriptionText = instanciaCarta.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-            disp.PwrTxt = instanciaCarta.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
-            deck.Remove(card);
+            if ((playerZone.childCount <= 9))
+            {
+                GameObject instanciaCarta = Instantiate(prefab, zone);
+                CardDisplay disp = instanciaCarta.GetComponent<CardDisplay>();
+                disp.cardTemplate = card;
+                disp.ArtworkImg = instanciaCarta.transform.GetChild(0).GetComponent<Image>();
+                disp.DescriptionText = instanciaCarta.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+                disp.PwrTxt = instanciaCarta.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
+                deck.Remove(card);
+            }
+            
         }
     }
     public void InstanciateLastOnDeck( int n, bool exception)
     {
-        if (deck.Count > 0 && (playerZone.childCount <= 9 || exception )&& n>0)
+        if (deck.Count > 0 && n>0)
         {
             Card card = deck[deck.Count - 1];
-            GameObject instanciaCarta = Instantiate(prefabCarta, playerZone);
-            CardDisplay disp = instanciaCarta.GetComponent<CardDisplay>();
-            disp.cardTemplate = card;
-            disp.ArtworkImg = instanciaCarta.transform.GetChild(0).GetComponent<Image>();
-            disp.DescriptionText = instanciaCarta.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-            disp.PwrTxt = instanciaCarta.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
-            deck.Remove(card);
-            GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
-            if (PlayerHand.tag.IndexOf("DE") != -1)
+            if ((playerZone.childCount <= 9 || exception))
             {
-                playerZone.GetChild(playerZone.childCount - 1).Rotate(0, 0, 180);
+                GameObject instanciaCarta = Instantiate(prefabCarta, playerZone);
+                CardDisplay disp = instanciaCarta.GetComponent<CardDisplay>();
+                disp.cardTemplate = card;
+                disp.ArtworkImg = instanciaCarta.transform.GetChild(0).GetComponent<Image>();
+                disp.DescriptionText = instanciaCarta.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+                disp.PwrTxt = instanciaCarta.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
+                deck.Remove(card);
+                GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
+                if (PlayerHand.tag.IndexOf("DE") != -1)
+                {
+                    playerZone.GetChild(playerZone.childCount - 1).Rotate(0, 0, 180);
+                }
+            }
+            else
+            {
+                deck.Remove(card);
+                cement.Add(card);
             }
             InstanciateLastOnDeck(n - 1, exception);
         }

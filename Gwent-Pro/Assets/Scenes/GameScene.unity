@@ -1498,7 +1498,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6940528146523382542, guid: 5f5df3d38db508146913c776e05753a5, type: 3}
       propertyPath: m_SizeDelta.y
-      value: -661.62
+      value: -668.82
       objectReference: {fileID: 0}
     - target: {fileID: 6940528146523382542, guid: 5f5df3d38db508146913c776e05753a5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1530,11 +1530,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6940528146523382542, guid: 5f5df3d38db508146913c776e05753a5, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -609.72
+      value: -609.71
       objectReference: {fileID: 0}
     - target: {fileID: 6940528146523382542, guid: 5f5df3d38db508146913c776e05753a5, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 188.22
+      value: 180.1
       objectReference: {fileID: 0}
     - target: {fileID: 6940528146523382542, guid: 5f5df3d38db508146913c776e05753a5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -3250,6 +3250,8 @@ MonoBehaviour:
   ButtonAliens2: {fileID: 0}
   ButtonAliens1: {fileID: 0}
   ButtonCelestial1: {fileID: 0}
+  Mixto1: {fileID: 0}
+  Mixto2: {fileID: 0}
 --- !u!1 &934289988 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1552971429096601434, guid: d12a2d4845c4d284783b1ac28bf9f245, type: 3}

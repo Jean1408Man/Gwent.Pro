@@ -212,7 +212,7 @@ public class GameManager : MonoBehaviour
             {
                 oponentlifes.transform.GetChild(indexE).gameObject.SetActive(false);
                 indexE++;
-                result = ((P1.name + " Ganó la ronda"));
+                result = ((P1.name + " Ganó la ronda aplicando el efecto de su líder"));
                 turno = true;
             }
             else
@@ -223,7 +223,7 @@ public class GameManager : MonoBehaviour
             {
                 playerLifes.transform.GetChild(indexP).gameObject.SetActive(false);
                 indexP++;
-                result= ((P2.name + " Ganó la ronda"));
+                result= ((P2.name + " Ganó la ronda aplicando el efecto de su líder"));
                 turno = false;
             }
             else
