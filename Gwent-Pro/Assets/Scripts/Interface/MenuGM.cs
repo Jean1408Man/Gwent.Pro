@@ -19,6 +19,7 @@ public class MenuGM : MonoBehaviour
     public GameObject OptionsPanel;
     public GameObject PanelP1;
     public GameObject PanelP2;
+    public GameObject CompilerPanel;
     public AudioClip ClickSound;
     public AudioClip ErrorSound;
     public AudioSource FXsource;
@@ -54,6 +55,8 @@ public class MenuGM : MonoBehaviour
     {
         MainPanel.SetActive(false);
         OptionsPanel.SetActive(false);
+        if(CompilerPanel!= null)
+        CompilerPanel.SetActive(false);
         if(PanelP1 != null)
         PanelP1.SetActive(false);
         if(PanelP2 != null)
@@ -166,8 +169,8 @@ public class MenuGM : MonoBehaviour
     {
         if (key == KeyCode.Escape)
         {
-            // Aquí puedes agregar la lógica que deseas ejecutar cuando se presiona Escape
-            Debug.Log("Se presionó la tecla Escape");
+            // Aquï¿½ puedes agregar la lï¿½gica que deseas ejecutar cuando se presiona Escape
+            Debug.Log("Se presionï¿½ la tecla Escape");
         }
     }
     public void Exit()

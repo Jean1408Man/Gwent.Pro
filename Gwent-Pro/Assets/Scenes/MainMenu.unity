@@ -2800,6 +2800,7 @@ MonoBehaviour:
   OptionsPanel: {fileID: 1512130313}
   PanelP1: {fileID: 1552958618}
   PanelP2: {fileID: 757102723}
+  CompilerPanel: {fileID: 2040250462}
   ClickSound: {fileID: 8300000, guid: fc6fbaa605c45164ca39eb7d60ad81a6, type: 3}
   ErrorSound: {fileID: 8300000, guid: 3a199f6425a6f88478dcfaad5c1b44e4, type: 3}
   FXsource: {fileID: 503116313}

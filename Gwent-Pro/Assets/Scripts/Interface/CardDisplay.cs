@@ -13,15 +13,14 @@ namespace LogicalSide
         public TextMeshProUGUI PwrTxt;
         public TextMeshProUGUI DescriptionText;
         public Image ArtworkImg;
-        bool activated=false;
 
         void Update()
         {
             if (cardTemplate != null)
             { 
-              if (cardTemplate.Pwr != 0)
+              if (cardTemplate.Power != 0)
                 {
-                    PwrTxt.text = cardTemplate.Pwr.ToString();
+                    PwrTxt.text = cardTemplate.Power.ToString();
                     cardTemplate.PwrText = PwrTxt;
                 }
                 else

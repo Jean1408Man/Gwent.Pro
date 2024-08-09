@@ -3242,6 +3242,7 @@ MonoBehaviour:
   OptionsPanel: {fileID: 1634715787}
   PanelP1: {fileID: 0}
   PanelP2: {fileID: 0}
+  CompilerPanel: {fileID: 0}
   ClickSound: {fileID: 8300000, guid: fc6fbaa605c45164ca39eb7d60ad81a6, type: 3}
   ErrorSound: {fileID: 8300000, guid: 3a199f6425a6f88478dcfaad5c1b44e4, type: 3}
   FXsource: {fileID: 0}
@@ -5134,8 +5135,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 55.798706, y: -15.3594055}
-  m_SizeDelta: {x: 1206.2891, y: 278.35468}
+  m_AnchoredPosition: {x: 51.0417, y: -15.3594}
+  m_SizeDelta: {x: 1924.6194, y: 1072.7992}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1394945501
 MonoBehaviour:

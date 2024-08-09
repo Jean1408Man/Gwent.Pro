@@ -19,9 +19,9 @@ namespace LogicalSide
             foreach (Transform cardTransform in transform)
             {
                 disp = cardTransform.GetComponent<CardDisplay>();
-                if (disp != null && disp.cardTemplate.unit == TypeUnit.Silver && disp.cardTemplate.type!="D")
+                if (disp != null && disp.cardTemplate.unit == TypeUnit.Silver && disp.cardTemplate.Type!="D")
                 {
-                    disp.cardTemplate.Pwr += diff;
+                    disp.cardTemplate.Power += diff;
                 }
             }
         }
@@ -35,9 +35,9 @@ namespace LogicalSide
             foreach (Transform cardTransform in transform)
             {
                 disp = cardTransform.GetComponent<CardDisplay>();
-                if (disp != null && disp.cardTemplate.unit == TypeUnit.Silver && disp.cardTemplate.type != "D")
+                if (disp != null && disp.cardTemplate.unit == TypeUnit.Silver && disp.cardTemplate.Type != "D")
                 {
-                    disp.cardTemplate.Pwr += diff;
+                    disp.cardTemplate.Power += diff;
                 }
             }
         }
@@ -52,7 +52,7 @@ namespace LogicalSide
         //}
         //private IEnumerator ProcessMessage()
         //{
-        //    // Procesa el mensaje aquí (reemplaza esto con tu lógica real)
+        //    // Procesa el mensaje aquï¿½ (reemplaza esto con tu lï¿½gica real)
 
 
         //    // Espera un frame antes de procesar el siguiente mensaje

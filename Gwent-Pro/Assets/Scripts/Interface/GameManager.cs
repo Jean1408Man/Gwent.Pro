@@ -111,7 +111,7 @@ public class GameManager : MonoBehaviour
         if (WhichPlayer(Turn).SetedUp != true)
         {
             Teller.gameObject.SetActive(true);
-            Send("Puedes descartar hasta dos cartas de tu mano haciendo click sobre ellas en este momento, si estás conforme con tu mano puedes pulsar el botón OK", Teller);
+            Send("Puedes descartar hasta dos cartas de tu mano haciendo click sobre ellas en este momento, si estï¿½s conforme con tu mano puedes pulsar el botï¿½n OK", Teller);
         }
         else
         {
@@ -193,14 +193,14 @@ public class GameManager : MonoBehaviour
             //Gana el P1
             oponentlifes.transform.GetChild(indexE).gameObject.SetActive(false);
             indexE++;
-            SendPrincipal((P1.name + " Ganó la ronda"));
+            SendPrincipal((P1.name + " Ganï¿½ la ronda"));
             Turn = true;
         }
         else if(diff<0)
         {
             playerLifes.transform.GetChild(indexP).gameObject.SetActive(false);
             indexP++;
-            SendPrincipal(P2.name + " Ganó la ronda");
+            SendPrincipal(P2.name + " Ganï¿½ la ronda");
             Turn =false;
         }
         else
@@ -212,7 +212,7 @@ public class GameManager : MonoBehaviour
             {
                 oponentlifes.transform.GetChild(indexE).gameObject.SetActive(false);
                 indexE++;
-                result = ((P1.name + " Ganó la ronda aplicando el efecto de su líder"));
+                result = ((P1.name + " Ganï¿½ la ronda aplicando el efecto de su lï¿½der"));
                 turno = true;
             }
             else
@@ -223,7 +223,7 @@ public class GameManager : MonoBehaviour
             {
                 playerLifes.transform.GetChild(indexP).gameObject.SetActive(false);
                 indexP++;
-                result= ((P2.name + " Ganó la ronda aplicando el efecto de su líder"));
+                result= ((P2.name + " Ganï¿½ la ronda aplicando el efecto de su lï¿½der"));
                 turno = false;
             }
             else
@@ -272,7 +272,7 @@ public class GameManager : MonoBehaviour
             res=(P2.name + " ha mantenido una de sus cartas en el campo aleatoriamente debido al efecto de su lider");
         }
         if(P2.RandomizedNotRem&& P1.RandomizedNotRem)
-            SendPrincipal("Ambos jugadores han mantenido una de sus cartas en el campo aleatoriamente debido al efecto de sus líderes");
+            SendPrincipal("Ambos jugadores han mantenido una de sus cartas en el campo aleatoriamente debido al efecto de sus lï¿½deres");
         else
             if(res!="")
                 SendPrincipal(res);
@@ -284,7 +284,7 @@ public class GameManager : MonoBehaviour
         if (P1.Stealer)
         {
             deck.InstanciateLastOnDeck(3, false);
-            r = P1.name + " ha robado una carta de más gracias al efecto de su lider";
+            r = P1.name + " ha robado una carta de mï¿½s gracias al efecto de su lider";
         }
         else
         {
@@ -294,12 +294,12 @@ public class GameManager : MonoBehaviour
         if (P2.Stealer)
         { 
             deck.InstanciateLastOnDeck(3, false);
-            r = P2.name + " ha robado una carta de más gracias al efecto de su lider";
+            r = P2.name + " ha robado una carta de mï¿½s gracias al efecto de su lider";
         }
         else
             deck.InstanciateLastOnDeck(2, false);
         if (P1.Stealer && P2.Stealer)
-            r = "Ambos jugadores han robado una carta de más gracias al efecto de su lider";
+            r = "Ambos jugadores han robado una carta de mï¿½s gracias al efecto de su lider";
         if(r!= "")
         {
             SendPrincipal(r);
@@ -328,7 +328,7 @@ public class GameManager : MonoBehaviour
             {
                 Turn = true;
             }
-            Send("Tu oponente pasó turno", EffTeller);
+            Send("Tu oponente pasï¿½ turno", EffTeller);
         }
         
     }
@@ -337,12 +337,11 @@ public class GameManager : MonoBehaviour
         if (winner == "Ambos")
             WinnerTxt.text= "El juego acaba en empate";
         else
-            WinnerTxt.text = winner+ " ganó la partida";
+            WinnerTxt.text = winner+ " ganï¿½ la partida";
         PanelWinner.SetActive(true);   
     }
     #endregion
     #region Messaging
-    bool IsMessaging = false;
     public void Send(string message, TextMeshProUGUI Mess)
     {
         Mess.gameObject.SetActive(true);
@@ -369,16 +368,6 @@ public class GameManager : MonoBehaviour
         }
         return SMS.Dequeue();
     }
-    private IEnumerator WaitForNextClick()
-    {
-        // Espera hasta que no haya ninguna tecla presionada
-        while (Input.anyKey)
-        {
-            
-            yield return null;
-        }
-        GetPrincipal();
-    }
     public void OK()
     {
         WhichPlayer(Turn).SetedUp = true;
@@ -387,7 +376,7 @@ public class GameManager : MonoBehaviour
 
     public Player WhichPlayer(bool b)
     {
-        if (b == P1.P)
+        if (b == P1.Turn)
             return P1;
         return P2;
     }
@@ -396,14 +385,14 @@ public class GameManager : MonoBehaviour
         Thread.Sleep(Convert.ToInt32(seconds*1000));
     }
 }
-public class Player: ScriptableObject
+public class Player: IPlayer
 {
     #region UsualProps
     public int faction;
-    public string name;
+    public new string name;
     public int lifes;
     public bool Surrender;
-    public bool P;
+    public bool Turn{get; set;}
     private bool _seted;
     public bool SetedUp
     {
@@ -414,7 +403,7 @@ public class Player: ScriptableObject
         set
         {
             _seted= value;GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
-            if(!_seted && GM.Turn== P)
+            if(!_seted && GM.Turn== Turn)
             {
                 GM.ButtonOK.SetActive(true);
                 GM.Teller.gameObject.SetActive(true);
@@ -470,7 +459,7 @@ public class Player: ScriptableObject
         this.name = name;
         this.faction = faction;
         Surrender = false;
-        this.P = b;
+        this.Turn = b;
         SetedUp = false;
         cardsExchanged = 0;
     }

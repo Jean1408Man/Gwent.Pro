@@ -55,15 +55,15 @@ public class CardDrag : MonoBehaviour
                 {
                     Debug.Log("Light");
                 }
-                if (AssociatedCard.type != "D")
+                if (AssociatedCard.Type != "D")
                 {
                     if (AssociatedCard.Eff != "Light")
                         transform.SetParent(dropzone.transform, false);
-                    if (AssociatedCard.type.IndexOf("C") == -1 && AssociatedCard.type.IndexOf("A") == -1)
+                    if (AssociatedCard.Type.IndexOf("C") == -1 && AssociatedCard.Type.IndexOf("A") == -1)
                         AssociatedCard.current_Rg = dropzone.tag;
                     else
                     {
-                        AssociatedCard.current_Rg = AssociatedCard.Atk_Rg;
+                        AssociatedCard.current_Rg = AssociatedCard.Range;
                     }
                 }
                 else
@@ -81,12 +81,13 @@ public class CardDrag : MonoBehaviour
                     GM.P1.Surrender = false;
                 else
                     GM.P2.Surrender = false;
-                if (AssociatedCard.type == "U")
+                if (AssociatedCard.Type == "U")
                     efectos.PlayCard(AssociatedCard);
                 GM.Sounds.PlaySoundButton();
-                if(AssociatedCard.type!="D")
+                if(AssociatedCard.Type!="D"&& (AssociatedCard.Effects==null|| AssociatedCard.Effects.Count==0))
                     efectos.ListEffects[AssociatedCard.Eff].Invoke(AssociatedCard);
-
+                else
+                    
                 GM.Turn = !GM.Turn;
                 if (AssociatedCard.Eff == "Light")
                 {
@@ -108,12 +109,12 @@ public class CardDrag : MonoBehaviour
     private GameObject IsPosible()
     {
         foreach(GameObject drop in dropzones)
-        if (AssociatedCard.type.IndexOf("C") == -1)
-            if (AssociatedCard.type.IndexOf("A") == -1)
+        if (AssociatedCard.Type.IndexOf("C") == -1)
+            if (AssociatedCard.Type.IndexOf("A") == -1)
             {
-                if (AssociatedCard.type.IndexOf('D') == -1)
+                if (AssociatedCard.Type.IndexOf('D') == -1)
                 {
-                    if (drop.transform.childCount < 6 && AssociatedCard.Atk_Rg.IndexOf(drop.tag) != -1 && efectos.RangeMap[(AssociatedCard.DownBoard, drop.tag)] == drop)
+                    if (drop.transform.childCount < 6 && AssociatedCard.Range.IndexOf(drop.tag) != -1 && efectos.RangeMap[(AssociatedCard.DownBoard, drop.tag)] == drop)
                     {
                         return drop;
                     }
@@ -130,7 +131,7 @@ public class CardDrag : MonoBehaviour
             }
             else
             {
-                if (drop.tag == AssociatedCard.type && efectos.RangeMap[(AssociatedCard.DownBoard, drop.tag)] == drop&& drop.transform.childCount<1)
+                if (drop.tag == AssociatedCard.Type && efectos.RangeMap[(AssociatedCard.DownBoard, drop.tag)] == drop&& drop.transform.childCount<1)
                     return drop;
             }
         else

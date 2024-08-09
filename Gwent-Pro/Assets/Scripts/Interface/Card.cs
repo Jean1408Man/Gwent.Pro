@@ -6,17 +6,33 @@ using UnityEngine.UI;
 
 namespace LogicalSide
 {
-    [CreateAssetMenu(fileName ="New Card", menuName = "Card")]
-    public class Card: ScriptableObject
+    public class Card: ICard
     {
-        public Player Owner;
+        public override IPlayer Owner{get; set;}
+
         public Sprite Artwork;
-        public string Name;
+        public override string Name{get; set;}
         public int Id;
         private int _pwr; // Campo de respaldo
         public bool Removable;
-        int debugg = 0;
-        public int Pwr
+        private bool _Destroy;
+        public bool Destroy
+        {
+            get
+            {
+                return _Destroy;
+            }
+            set
+            {
+                if(Displayed&& value==true)
+                {
+                    _Destroy= true;
+                }
+            }
+        }
+        public bool Displayed=false;
+        public bool SeteablePower;
+        public override int Power
         {
             get { return _pwr; }
             set
@@ -30,53 +46,39 @@ namespace LogicalSide
                 }
                 if(PwrText!=null)
                 PwrText.text = _pwr.ToString();
-                else
-                {
-                    debugg = 5;
-                }
             }
 
         }
+        public override string Faction{get; set;}
 
         public int OriginPwr;
         public string description;
-        public string Atk_Rg;
+        public override string Range{get; set;}
         public string current_Rg;
-        public string type;
+        public override string Type{get; set;}
         public TypeUnit unit;
         public string Eff;
         public bool DownBoard;
         public TextMeshProUGUI PwrText= new();
         
+        //Compiler Important Member
+        public override List<IEffect> Effects{get; set;}
 
-        public Card(bool DownBoard ,string name , int id ,int pwr, string description,Player Owner,TypeUnit unit,string type ,string Eff,string atk_Rg, Sprite Img, bool Removable)
+        public Card(bool DownBoard ,string name , int id ,int pwr, string description,Player Owner,TypeUnit unit,string type ,string Eff,string atk_Rg, Sprite Img, bool Removable, bool Seteable= true)
         {
             this.Name = name;
             this.Id = id;
-            this.Pwr = pwr;
+            this.Power = pwr;
             OriginPwr = pwr;
             this.description = description;
-            this.Atk_Rg = atk_Rg;
+            this.Range = atk_Rg;
             this.Artwork = Img;
-            this.type = type;
+            this.Type = type;
             this.unit = unit;
             this.Eff = Eff;
             this.DownBoard = DownBoard;
             this.Removable = Removable;
             this.Owner = Owner;
-        }
-        public void Assign(Card card)
-        {
-            this.Name = card.Name;
-            this.Id = card.Id;
-            this.Pwr = card.Pwr;
-            this.OriginPwr = card.OriginPwr;
-            this.description = card.description;
-            this.Atk_Rg = card.Atk_Rg;
-            this.Artwork = card.Artwork;
-            this.type = card.type;
-            this.unit = card.unit;
-            this.Eff = card.Eff;
         }
     }
     public enum Type
