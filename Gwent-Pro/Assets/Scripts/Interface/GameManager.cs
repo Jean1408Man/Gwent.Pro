@@ -48,6 +48,7 @@ public class GameManager : MonoBehaviour
         { 
             if(_Turn != value)
             {
+                GameObject.Find("Effects").GetComponent<Efectos>().Turn= value;
                 _Turn = value;
                 Rotate();
             }
@@ -162,22 +163,22 @@ public class GameManager : MonoBehaviour
         {
             for(int i= 0; i< PlayerZone.transform.childCount; i++)
             {
-                PlayerZone.transform.GetChild(i).transform.GetChild(3).gameObject.SetActive(false);
+                PlayerZone.transform.GetChild(i).transform.GetChild(7).gameObject.SetActive(false);
             }
             for (int i = 0; i < EnemyZone.transform.childCount; i++)
             {
-                EnemyZone.transform.GetChild(i).transform.GetChild(3).gameObject.SetActive(true);
+                EnemyZone.transform.GetChild(i).transform.GetChild(7).gameObject.SetActive(true);
             }
         }
         else
         {
             for (int i = 0; i < PlayerZone.transform.childCount; i++)
             {
-                PlayerZone.transform.GetChild(i).transform.GetChild(3).gameObject.SetActive(true);
+                PlayerZone.transform.GetChild(i).transform.GetChild(7).gameObject.SetActive(true);
             }
             for (int i = 0; i < EnemyZone.transform.childCount; i++)
             {
-                EnemyZone.transform.GetChild(i).transform.GetChild(3).gameObject.SetActive(false);
+                EnemyZone.transform.GetChild(i).transform.GetChild(7).gameObject.SetActive(false);
             }
         }
     }
@@ -376,6 +377,11 @@ public class GameManager : MonoBehaviour
 
     public Player WhichPlayer(bool b)
     {
+        if(P1==null)
+        {
+            UnityEngine.Debug.Log("Player nulo");
+            P1= new Player(10, "jua", true);
+        }
         if (b == P1.Turn)
             return P1;
         return P2;

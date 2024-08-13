@@ -1,18 +1,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace LogicalSide{
+namespace LogicalSide
+{
 
- public abstract class Expression
+public abstract class Expression
  {
     #region EvaluateSection
-    public object _value;
     public object? Value{get;set;}
-    public object? GetValue(EvaluateScope ev)
-    {
-        Evaluator= ev;
-        return Value;
-    }
     #endregion
     public SemanticalScope? SemanticScope;
     public EvaluateScope? Evaluator;
@@ -41,7 +36,7 @@ public class ProgramExpression: Expression
     }
     public override object Evaluate(EvaluateScope scope,object Set, object Before= null)
     {
-        CustomList<ICard> cards= new(false);
+        CustomList<ICard> cards= new(false,null);
         object values=null;
         foreach(Expression exp in EffectsAndCards)
         {
@@ -110,7 +105,6 @@ public class EffectDeclarationExpr: Expression
         Action.Evaluate(Evaluator,null); 
     }
 
-    //TODO: Effect Declarations need a method named Execute, wich will take the variables initialized correctly and act
     public override object Evaluate(EvaluateScope? scope,object Set, object Before= null)
     {
         string name= (string)Name!.Evaluate(scope, Set);
@@ -573,7 +567,7 @@ public class SelectorExpression: Expression
     public Expression? Single;
     public Expression? Predicate;
 
-    readonly List<string> SourcesAvailable= new List<string>{"hand", "otherhand", "deck", "otherdeck", "field", "otherfield", "parent", "board"};
+    readonly List<string> SourcesAvailable = new List<string>{"hand", "otherhand", "deck", "otherdeck", "field", "otherfield", "parent", "board", "graveyard", "othergraveyard"};
     private string FormatSources(string source)
     {
         string format= "";
@@ -584,9 +578,19 @@ public class SelectorExpression: Expression
             format= "Hand";
             break;
             
-            case "Otherhand":
+            case "OtherHand":
             case "otherhand":
             format= "OtherHand";
+            break;
+
+            case "graveyard":
+            case "GraveYard":
+            format= "GraveYard";
+            break;
+            
+            case "OtherGraveYard":
+            case "othergraveyard":
+            format= "OtherGraveYard";
             break;
 
             case "Deck":
@@ -594,7 +598,7 @@ public class SelectorExpression: Expression
             format= "Deck";
             break;
             
-            case "Otherdeck":
+            case "OtherDeck":
             case "otherdeck":
             format= "OtherDeck";
             break;
@@ -603,7 +607,7 @@ public class SelectorExpression: Expression
             format= "Field";
             break;
             
-            case "Otherfield":
+            case "OtherField":
             case "otherfield":
             format= "OtherField";
             break;
@@ -627,7 +631,7 @@ public class SelectorExpression: Expression
         
         Source!.Value= FormatSources((string)Source.Value!);
         CustomList<ICard> SourceCards= (CustomList<ICard>)Api.GetProperty(context, (string)Source.Value);
-        CustomList<ICard> Targets= new(false);
+        CustomList<ICard> Targets= new(false, null);
 
         if((bool)Single!.Value!)
         {
@@ -660,10 +664,12 @@ public class SelectorExpression: Expression
         {
             throw new Exception($"You are giving an invalid source: {s}, check the available sources and try again");
         }
-        if(s== "parent")
+        if(s== "parent")if( Set!= null)
         {//Is trying to use the source of its parent
             Source.Value= Set;
         }
+        else
+            throw new Exception("Evaluate error, use of parent in a non Postaction statement");
         Single.Evaluate(scope, Set, Before);
         return null;
     }
@@ -887,11 +893,6 @@ public class BinaryOperator : Expression
     {
         switch(Operator)
         {
-            // Right.Value= Right.Evaluate(scope, null);
-            // Left.Evaluate(scope, Right.Value);
-            // Value= Left.Value;
-            // return Left.Value;
-             //Acums
             case TokenType.PLUSACCUM:
             Right.Value= Right.Evaluate(scope,Set,Before);
             object value= Left.Evaluate(scope, Set,Before);
@@ -1001,24 +1002,26 @@ public class BinaryOperator : Expression
             this.Value= (string)Left.Value + " "+ (string)Right.Value;
             return this.Value;
             // Point            
+            
             case TokenType.POINT:
             Left.Value= Left.Evaluate(scope, null!, Before);
             Right.Value= Right.Evaluate(scope, Set, Left.Value);
             
             return Right.Value;
+            
             //Indexer
             case TokenType.INDEXER:
             Left.Value= Left.Evaluate(scope, null!, Before);
             if(Left.Value is CustomList<ICard> list)
             {
-                Right.Value= (int)Right.Evaluate(scope,Set,Before);
+                Right.Value= (int)Right.Evaluate(scope,null);
                 if((int)Right.Value< list.Count)
                 {
-                    Left.Value=list[(int)Right.Value];
-                    return Left.Value;
+                    object val=list[(int)Right.Value];
+                    return val;
                 }
                 else 
-                    throw new Exception($"Evaluate Error at Indexer, because index out of range of List");
+                    throw new Exception($"Evaluate Error at Indexer, because index out of range");
             }
             else throw new Exception($"Evaluate Error at Indexer, {Left.Type} must be List Type");
             //Two Points
@@ -1100,7 +1103,9 @@ public class UnaryOperator : Terminal
             case TokenType.Pop:
             Value= Api.InvokeMethodWithParameters(Before, Operator.ToString(), Operand.Evaluate(scope, null));
             return Value;
+
             //Numbers
+
             case TokenType.RDECREMENT:
             Operand.Value= (int)Operand.Evaluate(scope,null)-1;
             Value= (int)Operand.Value+1;
@@ -1350,7 +1355,7 @@ public class IdentifierExpression : Terminal
             else
             throw new Exception("Troubles with List Card Class methods");
         }
-        
+
             else if(Set!= null)
             {
                 Value= Set;
@@ -1365,9 +1370,8 @@ public class IdentifierExpression : Terminal
                 {
                     if(scope!=null)
                     scope.Find(this, out value);
-                    return value;
                 }
-                else return value;
+                return value;
             }
             return null;
     }
@@ -1390,4 +1394,8 @@ public class StringExpression : Terminal
     }
 }
 #endregion
+
+
+
+
 }

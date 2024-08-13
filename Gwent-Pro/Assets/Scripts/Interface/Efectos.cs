@@ -33,13 +33,21 @@ namespace LogicalSide
         }
         public CustomList<ICard> DeckOfPlayer(IPlayer player)
         {
+            CustomList<ICard> custom;
             PlayerDeck Deck;
             if((player.Turn && !InvertDecksLocally)|| (!player.Turn && InvertDecksLocally))
+            {
+                custom = new(true, true);
                 Deck= GameObject.Find("Deck").GetComponent<PlayerDeck>();
+                custom.MyName= "Deck";
+            }
             else
+            {
+                custom = new(true, false);
                 Deck= GameObject.Find("DeckEnemy").GetComponent<PlayerDeck>();
+                custom.MyName= "OtherDeck";
+            }
             
-            CustomList<ICard> custom = new(true);
             foreach(ICard card in Deck.deck)
             {
                 custom.list.Add(card);
@@ -68,13 +76,20 @@ namespace LogicalSide
         }
         public CustomList<ICard> GraveYardOfPlayer(IPlayer player)
         {
+            CustomList<ICard> custom;
             PlayerDeck Deck;
             if((player.Turn && !InvertDecksLocally)|| (!player.Turn && InvertDecksLocally))
+            {
+                custom = new(true, true);
                 Deck= GameObject.Find("Deck").GetComponent<PlayerDeck>();
+                custom.MyName= "GraveYard";
+            }
             else
+            {
+                custom = new(true, false);
                 Deck= GameObject.Find("DeckEnemy").GetComponent<PlayerDeck>();
-            
-            CustomList<ICard> custom = new(true);
+                custom.MyName= "OtherGraveYard";
+            }
             foreach(ICard card in Deck.cement)
             {
                 custom.list.Add(card);
@@ -102,13 +117,18 @@ namespace LogicalSide
         }
         public CustomList<ICard> FieldOfPlayer(IPlayer player)
         {
-            CustomList<ICard> list = new(false);
+            CustomList<ICard> list;
             int discrimininant;
             if((player.Turn && !InvertDecksLocally)|| (!player.Turn && InvertDecksLocally))
+            {
                 discrimininant= 0;
+                list= new(false, true);
+            }
             else
+            {
                 discrimininant= 6;
-                
+                list= new(false, false);
+            }
             for(int i = discrimininant; i<6+discrimininant ; i++)
             {
                 foreach(GameObject card in BoardOfGameObject[i].transform)
@@ -126,6 +146,7 @@ namespace LogicalSide
             get
             {
                 InvertDecksLocally= false;
+                CustomList<ICard> cards= new(true, null, 10);
                 return HandOfPlayer(TriggerPlayer);
             } 
         }
@@ -144,11 +165,19 @@ namespace LogicalSide
         public CustomList<ICard> HandOfPlayer(IPlayer player)
         {
             GameObject Hand;
+            CustomList<ICard> cards;
             if((player.Turn && !InvertDecksLocally) || (!player.Turn && InvertDecksLocally))
+            {
                 Hand= GameObject.Find("Player Hand");
+                cards= new(true, true, 10);
+                cards.MyName= "Hand";
+            }
             else
+            {
                 Hand= GameObject.Find("Enemy Hand");
-            CustomList<ICard> cards= new(true, 10);
+                cards= new(true, false, 10);
+                cards.MyName= "OtherHand";
+            }
             GameObject Var= null;
             for(int i = 0; i< Hand.transform.childCount; i++)
             {
@@ -158,10 +187,11 @@ namespace LogicalSide
             }
             return cards;
         }
-        public CustomList<ICard> Board{
+        public CustomList<ICard> Board
+        {
             get
             {
-                CustomList<ICard> list= new(false);
+                CustomList<ICard> list= new(false,null);
 
                 foreach(GameObject zone in BoardOfGameObject)
                 {
@@ -175,7 +205,7 @@ namespace LogicalSide
                 }
                 return list;
             } 
-            }
+        }
         public IPlayer TriggerPlayer
         {
             get{
@@ -183,9 +213,6 @@ namespace LogicalSide
                 return GM.WhichPlayer(GM.Turn);
             } 
         }
-
-
-
 
         #endregion
 

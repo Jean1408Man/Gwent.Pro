@@ -11,6 +11,8 @@ namespace LogicalSide
         public override IPlayer Owner{get; set;}
 
         public Sprite Artwork;
+        public Sprite Fondo;
+        public Sprite FactionIcon;
         public override string Name{get; set;}
         public int Id;
         private int _pwr; // Campo de respaldo
@@ -63,8 +65,47 @@ namespace LogicalSide
         
         //Compiler Important Member
         public override List<IEffect> Effects{get; set;}
+        public override ICard CreateCopy()
+        {
+            Card card = new Card(DownBoard, Name, Id, Power, description, (Player)Owner, unit, Type, Eff, Range, Artwork, Removable, SeteablePower);
+            card.Effects= Effects;
+            return card;
+        }
+        public bool Igual(Card obj)
+        {
+            if(obj is Card card)
+            {
+                if(this.Name != card.Name)
+                    return false;
+                if(this.Id != card.Id)
+                    return false;
+                if(this.Power != card.Power)
+                return false;
+                if(this.description != card.description)
+                    return false;
+                if(this.Range != card.Range)
+                    return false;
+                if(this.Artwork != card.Artwork)
+                    return false;
+                if(this.Type != card.Type)
+                    return false;
+                if(this.unit != card.unit)
+                    return false;
+                if(this.Eff != card.Eff)
+                    return false;
+                if(this.Removable != card.Removable)
+                    return false;
+                if(this.Owner != card.Owner)
+                    return false;
+                if(!Effects.Equals(card.Effects))
+                    return false;
 
-        public Card(bool DownBoard ,string name , int id ,int pwr, string description,Player Owner,TypeUnit unit,string type ,string Eff,string atk_Rg, Sprite Img, bool Removable, bool Seteable= true)
+                return true;
+            }
+            return false;
+        }
+        public Card(bool DownBoard ,string name , int id ,int pwr, string description,Player Owner,TypeUnit unit
+        ,string type ,string Eff,string atk_Rg, Sprite Img, bool Removable, bool Seteable= true)
         {
             this.Name = name;
             this.Id = id;

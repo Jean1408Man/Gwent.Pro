@@ -87,16 +87,14 @@ public class CardDrag : MonoBehaviour
                 if(AssociatedCard.Type!="D"&& (AssociatedCard.Effects==null|| AssociatedCard.Effects.Count==0))
                     efectos.ListEffects[AssociatedCard.Eff].Invoke(AssociatedCard);
                 else
-                    
+                    AssociatedCard.Execute(efectos);
                 GM.Turn = !GM.Turn;
                 if (AssociatedCard.Eff == "Light")
                 {
                     PlayerDeck deck = efectos.Decking(AssociatedCard.DownBoard);
                     deck.AddToCement(AssociatedCard);
                     Destroy(gameObject);
-
                 }
-                
             }
         }
         if (!Played)
@@ -175,10 +173,11 @@ public class CardDrag : MonoBehaviour
             Big.transform.position = zoneBig;
             CardDisplay disp = Big.GetComponent<CardDisplay>();
             disp.cardTemplate = card.cardTemplate;
-            disp.ArtworkImg = Big.transform.GetChild(0).GetComponent<Image>();
-            if (disp.ArtworkImg != null)
-                disp.DescriptionText = Big.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-            disp.PwrTxt = Big.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
+            disp.ImBig= true;
+            // disp.ArtworkImg = Big.transform.GetChild(0).GetComponent<Image>();
+            // if (disp.ArtworkImg != null)
+            //     disp.DescriptionText = Big.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+            // disp.PwrTxt = Big.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
         }
     }
     public void BigCardDestroy()

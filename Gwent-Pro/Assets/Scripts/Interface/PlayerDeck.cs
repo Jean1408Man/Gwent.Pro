@@ -9,6 +9,8 @@ using UnityEngine.XR;
 
 public class PlayerDeck : MonoBehaviour
 {
+    public GameObject RangeIcons;
+    public GameObject BigRangeIcons;
     public GameObject prefabCarta; // El prefab gen�rico de la carta
     public GameObject prefabLeader;
     public Transform playerZone; // El lugar donde se colocar� la carta del jugador
@@ -27,9 +29,6 @@ public class PlayerDeck : MonoBehaviour
                 GameObject instanciaCarta = Instantiate(prefab, zone);
                 CardDisplay disp = instanciaCarta.GetComponent<CardDisplay>();
                 disp.cardTemplate = card;
-                disp.ArtworkImg = instanciaCarta.transform.GetChild(0).GetComponent<Image>();
-                disp.DescriptionText = instanciaCarta.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-                disp.PwrTxt = instanciaCarta.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
                 deck.Remove(card);
             }
             
@@ -45,11 +44,7 @@ public class PlayerDeck : MonoBehaviour
                 GameObject instanciaCarta = Instantiate(prefabCarta, playerZone);
                 CardDisplay disp = instanciaCarta.GetComponent<CardDisplay>();
                 disp.cardTemplate = card;
-                disp.ArtworkImg = instanciaCarta.transform.GetChild(0).GetComponent<Image>();
-                disp.DescriptionText = instanciaCarta.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-                disp.PwrTxt = instanciaCarta.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
                 deck.Remove(card);
-                GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
                 if (PlayerHand.tag.IndexOf("DE") != -1)
                 {
                     playerZone.GetChild(playerZone.childCount - 1).Rotate(0, 0, 180);

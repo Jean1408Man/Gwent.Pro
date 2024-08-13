@@ -7,7 +7,16 @@ namespace LogicalSide
 { 
     public class CardDataBase: MonoBehaviour
     {
-        
+
+        private void Start() {
+            Icons= new Sprite[]
+        {
+            Resources.Load<Sprite>("Icono"),
+            Resources.Load<Sprite>("Aliens"),
+            Resources.Load<Sprite>("Mixto")
+        };
+        }
+        private static Sprite[] Icons;
         
         public static List<Card> GetDeck(Player P)
         {
@@ -110,6 +119,16 @@ namespace LogicalSide
                 #endregion
                 P.AlwaysAWinner= true;
             }
+            foreach(Card card in Deck)
+            {
+                //Icono de Faccion
+                card.FactionIcon= Icons[P.faction-1];
+                //Back
+
+            }
+
+
+
             return Deck;
         }
 

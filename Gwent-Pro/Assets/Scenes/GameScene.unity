@@ -4745,8 +4745,6 @@ MonoBehaviour:
   prefabCard: {fileID: 8389824397379620764, guid: 9594645e91a5fb1428d6603d9a577173, type: 3}
   prefabLeader: {fileID: 6812664536142041913, guid: 3356d76ce75ac8c42836f212acb1d496, type: 3}
   Sounds: {fileID: 0}
-  P1: {fileID: 0}
-  P2: {fileID: 0}
   PlayerZone: {fileID: 465665518}
   EnemyZone: {fileID: 1705959963}
   CardFilter: 1
@@ -6784,9 +6782,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 342544969}
     - target: {fileID: 4838865632980124128, guid: 930b744ffaf901d429eefaf65bcefc2e, type: 3}
+      propertyPath: RangeIcons
+      value: 
+      objectReference: {fileID: 5947324836310408071, guid: 61786f65c99ad0149807ee4aedff31e9, type: 3}
+    - target: {fileID: 4838865632980124128, guid: 930b744ffaf901d429eefaf65bcefc2e, type: 3}
       propertyPath: playerZone
       value: 
       objectReference: {fileID: 2038393104}
+    - target: {fileID: 4838865632980124128, guid: 930b744ffaf901d429eefaf65bcefc2e, type: 3}
+      propertyPath: BigRangeIcons
+      value: 
+      objectReference: {fileID: 2703675959568477533, guid: c027dcb96d8d8e849a795afb8ab6caf3, type: 3}
     - target: {fileID: 6125123409471493842, guid: 930b744ffaf901d429eefaf65bcefc2e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

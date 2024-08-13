@@ -1,29 +1,10 @@
 using System.Collections.Generic;
 using System;
 namespace LogicalSide{
+    
 
 public static class SintaxFacts
 {
-    public static Token Numerical(int x)
-    { 
-        return new Token(TokenType.INT,x.ToString(),(-1,-1));
-    }
-    public static bool EqualTerm(object left, object right)
-    {
-        if(left is int _left && right is int _right)
-        {
-            return _left== _right;
-        }
-        else if(left is bool _leftb && right is bool _rightb)
-        {
-            return _leftb== _rightb;
-        }
-        else if(left is string _lefts && right is string _rights)
-        {
-            return _lefts== _rights;
-        }
-        return false;
-    }
     public static int GetPrecedence(TokenType type)
     {
         switch (type)

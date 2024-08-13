@@ -51,6 +51,7 @@ namespace LogicalSide
                 effect.Execute(context);
             }
         }
+        public abstract ICard CreateCopy();
         
     }
     public class MyCard: ICard
@@ -78,6 +79,10 @@ namespace LogicalSide
                 Console.WriteLine($"{conta++}- "+ effect);
             }
             return result;
+        }
+        public override ICard CreateCopy()
+        {
+            throw new NotImplementedException();
         }
     }
     public interface IPlayer
