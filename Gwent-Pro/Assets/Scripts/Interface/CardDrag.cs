@@ -165,7 +165,7 @@ public class CardDrag : MonoBehaviour
     {
         if(Big!=null)
             BigCardDestroy();
-        if (!IsDragging&&( gameObject.tag=="LeaderCard"||(gameObject.tag=="Card" && !gameObject.transform.GetChild(3).gameObject.activeSelf)))
+        if (!IsDragging&&( gameObject.tag=="LeaderCard"||(gameObject.tag=="Card" && !gameObject.transform.GetChild(7).gameObject.activeSelf)))
         {
             CardDisplay card = gameObject.GetComponent<CardDisplay>();
             Big = Instantiate(BigCardPrefab, zoneBig, Quaternion.identity);

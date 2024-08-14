@@ -43,11 +43,9 @@ public class MenuGM : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if(MainPanel.activeSelf)
-            {
                 MainPanel.SetActive(false);
-            }
             else
-            OpenPanel(MainPanel);
+                OpenPanel(MainPanel);
         }
     }
 

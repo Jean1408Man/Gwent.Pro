@@ -8344,6 +8344,10 @@ PrefabInstance:
       propertyPath: P2AS
       value: 
       objectReference: {fileID: 1559524038}
+    - target: {fileID: 5805337355397861604, guid: 8b82cafb7fd1f4f42ae9e0c9fde09f31, type: 3}
+      propertyPath: Clima
+      value: 
+      objectReference: {fileID: 722648847}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

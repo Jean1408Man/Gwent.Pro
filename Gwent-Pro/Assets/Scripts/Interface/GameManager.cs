@@ -10,6 +10,7 @@ using System;
 using JetBrains.Annotations;
 using System.Diagnostics;
 using System.Threading;
+using Unity.VisualScripting;
 public class GameManager : MonoBehaviour
 {
     public GameObject PanelWinner;
@@ -67,6 +68,22 @@ public class GameManager : MonoBehaviour
         }
     }
     // Start is called before the first frame update
+    private string FormatFaction(int f)
+    {
+        switch(f)
+        {
+            case 1:
+            return "Ingenieros Celestiales";
+            case 2:
+            return "Aliens Elementales";
+            case 3:
+            return "Mixto";
+            case 4:
+            return "Compilado";
+            default:
+            return "Invalido";
+        }
+    }
     void Start()
     {
         SMS = new();
@@ -77,13 +94,13 @@ public class GameManager : MonoBehaviour
         }
         if (data != null && !data.debug)
         {
-            P1 = new Player(data.faction_1, data.name_1, true);
-            P2 = new Player(data.faction_2, data.name_2,false);
+            P1 = new Player(FormatFaction(data.faction_1), data.name_1, true);
+            P2 = new Player(FormatFaction(data.faction_2), data.name_2,false);
         }
         else
         {
-            P1 = new Player(2, "Jean",true);
-            P2 = new Player(1, "Deiny",false);
+            P1 = new Player("Ingenieros Celestiales", "Jean",true);
+            P2 = new Player("", "Deiny",false);
         }
         SetupPLayers();
         Sounds = GameObject.Find("Menus").GetComponent<MenuGM>();
@@ -380,7 +397,7 @@ public class GameManager : MonoBehaviour
         if(P1==null)
         {
             UnityEngine.Debug.Log("Player nulo");
-            P1= new Player(10, "jua", true);
+            P1= new Player("Invalido", "jua", true);
         }
         if (b == P1.Turn)
             return P1;
@@ -394,8 +411,8 @@ public class GameManager : MonoBehaviour
 public class Player: IPlayer
 {
     #region UsualProps
-    public int faction;
-    public new string name;
+    public string faction;
+    public string name;
     public int lifes;
     public bool Surrender;
     public bool Turn{get; set;}
@@ -459,7 +476,7 @@ public class Player: IPlayer
             }
         }
     }
-    public Player(int faction, string name, bool b)
+    public Player(string faction, string name, bool b)
     {
 
         this.name = name;

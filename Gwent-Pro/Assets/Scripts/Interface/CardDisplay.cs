@@ -45,17 +45,17 @@ namespace LogicalSide
                     //Descripcion
                     gameObject.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = cardTemplate.description;
                     //Back
-                    gameObject.transform.GetChild(4).GetComponent<Image>().sprite = Resources.Load<Sprite>("Deck");
+                    gameObject.transform.GetChild(7).GetComponent<Image>().sprite = Resources.Load<Sprite>("Deck");
                     //Nombre de carta
-                    gameObject.transform.GetChild(5).GetComponent<TextMeshProUGUI>().text= cardTemplate.Name;
+                    gameObject.transform.GetChild(4).GetComponent<TextMeshProUGUI>().text= cardTemplate.Name;
                     //Faction de carta
-                    gameObject.transform.GetChild(6).GetComponent<Image>().sprite= cardTemplate.FactionIcon;
+                    gameObject.transform.GetChild(5).GetComponent<Image>().sprite= cardTemplate.FactionIcon;
                     //Imagen de carta
                     gameObject.transform.GetChild(1).GetComponent<Image>().sprite = cardTemplate.Artwork;
 
                     PlayerDeck deck = GameObject.Find("Deck").GetComponent<PlayerDeck>();
                     GameObject prefab;
-                    Transform iconzone= gameObject.transform.GetChild(7).transform;
+                    Transform iconzone= gameObject.transform.GetChild(6).transform;
                     if(ImBig)
                     prefab = deck.BigRangeIcons;
                     else
