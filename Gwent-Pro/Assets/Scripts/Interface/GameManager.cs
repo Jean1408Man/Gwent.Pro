@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour
     public GameObject PlayerZone;
     public GameObject EnemyZone;
     public bool CardFilter = false;
+    SavedData data;
 
 
     private Queue<string> SMS;
@@ -87,21 +88,17 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         SMS = new();
-        SavedData data= null;
+        data= null;
         if (GameObject.Find("SoundManager")!= null)
         {
             data = GameObject.Find("SoundManager").GetComponent<SavedData>();
         }
-        if (data != null && !data.debug)
+        if (data != null)
         {
             P1 = new Player(FormatFaction(data.faction_1), data.name_1, true);
             P2 = new Player(FormatFaction(data.faction_2), data.name_2,false);
         }
-        else
-        {
-            P1 = new Player("Ingenieros Celestiales", "Jean",true);
-            P2 = new Player("", "Deiny",false);
-        }
+        
         SetupPLayers();
         Sounds = GameObject.Find("Menus").GetComponent<MenuGM>();
         Turn = true;
@@ -145,16 +142,22 @@ public class GameManager : MonoBehaviour
         if (deck != null )
         {
             PlayerDeck setup = deck.GetComponent<PlayerDeck>();
-            setup.deck = CardDataBase.GetDeck(P1);
-            setup.Shuffle(setup.deck);
+            if (data.CartasCompiladas1 == null || P1.faction!= "Compilado")
+                setup.deck = CardDataBase.GetDeck(P1);
+            else
+                setup.deck = CardDataBase.CompleteDeck(data.CartasCompiladas1, P1);
+            setup.Shuffle(setup.deck, true);
         }
         deck = GameObject.Find("DeckEnemy");
         GameObject hand = GameObject.Find("Enemy Hand");
         if (deck != null)
         {
             PlayerDeck setup = deck.GetComponent<PlayerDeck>();
-            setup.deck = CardDataBase.GetDeck(P2);
-            setup.Shuffle(setup.deck);
+            if (data.CartasCompiladas2 == null || P2.faction != "Compilado")
+                setup.deck = CardDataBase.GetDeck(P2);
+            else
+                setup.deck = CardDataBase.CompleteDeck(data.CartasCompiladas2, P2);
+            setup.Shuffle(setup.deck, true);
         }
     }
     public void AddScore(bool Downboard, int value)

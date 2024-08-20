@@ -5,6 +5,11 @@ namespace LogicalSide
 {
     public static class EvaluateUtils
     {
+        public static void Restart()
+        {
+            ParamsRequiered = new();
+            Effects= new();
+        }
         //Dictionary that will associate the names and the params of the effects that are already checked
         public static Dictionary<string, List<IdentifierExpression>> ParamsRequiered= new Dictionary<string, List<IdentifierExpression>>();
         public static Dictionary<string, EffectDeclarationExpr> Effects= new Dictionary<string, EffectDeclarationExpr>();

@@ -30,6 +30,9 @@ public class MenuGM : MonoBehaviour
     public GameObject ButtonCelestial1;
     public GameObject Mixto1;
     public GameObject Mixto2;
+    public GameObject Compiladas1;
+    public GameObject Compiladas2;
+
     private void Awake()
     {
         Volume.onValueChanged.AddListener(ChangeVolumeMaster);
@@ -94,18 +97,28 @@ public class MenuGM : MonoBehaviour
             ButtonCelestial2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono1");
             ButtonAliens2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens");
             Mixto2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto");
+            Compiladas2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Diseño Compi");
         }
         else if (Faction == 2)
         {
             ButtonCelestial2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono");
             ButtonAliens2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens1");
             Mixto2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto");
+            Compiladas2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Diseño Compi");
         }
         else if (Faction == 3)
         {
             ButtonCelestial2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono");
             ButtonAliens2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens");
             Mixto2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto1");
+            Compiladas2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Diseño Compi");
+        }
+        else if (Faction == 4)
+        {
+            ButtonCelestial2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono");
+            ButtonAliens2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens");
+            Mixto2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto");
+            Compiladas2.GetComponent<Image>().sprite = Resources.Load<Sprite>("Diseño Compi1");
         }
 
     }
@@ -117,18 +130,28 @@ public class MenuGM : MonoBehaviour
             ButtonCelestial1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono1");
             ButtonAliens1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens");
             Mixto1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto");
+            Compiladas1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Diseño Compi");
         }
         else if (Faction == 2)
         {
             ButtonCelestial1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono");
             ButtonAliens1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens1");
             Mixto1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto");
+            Compiladas1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Diseño Compi");
         }
         else if (Faction == 3)
         {
             ButtonCelestial1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono");
             ButtonAliens1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens");
             Mixto1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto1");
+            Compiladas1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Diseño Compi");
+        }
+        else if (Faction == 4)
+        {
+            ButtonCelestial1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icono");
+            ButtonAliens1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Aliens");
+            Mixto1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Mixto");
+            Compiladas1.GetComponent<Image>().sprite = Resources.Load<Sprite>("Diseño Compi1");
         }
     }
     public void NameCompleted(int P)
@@ -175,4 +198,21 @@ public class MenuGM : MonoBehaviour
     {
         Application.Quit();
     }
+
+
+
+    #region Return Back Logic
+    private GameObject Saved;
+    public void SaveThisPanel(GameObject panel)
+    {
+        Saved= panel;
+    }
+    public void Volver()
+    {
+        OpenPanel(Saved);
+    }
+
+
+
+    #endregion
 }

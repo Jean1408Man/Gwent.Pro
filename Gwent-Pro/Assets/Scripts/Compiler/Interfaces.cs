@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace LogicalSide
 {
@@ -34,7 +35,7 @@ namespace LogicalSide
     }
 
 
-    public abstract class ICard
+    public abstract class ICard: ScriptableObject
     {
         public abstract string Name{get; set;}
         public abstract string Type{get; set;}

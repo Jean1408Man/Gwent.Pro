@@ -42,35 +42,42 @@ public static class Api
             Console.WriteLine($"Property '{propertyName}' not found.");
         }
     }
-    public static object InvokeMethodWithParameters<T>(T obj, string methodName, params object[] args)
-    {
-        // Get the type of the object
-        System.Type type = obj.GetType();
-
-        // Print the type of the object
-        Console.WriteLine($"Invoking method '{methodName}' on object of type: {type.FullName}");
-
-        // Find the MethodInfo by name
-        MethodInfo methodInfo = type.GetMethod(methodName);
-
-        // Check if the method exists
-        if (methodInfo != null)
+        public static object InvokeMethodWithParameters<T>(T obj, string methodName, object args)
         {
-            if (methodInfo.ReturnType == typeof(void))
-            {//Is a void method
-                methodInfo.Invoke(obj, args);
-                return null;
+            object?[]? arrayargs = null!;
+            if (args != null)
+            {
+                arrayargs = new object?[1]{
+                args
+                };
+            }
+            // Get the type of the object
+            System.Type type = obj!.GetType();
+
+            // Print the type of the object
+            Console.WriteLine($"Invoking method '{methodName}' on object of type: {type.FullName}");
+
+            // Find the MethodInfo by name
+            MethodInfo methodInfo = type!.GetMethod(methodName)!;
+
+            // Check if the method exists
+            if (methodInfo != null)
+            {
+                if (methodInfo.ReturnType == typeof(void))
+                {//Is a void method
+                    methodInfo.Invoke(obj, arrayargs);
+                    return null!;
+                }
+                else
+                {
+                    //Invoke the method
+                    return methodInfo!.Invoke(obj, arrayargs)!;
+                }
             }
             else
             {
-                // Invoke the method
-                return methodInfo.Invoke(obj, args);
+                throw new Exception($"Method '{methodName}' not found on type: {type.FullName}");
             }
         }
-        else
-        {
-            throw new Exception($"Method '{methodName}' not found on type: {type.FullName}");
-        }
     }
-}
 }

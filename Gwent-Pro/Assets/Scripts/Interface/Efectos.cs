@@ -26,7 +26,7 @@ namespace LogicalSide
             get
             {
                 InvertDecksLocally= true;
-                CustomList<ICard> list= GraveYardOfPlayer(TriggerPlayer);
+                CustomList<ICard> list= DeckOfPlayer(TriggerPlayer);
                 InvertDecksLocally= false;
                 return list;
             }
@@ -129,12 +129,13 @@ namespace LogicalSide
                 discrimininant= 6;
                 list= new(false, false);
             }
+
             for(int i = discrimininant; i<6+discrimininant ; i++)
             {
                 foreach(GameObject card in BoardOfGameObject[i].transform)
                 {
                     CardDisplay disp= card.GetComponent<CardDisplay>();
-                    list.Add(disp.cardTemplate);
+                    list.list.Add(disp.cardTemplate);
                 }
             }
             return list;
@@ -168,22 +169,23 @@ namespace LogicalSide
             CustomList<ICard> cards;
             if((player.Turn && !InvertDecksLocally) || (!player.Turn && InvertDecksLocally))
             {
-                Hand= GameObject.Find("Player Hand");
+                Hand= GameObject.FindWithTag("P");
                 cards= new(true, true, 10);
                 cards.MyName= "Hand";
             }
             else
             {
-                Hand= GameObject.Find("Enemy Hand");
+                Hand= GameObject.FindWithTag("E");
                 cards= new(true, false, 10);
                 cards.MyName= "OtherHand";
             }
+            
             GameObject Var= null;
             for(int i = 0; i< Hand.transform.childCount; i++)
             {
                 Var= Hand.transform.GetChild(i).gameObject;
                 CardDisplay disp= Var.GetComponent<CardDisplay>();
-                cards.Add(disp.cardTemplate);
+                cards.list.Add(disp.cardTemplate);
             }
             return cards;
         }
@@ -200,7 +202,7 @@ namespace LogicalSide
                     {
                         Var= zone.transform.GetChild(i).gameObject;
                         CardDisplay disp= Var.GetComponent<CardDisplay>();
-                        list.Add(disp.cardTemplate);
+                        list.list.Add(disp.cardTemplate);
                     }
                 }
                 return list;
@@ -311,19 +313,25 @@ namespace LogicalSide
         }
         public void Weather(Card card)
         {//Efecto Clima Gen�rico
-            GameObject C = RangeMap[(card.DownBoard, card.current_Rg)];
-            C.GetComponent<DropProp>().DropStatus(-1);
-            C = RangeMap[(!card.DownBoard, card.current_Rg)];
-            C.GetComponent<DropProp>().DropStatus(-1);
-            GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
-            GM.Send("Tu oponente ha jugado una carta clima", GM.EffTeller);
+            foreach(char c in card.current_Rg)
+            {
+                GameObject C = RangeMap[(card.DownBoard, c.ToString())];
+                C.GetComponent<DropProp>().DropStatus(-1);
+                C = RangeMap[(!card.DownBoard, c.ToString())];
+                C.GetComponent<DropProp>().DropStatus(-1);
+                GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
+                GM.Send("Tu oponente ha jugado una carta clima", GM.EffTeller);
+            }
         }
         public void Raise(Card card)
         {
-            GameObject C = RangeMap[(card.DownBoard, card.current_Rg)];
-            C.GetComponent<DropProp>().DropStatus(+1);
-            GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
-            GM.Send("Tu oponente ha jugado una carta de aumento", GM.EffTeller);
+            foreach (char c in card.current_Rg)
+            {
+                GameObject C = RangeMap[(card.DownBoard, c.ToString())];
+                C.GetComponent<DropProp>().DropStatus(+1);
+                GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
+                GM.Send("Tu oponente ha jugado una carta de aumento", GM.EffTeller);
+            }
         }
         public void PlayCard(Card card)
         {
@@ -341,17 +349,23 @@ namespace LogicalSide
         {//Este efecto realmente establece las dropzones
             if(card.Eff== "Weather")
             {
-                GameObject C = RangeMap[(card.DownBoard, card.current_Rg)];
-                C.GetComponent<DropProp>().DropOnReset(+1);
-                C = RangeMap[(!card.DownBoard, card.current_Rg)];
-                C.GetComponent<DropProp>().DropOnReset(+1);
+                foreach (char c in card.current_Rg)
+                {
+                    GameObject C = RangeMap[(card.DownBoard, c.ToString())];
+                    C.GetComponent<DropProp>().DropOnReset(+1);
+                    C = RangeMap[(!card.DownBoard, c.ToString())];
+                    C.GetComponent<DropProp>().DropOnReset(+1);
+                }
             }
             if (card.Eff == "Raise")
             {
-                GameObject C = RangeMap[(card.DownBoard, card.current_Rg)];
-                C.GetComponent<DropProp>().DropOnReset(-1);
-                C = RangeMap[(!card.DownBoard, card.current_Rg)];
-                C.GetComponent<DropProp>().DropOnReset(-1);
+                foreach (char c in card.current_Rg)
+                {
+                    GameObject C = RangeMap[(card.DownBoard,c.ToString())];
+                    C.GetComponent<DropProp>().DropOnReset(-1);
+                    //C = RangeMap[(!card.DownBoard, c.ToString())];
+                    //C.GetComponent<DropProp>().DropOnReset(-1);
+                }
             }
             GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
             GM.Send("Tu oponente ha jugado una carta de se�uelo", GM.EffTeller);
@@ -653,7 +667,7 @@ namespace LogicalSide
             else
                 return GameObject.Find("DeckEnemy").GetComponent<PlayerDeck>();
         }
-        private void Restart(Card card)
+        public void Restart(Card card)
         {//Jugando con el set de Card para que actualice automaticamente el score
             card.Power = 0;
             card.current_Rg = "";

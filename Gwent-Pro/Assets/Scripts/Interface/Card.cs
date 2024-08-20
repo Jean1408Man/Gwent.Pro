@@ -8,12 +8,44 @@ namespace LogicalSide
 {
     public class Card: ICard
     {
-        public override IPlayer Owner{get; set;}
+        private IPlayer _player;
+        public override IPlayer Owner
+        {
+            get { return _player; }
+            set
+            {
+                if (OnConstruction) _player = value;
+                else
+                {
+                    GameManager GM = null;
+                    GameObject Object = GameObject.Find("GameManager");
+                    if (Object != null)
+                        GM = Object.GetComponent<GameManager>();
+                    GM.SendPrincipal("El dueño(Owner) de las cartas es de solo lectura");
+                }
+            }
+        }
 
         public Sprite Artwork;
         public Sprite Fondo;
         public Sprite FactionIcon;
-        public override string Name{get; set;}
+        private string _nombre;
+        public override string Name
+        {
+            get { return _nombre; }
+            set
+            {
+                if (OnConstruction) _nombre = value;
+                else
+                {
+                    GameManager GM = null;
+                    GameObject Object = GameObject.Find("GameManager");
+                    if (Object != null)
+                        GM = Object.GetComponent<GameManager>();
+                    GM.SendPrincipal("El nombre de las cartas es de solo lectura");
+                }
+            }
+        }
         public int Id;
         private int _pwr; // Campo de respaldo
         public bool Removable;
@@ -29,45 +61,114 @@ namespace LogicalSide
                 if(Displayed&& value==true)
                 {
                     _Destroy= true;
+                    Displayed = false;
                 }
             }
         }
         public bool Displayed=false;
-        public bool SeteablePower;
+
+
+        public bool OnConstruction = true;
         public override int Power
         {
             get { return _pwr; }
             set
             {
-                int provi = _pwr;
-                _pwr = value; // Almacena el valor en el campo de respaldo
-                GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
-                if (GM != null&& current_Rg!=""&& current_Rg!=null)
+                if(!OnConstruction)
                 {
-                    GM.AddScore(DownBoard,_pwr-provi);
+                    GameManager GM=null;
+                    GameObject Object = GameObject.Find("GameManager");
+                    if(Object != null)
+                        GM= Object.GetComponent<GameManager>();
+                    if (_pwr != value)
+                    {
+                        if (GM != null && Type != null && (Type == "C" || Type.IndexOf("A") != -1))
+                            GM.SendPrincipal("Has tratado de modificar el poder de un clima o un aumento, lo cual no es permitido pues no tienen");
+                        else
+                        {
+
+                            int provi = _pwr;
+                            _pwr = value; // Almacena el valor en el campo de respaldo
+                            if (GM != null && current_Rg != "" && current_Rg != null)
+                            {
+                                GM.AddScore(DownBoard, _pwr - provi);
+                            }
+
+                        }
+                    }
                 }
-                if(PwrText!=null)
-                PwrText.text = _pwr.ToString();
+                else
+                {
+                    int provi = _pwr;
+                    _pwr = value;
+                }
             }
 
         }
-        public override string Faction{get; set;}
+        private string _faccion;
+        public override string Faction{ 
+            get { return _faccion; } 
+            set 
+            {
+                if (OnConstruction) _faccion = value;
+                else
+                {
+                    GameManager GM = null;
+                    GameObject Object = GameObject.Find("GameManager");
+                    if (Object != null)
+                        GM = Object.GetComponent<GameManager>();
+                    GM.SendPrincipal("La facción de las cartas es de solo lectura");
+                }
+            } 
+        }
 
         public int OriginPwr;
         public string description;
-        public override string Range{get; set;}
+        private string _rango;
+        public override string Range
+        {
+            get { return _rango; }
+            set
+            {
+                if (OnConstruction) _rango = value;
+                else
+                {
+                    GameManager GM = null;
+                    GameObject Object = GameObject.Find("GameManager");
+                    if (Object != null)
+                        GM = Object.GetComponent<GameManager>();
+                    GM.SendPrincipal("El rango de las cartas es de solo lectura");
+                }
+            }
+        }
         public string current_Rg;
-        public override string Type{get; set;}
+        private string _tipo;
+        public override string Type
+        {
+            get { return _tipo; }
+            set
+            {
+                if (OnConstruction) _tipo = value;
+                else
+                {
+                    GameManager GM = null;
+                    GameObject Object = GameObject.Find("GameManager");
+                    if (Object != null)
+                        GM = Object.GetComponent<GameManager>();
+                    GM.SendPrincipal("El tipo de las cartas es de solo lectura");
+                }
+            }
+        }
         public TypeUnit unit;
         public string Eff;
         public bool DownBoard;
-        public TextMeshProUGUI PwrText= new();
         
         //Compiler Important Member
         public override List<IEffect> Effects{get; set;}
         public override ICard CreateCopy()
         {
-            Card card = new Card(DownBoard, Name, Id, Power, description, (Player)Owner, unit, Type, Eff, Range, Artwork, Removable, SeteablePower);
+            Card card = new Card(DownBoard, Name, Id, OriginPwr, description, (Player)Owner, unit, Type, Eff, Range, Artwork, Removable);
+            CardDataBase.CustomizeCard(card);
             card.Effects= Effects;
             return card;
         }
@@ -105,7 +206,7 @@ namespace LogicalSide
             return false;
         }
         public Card(bool DownBoard ,string name , int id ,int pwr, string description,Player Owner,TypeUnit unit
-        ,string type ,string Eff,string atk_Rg, Sprite Img, bool Removable, bool Seteable= true)
+        ,string type ,string Eff,string atk_Rg, Sprite Img, bool Removable)
         {
             this.Name = name;
             this.Id = id;
@@ -120,6 +221,7 @@ namespace LogicalSide
             this.DownBoard = DownBoard;
             this.Removable = Removable;
             this.Owner = Owner;
+            OnConstruction = false;
         }
     }
     public enum Type

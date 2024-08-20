@@ -36,7 +36,7 @@ public class ProgramExpression: Expression
     }
     public override object Evaluate(EvaluateScope scope,object Set, object Before= null)
     {
-        CustomList<ICard> cards= new(false,null);
+        List<ICard> cards= new();
         object values=null;
         foreach(Expression exp in EffectsAndCards)
         {
@@ -358,10 +358,12 @@ public class CardExpression: Expression
         foreach(Expression range in ranges)
         {
             ev= (string)range.Evaluate(null, null);
-            if(strings.Contains(ev))
-            {
-                s+= ev.Substring(0,1);
-            }
+                if (strings.Contains(ev))
+                {
+                    s += ev.Substring(0, 1);
+                }
+                else
+                    throw new Exception($"Rango invalido: {ev}");
         }
         return s;
     }
@@ -640,7 +642,7 @@ public class SelectorExpression: Expression
                 predicate.Unit!.Value= card;
                 if((bool)predicate.Evaluate(null!,null!))
                 {
-                    Targets.Add(card);
+                    Targets.list.Add(card);
                     break;
                 }
             }
@@ -651,7 +653,7 @@ public class SelectorExpression: Expression
             {
                 if((bool)predicate.Evaluate(null!,card))
                 {
-                    Targets.Add(card);
+                    Targets.list.Add(card);
                 }
             }
         }
@@ -1083,7 +1085,6 @@ public class UnaryOperator : Terminal
     }
     public override object Evaluate(EvaluateScope scope,object Set, object Before= null)
     {
-        if(Operand!= null)
         switch(Operator)
         {
             //Card Argument
@@ -1091,8 +1092,7 @@ public class UnaryOperator : Terminal
             case TokenType.Remove:
             case TokenType.Push:
             case TokenType.Add:
-            Api.InvokeMethodWithParameters(Before, Operator.ToString(), Operand.Evaluate(scope, null));
-            return null;
+            case TokenType.Shuffle:
 
             //Player Argument
             case TokenType.HandOfPlayer:
@@ -1101,7 +1101,11 @@ public class UnaryOperator : Terminal
             case TokenType.FieldOfPlayer:
             case TokenType.Find:
             case TokenType.Pop:
-            Value= Api.InvokeMethodWithParameters(Before, Operator.ToString(), Operand.Evaluate(scope, null));
+            
+            object value = null!;
+            if (Operand != null)
+                value = Operand.Evaluate(scope, null!);
+            Value = Api.InvokeMethodWithParameters(Before, Operator.ToString(), value);
             return Value;
 
             //Numbers
@@ -1141,11 +1145,7 @@ public class UnaryOperator : Terminal
                 return !(bool)Value;
             }
         }
-        if(SintaxFacts.TypeOf.ContainsKey(Operator))
-        {
-            Type = SintaxFacts.TypeOf[Operator];
-            return Type;
-        }
+        
         throw new Exception("Invalid Unary Operator");
     }
     public override bool Equals(object? obj)
@@ -1297,7 +1297,7 @@ public class IdentifierExpression : Terminal
                 return Api.GetProperty(context, ValueAsToken.Value);
             }
             else
-            throw new Exception("Troubles with IContext Interface");
+                throw new Exception("Used a IContext property, but not referencing a context");
         }
         else if(SintaxFacts.PointPosibbles[ValueType.Card].Contains(ValueAsToken.Type)&& Before is ICard card)
         {

@@ -5,42 +5,24 @@ using LogicalSide;
 
 namespace LogicalSide
 {
-    public class Program
+    public static class Compiler
     {
 
-        public static void Main(string[] args)
+        public static List<ICard> Compile(string path)
         {
-            try
-            {
-                string filePath = @"C:\Users\luisj\Desktop\Compiler\Gwent-Compiler\Input.txt";
-                string text = File.ReadAllText(filePath);
-                Lexer l = new Lexer(text);
-                List<Token> tokens = l.Tokenize();
-                Console.WriteLine(text);
-                foreach (Token t in tokens)
-                {
-                    Console.WriteLine(t.Type.ToString()+ " in " + t.lugar.fila+" line "+ " and " + t.lugar.colmna+ " column ");
-                }
-                Parser parser = new(tokens);
-                Expression root = parser.Parse();
-                Console.WriteLine(parser.position);
-                PrintExpressionTree(root);
-                Semantic semantic= new Semantic(root);
-                PrintExpressionTree(root);
-                CustomList<ICard> cards= (CustomList<ICard>)root.Evaluate(null!,null!);
-                CheckingContext context = new();
-                context.Deck= cards;
-                for(int i = 0; i< cards.list.Count; i++) 
-                {
-                    ICard card= cards[i];
-                    Console.WriteLine(card.ToString());
-                    card.Execute(context);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
+            string filePath = path;
+            string text = File.ReadAllText(filePath);
+            //Lexer
+            Lexer l = new Lexer(text);
+            List<Token> tokens = l.Tokenize();
+            //Parser
+            Parser parser = new(tokens);
+            Expression root = parser.Parse();
+            //Semantic
+            Semantic semantic= new Semantic(root);
+            //Evaluate
+            List<ICard> cards= (List<ICard>)root.Evaluate(null!,null!);
+            return cards;
         }
 
         public static void PrintExpressionTree(Expression node, int indentLevel = 0)

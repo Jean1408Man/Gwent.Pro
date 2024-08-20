@@ -16,11 +16,17 @@ public class PlayerDeck : MonoBehaviour
     public Transform playerZone; // El lugar donde se colocar� la carta del jugador
     public GameObject PlayerHand;
     public Transform Leaderzone;
-    public List<Card> deck; // Tu lista de cartas
+    [SerializeField]public List<Card> deck; // Tu lista de cartas
     public List<Card> cement;
-    
+
+
+    private void Start()
+    {
+        deck = new List<Card>();
+        cement = new List<Card>();
+    }
     // M�todo para instanciar la �ltima carta del mazo
-    public void Instanciate(Card card, Transform zone, GameObject prefab)
+    public void Instanciate(Card card, Transform zone, GameObject prefab, bool Rota=false)
     {
         if (deck.Count > 0 )
         {
@@ -29,7 +35,13 @@ public class PlayerDeck : MonoBehaviour
                 GameObject instanciaCarta = Instantiate(prefab, zone);
                 CardDisplay disp = instanciaCarta.GetComponent<CardDisplay>();
                 disp.cardTemplate = card;
-                deck.Remove(card);
+
+                deck.Remove(card); 
+                if (Rota)
+                {
+                    zone.GetChild(zone.childCount - 1).Rotate(0, 0, 180);
+                }
+
             }
             
         }
@@ -77,18 +89,21 @@ public class PlayerDeck : MonoBehaviour
         if(deck.Count > 0)
         InstanciateLastOnDeck(1,false);
     }
-    public void Shuffle(List<Card> deck)
+    public void Shuffle(List<Card> deck, bool Debug=false)
     {
         System.Random random = new System.Random();
         Instanciate(deck[0],Leaderzone, prefabLeader);
         if(Leaderzone.name == "LeaderplaceEnemy")
             Leaderzone.transform.GetChild(0).Rotate(0, 0, 180);
-        int n = deck.Count;
-        while (n > 0)
+        if(!Debug)
         {
-            n--;
-            int k = random.Next(n + 1);
-            (deck[n], deck[k]) = (deck[k], deck[n]);
+            int n = deck.Count;
+            while (n > 0)
+            {
+                n--;
+                int k = random.Next(n + 1);
+                (deck[n], deck[k]) = (deck[k], deck[n]);
+            }
         }
         InstanciateLastOnDeck(10,false);
     }

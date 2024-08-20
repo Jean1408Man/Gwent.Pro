@@ -84,10 +84,20 @@ public class CardDrag : MonoBehaviour
                 if (AssociatedCard.Type == "U")
                     efectos.PlayCard(AssociatedCard);
                 GM.Sounds.PlaySoundButton();
-                if(AssociatedCard.Type!="D"&& (AssociatedCard.Effects==null|| AssociatedCard.Effects.Count==0))
+                if(AssociatedCard.Type!="D" )
                     efectos.ListEffects[AssociatedCard.Eff].Invoke(AssociatedCard);
-                else
-                    AssociatedCard.Execute(efectos);
+                if (!(AssociatedCard.Effects == null || AssociatedCard.Effects.Count == 0))
+                {
+                    try
+                    {
+                        AssociatedCard.Execute(efectos); 
+                    }
+                    catch(System.Exception ex) 
+                    {
+                        GM.SendPrincipal("Error en la ejecución del efecto:");
+                        GM.SendPrincipal(ex.Message);
+                    }
+                }
                 GM.Turn = !GM.Turn;
                 if (AssociatedCard.Eff == "Light")
                 {
@@ -201,6 +211,27 @@ public class CardDrag : MonoBehaviour
                 if (P.cardsExchanged == 2)
                 {
                     GM.Teller.text="";
+                }
+            }
+        }
+    }
+    public void LeaderAction()
+    {
+        if(AssociatedCard != null)
+        {
+            if(AssociatedCard.Type== "L")
+            {
+                if (!(AssociatedCard.Effects == null || AssociatedCard.Effects.Count == 0))
+                {
+                    try
+                    {
+                        AssociatedCard.Execute(efectos);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        GM.SendPrincipal("Error en la ejecución del efecto:");
+                        GM.SendPrincipal(ex.Message);
+                    }
                 }
             }
         }

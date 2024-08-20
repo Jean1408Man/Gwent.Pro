@@ -268,7 +268,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1.9513, y: 55.6886}
+  m_AnchoredPosition: {x: -0.60301, y: 45.9}
   m_SizeDelta: {x: 69.6337, y: 13.6222}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1015582082476196168
@@ -477,8 +477,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.60299, y: 9.792904}
-  m_SizeDelta: {x: 98.794, y: 72.559}
+  m_AnchoredPosition: {x: -0.5069, y: 15.8219}
+  m_SizeDelta: {x: 84.7358, y: 60.5022}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1688909752152371713
 CanvasRenderer:
@@ -654,6 +654,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ImBig: 0
+  displayed: 0
+  cardTemplate: {fileID: 0}
 --- !u!114 &8464157495241519836
 MonoBehaviour:
   m_ObjectHideFlags: 0

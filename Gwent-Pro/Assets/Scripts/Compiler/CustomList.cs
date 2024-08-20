@@ -35,24 +35,27 @@ namespace LogicalSide
         }
         public void Add(T item)
         {
-            if(AddPosibility!= null && (bool)AddPosibility&& item is Card card)
+            if(AddPosibility!= null && (bool)AddPosibility&& item is Card Card)
             {
+                Card card = (Card)Card.CreateCopy();
                 PlayerDeck Deck;
                 if(MyName== "Hand")
                 {
-                    Deck= GameObject.Find("Player Hand").GetComponent<PlayerDeck>();
+                    Deck= GameObject.Find("Deck").GetComponent<PlayerDeck>();
                     Deck.Instanciate(card, Deck.playerZone, Deck.prefabCarta);
                 }
                 else if(MyName== "OtherHand")
                 {
-                    Deck= GameObject.Find("Enemy Hand").GetComponent<PlayerDeck>();
-                    Deck.Instanciate(card, Deck.playerZone, Deck.prefabCarta);
+                    Deck= GameObject.Find("DeckEnemy").GetComponent<PlayerDeck>();
+                    Deck.Instanciate(card, Deck.playerZone, Deck.prefabCarta, true);
                 }
                 if(PlayerOwner!= null)
                 {
                     GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
                     card.DownBoard= (bool)PlayerOwner;
+                    card.OnConstruction = true;
                     card.Owner= GM.WhichPlayer((bool)PlayerOwner);
+                    card.OnConstruction = false;
                 }
                 list.Add(item);
             }
