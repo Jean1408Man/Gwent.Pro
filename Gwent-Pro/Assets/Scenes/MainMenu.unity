@@ -792,7 +792,7 @@ PrefabInstance:
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 503116315}
+      objectReference: {fileID: 1253312322}
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
@@ -827,7 +827,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: LogicalSide.SavedData, Assembly-CSharp
+      value: LogicalSide.CompilationMaster, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
@@ -1210,10 +1210,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
@@ -1221,7 +1225,15 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1253312321}
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1253312322}
+    - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
@@ -1229,8 +1241,16 @@ PrefabInstance:
       value: Volver
       objectReference: {fileID: 0}
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ClearConsole
+      objectReference: {fileID: 0}
+    - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: MenuGM, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: LogicalSide.CompilationMaster, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
@@ -1238,6 +1258,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1863,7 +1887,7 @@ PrefabInstance:
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 503116315}
+      objectReference: {fileID: 1253312322}
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
@@ -1898,7 +1922,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: LogicalSide.SavedData, Assembly-CSharp
+      value: LogicalSide.CompilationMaster, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
@@ -3969,27 +3993,47 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 503116315}
+      objectReference: {fileID: 1253312322}
+    - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1253312322}
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ClearConsole
+      objectReference: {fileID: 0}
+    - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
       value: Compile
       objectReference: {fileID: 0}
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: LogicalSide.SavedData, Assembly-CSharp
+      value: LogicalSide.CompilationMaster, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: LogicalSide.CompilationMaster, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
@@ -3997,6 +4041,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 6308246467342071621, guid: 48bf3c67fce966e4682914b5558a961e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -4022,6 +4070,7 @@ GameObject:
   - component: {fileID: 1253312318}
   - component: {fileID: 1253312317}
   - component: {fileID: 1253312321}
+  - component: {fileID: 1253312322}
   m_Layer: 5
   m_Name: MenuGM
   m_TagString: Untagged
@@ -4148,6 +4197,23 @@ MonoBehaviour:
   Mixto2: {fileID: 1913429112}
   Compiladas1: {fileID: 1915790267}
   Compiladas2: {fileID: 1446776221}
+--- !u!114 &1253312322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1253312316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4d2ae717bb03284fb852c41155ee44e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: {fileID: 1911442284}
+  FilePath1: C:\Users\luisj\Desktop\Compiler\Gwent-Compiler\Input.txt
+  FilePath2: C:\Users\luisj\Desktop\Compiler\Gwent-Compiler\Input.txt
+  currentPlayer: 0
+  CompilerErrors: {fileID: 280586758}
 --- !u!1 &1343347625
 GameObject:
   m_ObjectHideFlags: 0
@@ -6461,8 +6527,8 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 503116315}
-        m_TargetAssemblyTypeName: LogicalSide.SavedData, Assembly-CSharp
+      - m_Target: {fileID: 1253312322}
+        m_TargetAssemblyTypeName: LogicalSide.CompilationMaster, Assembly-CSharp
         m_MethodName: PathCompleted
         m_Mode: 1
         m_Arguments:

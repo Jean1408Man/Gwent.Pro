@@ -47,11 +47,7 @@ namespace LogicalSide
                 Deck= GameObject.Find("DeckEnemy").GetComponent<PlayerDeck>();
                 custom.MyName= "OtherDeck";
             }
-            
-            foreach(ICard card in Deck.deck)
-            {
-                custom.list.Add(card);
-            }
+            custom.list= Deck.deck;
             return custom;
         }
         
@@ -90,10 +86,7 @@ namespace LogicalSide
                 Deck= GameObject.Find("DeckEnemy").GetComponent<PlayerDeck>();
                 custom.MyName= "OtherGraveYard";
             }
-            foreach(ICard card in Deck.cement)
-            {
-                custom.list.Add(card);
-            }
+            custom.list = Deck.cement;
             return custom;
         }
         
@@ -132,8 +125,10 @@ namespace LogicalSide
 
             for(int i = discrimininant; i<6+discrimininant ; i++)
             {
-                foreach(GameObject card in BoardOfGameObject[i].transform)
+                
+                for(int j = 0; j< BoardOfGameObject[i].transform.childCount; j++)
                 {
+                    GameObject card= BoardOfGameObject[i].transform.GetChild(j).gameObject;
                     CardDisplay disp= card.GetComponent<CardDisplay>();
                     list.list.Add(disp.cardTemplate);
                 }
@@ -147,7 +142,6 @@ namespace LogicalSide
             get
             {
                 InvertDecksLocally= false;
-                CustomList<ICard> cards= new(true, null, 10);
                 return HandOfPlayer(TriggerPlayer);
             } 
         }
@@ -386,7 +380,7 @@ namespace LogicalSide
                     {
                         Var = Gamezone.transform.GetChild(i).gameObject;
                         dispvar = Var.GetComponent<CardDisplay>().cardTemplate;
-                        if ((dispvar.Type == "U" || dispvar.Type == "D") && dispvar.unit == TypeUnit.Silver && dispvar.Removable)
+                        if ((dispvar.TypeInterno == "U" || dispvar.TypeInterno == "D") && dispvar.unit == TypeUnit.Silver && dispvar.Removable)
                         {
                             Bigger = Gamezone.transform.GetChild(i).gameObject;
                             disp = Bigger.GetComponent<CardDisplay>().cardTemplate;
@@ -396,7 +390,7 @@ namespace LogicalSide
                     {
                         Var = Gamezone.transform.GetChild(i).gameObject;
                         dispvar = Var.GetComponent<CardDisplay>().cardTemplate;
-                        if ((dispvar.Type == "U" || dispvar.Type=="D")&& dispvar.unit == TypeUnit.Silver && dispvar.Removable)
+                        if ((dispvar.TypeInterno == "U" || dispvar.TypeInterno=="D")&& dispvar.unit == TypeUnit.Silver && dispvar.Removable)
                         {
                             if (dispvar.Power > disp.Power)
                             {
@@ -443,7 +437,7 @@ namespace LogicalSide
                     {
                         Var = Gamezone.transform.GetChild(i).gameObject;
                         dispvar = Var.GetComponent<CardDisplay>().cardTemplate;
-                        if ((dispvar.Type == "U" || dispvar.Type == "D") && dispvar.unit == TypeUnit.Silver && dispvar.Removable)
+                        if ((dispvar.TypeInterno == "U" || dispvar.TypeInterno == "D") && dispvar.unit == TypeUnit.Silver && dispvar.Removable)
                         {
                             Bigger = Gamezone.transform.GetChild(i).gameObject;
                             disp = Bigger.GetComponent<CardDisplay>().cardTemplate;
@@ -453,7 +447,7 @@ namespace LogicalSide
                     {
                         Var = Gamezone.transform.GetChild(i).gameObject;
                         dispvar = Var.GetComponent<CardDisplay>().cardTemplate;
-                        if ((dispvar.Type == "U" || dispvar.Type == "D") && dispvar.unit == TypeUnit.Silver && dispvar.Removable)
+                        if ((dispvar.TypeInterno == "U" || dispvar.TypeInterno == "D") && dispvar.unit == TypeUnit.Silver && dispvar.Removable)
                         {
                             if (dispvar.Power < disp.Power)
                             {
@@ -495,7 +489,7 @@ namespace LogicalSide
                 for (int i = 0; i < Gamezone.transform.childCount; i++)
                 {
                     dispvar = Gamezone.transform.GetChild(i).gameObject.GetComponent<CardDisplay>().cardTemplate;
-                    if (dispvar != null&& (dispvar.Type=="U" || dispvar.Type == "D"))
+                    if (dispvar != null&& (dispvar.TypeInterno=="U" || dispvar.TypeInterno == "D"))
                     {
                         totalPwr += dispvar.Power;
                         cant++;
@@ -509,7 +503,7 @@ namespace LogicalSide
                 for (int i = 0; i < Gamezone.transform.childCount; i++)
                 {
                     dispvar = Gamezone.transform.GetChild(i).gameObject.GetComponent<CardDisplay>().cardTemplate;
-                    if (dispvar != null && (dispvar.Type == "U" || dispvar.Type == "D") && dispvar.unit== TypeUnit.Silver)
+                    if (dispvar != null && (dispvar.TypeInterno == "U" || dispvar.TypeInterno == "D") && dispvar.unit== TypeUnit.Silver)
                     {
                         dispvar.Power = media;
                     }
@@ -626,7 +620,7 @@ namespace LogicalSide
                     for (int i = 0; i < Gamezone.transform.childCount; i++)
                     {
                         Card disp = Gamezone.transform.GetChild(i).GetComponent<CardDisplay>().cardTemplate;
-                        if (disp.unit == TypeUnit.Silver&& disp.Type!="D")
+                        if (disp.unit == TypeUnit.Silver&& disp.TypeInterno!="D")
                             disp.Power -= props.weather;
                     }
                     props.weather = 0;
@@ -702,7 +696,7 @@ namespace LogicalSide
                     CardDisplay disp = card.GetComponent<CardDisplay>();
                     if (disp != null)
                     {
-                        if (disp.cardTemplate.Type == "U"&& disp.cardTemplate.Removable)
+                        if (disp.cardTemplate.TypeInterno == "U"&& disp.cardTemplate.Removable)
                             Restart(disp.cardTemplate);
                         if (disp.cardTemplate.Removable)
                         {
@@ -756,7 +750,7 @@ namespace LogicalSide
                 for (int i = 0; i < Gamezone.transform.childCount; i++)
                 {
                     dispvar = Gamezone.transform.GetChild(i).gameObject.GetComponent<CardDisplay>().cardTemplate;
-                    if (dispvar != null && (dispvar.Type == "U"|| dispvar.Type== "D" )&& dispvar.Owner== Player)
+                    if (dispvar != null && (dispvar.TypeInterno == "U"|| dispvar.TypeInterno== "D" )&& dispvar.Owner== Player)
                     {
                         cant++;
                     }
@@ -771,7 +765,7 @@ namespace LogicalSide
                     for (int i = 0; i < Gamezone.transform.childCount; i++)
                     {
                         dispvar = Gamezone.transform.GetChild(i).gameObject.GetComponent<CardDisplay>().cardTemplate;
-                        if (dispvar != null && (dispvar.Type == "U" || dispvar.Type == "D") && dispvar.Owner == Player)
+                        if (dispvar != null && (dispvar.TypeInterno == "U" || dispvar.TypeInterno == "D") && dispvar.Owner == Player)
                         {
                             if (cant2 == cant)
                             {

@@ -30,10 +30,8 @@ namespace LogicalSide
                 if(cardTemplate.Destroy)
                 {
                     Efectos ef = GameObject.Find("Effects").GetComponent<Efectos>();
-                    PlayerDeck Current = ef.Decking(cardTemplate.DownBoard);
                     ef.Decoy(cardTemplate);
                     ef.Restart(cardTemplate);
-                    Current.AddToCement(cardTemplate);
                     Destroy(gameObject);
                 }
                 else

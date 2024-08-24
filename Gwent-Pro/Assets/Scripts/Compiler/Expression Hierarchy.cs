@@ -351,10 +351,10 @@ public class CardExpression: Expression
     public OnActivationExpression? OnActivation;
     private string RangeFormat(List<Expression> ranges)
     {
-
         List<string> strings= new List<string>{"Range", "Melee", "Siege"};
         string s= "";
         string ev;
+        if(ranges!= null)
         foreach(Expression range in ranges)
         {
             ev= (string)range.Evaluate(null, null);
@@ -373,7 +373,11 @@ public class CardExpression: Expression
         card.Name= (string)Name!.Evaluate(scope, Set);
         card.Type= (string)Type!.Evaluate(scope, Set);
         card.Faction= (string)Faction!.Evaluate(scope, Set);
-        card.Power= (int)Power!.Evaluate(scope, Set);
+        if (Power != null)
+            card.Power = (int)Power!.Evaluate(scope, Set);
+        else
+            card.Power = 0;
+        if(OnActivation!= null)
         card.Effects= (List<IEffect>)OnActivation.Evaluate(scope,null);
         
         card.Range= RangeFormat(Range);
@@ -404,13 +408,14 @@ public class CardExpression: Expression
         #endregion
         
         #region Power
-        if(Name== null || Power.Semantic(scope)!= ValueType.Number)
+        if(Power!= null && Power.Semantic(scope)!= ValueType.Number)
         {
             throw new Exception("Semantic Error, Expected Number Type");
         }
         #endregion
         
         #region Range
+        if(Range!= null)
         foreach(Expression exp in Range)
         {
             ValueType? check= exp.Semantic(scope);
@@ -422,7 +427,7 @@ public class CardExpression: Expression
         #endregion
         
         #region OnActivation
-        if(OnActivation== null || OnActivation.Semantic(scope)!= ValueType.OnActivacion)
+        if(OnActivation!= null && OnActivation.Semantic(scope)!= ValueType.OnActivacion)
         {
             throw new Exception("Semantic Error, Expected OnActivation Type");
         }
@@ -445,10 +450,14 @@ public class PredicateExp: Expression
     }
     public override object Evaluate(EvaluateScope scope,object Set, object Before= null)
     {//At this method Set will be the Card is being analized for this predicate
-        Evaluator = new EvaluateScope(scope);
-        Unit.Value= Set;
-        Evaluator.AddVar(Unit, Unit.Value);
-        return Condition.Evaluate(Evaluator, null);//this is supossed to be a boolean that verifies the predicate
+            if(Set != null)
+            {
+                Evaluator = new EvaluateScope(scope);
+                Unit.Value = Set;
+                Evaluator.AddVar(Unit, Unit.Value);
+                return Condition.Evaluate(Evaluator, null);
+            }//this is supossed to be a boolean that verifies the predicate
+            throw new Exception("You arent putting a unit to evaluate at the predicate");
     }
     public override ValueType? Semantic(SemanticalScope scope)
     {
@@ -466,6 +475,7 @@ public class OnActivationExpression: Expression
     public override object Evaluate(EvaluateScope scope,object Set, object Before= null)
     {
         List<IEffect> effects= new();
+        if(Effects != null)
         foreach(EffectAssignment assignment in Effects)
         {
             assignment.Evaluate(scope, Set, effects);
@@ -480,8 +490,7 @@ public class OnActivationExpression: Expression
     }
     public override ValueType? Semantic(SemanticalScope scope)
     {
-        if(Effects==null)
-            throw new Exception("Semantic Error, There are not Effects in OnActivation");
+        if(Effects!=null)
         foreach(EffectAssignment assignment in Effects)
         {
             if(assignment.Semantic(scope)!= ValueType.EffectAssignment)
@@ -633,7 +642,7 @@ public class SelectorExpression: Expression
         
         Source!.Value= FormatSources((string)Source.Value!);
         CustomList<ICard> SourceCards= (CustomList<ICard>)Api.GetProperty(context, (string)Source.Value);
-        CustomList<ICard> Targets= new(false, null);
+        CustomList<ICard> Targets= new(false, false);
 
         if((bool)Single!.Value!)
         {
@@ -946,7 +955,7 @@ public class BinaryOperator : Expression
             Right.Value= (int)Right.Evaluate(scope,Set,Before);
             Left.Value= (int)Left.Evaluate(scope,Set,Before);
             this.Value= Math.Pow((int)Left.Value , (int)Right.Value);
-            return this.Value;
+            return Convert.ToInt32(this.Value);
 
             // Booleans
             case TokenType.EQUAL:
@@ -1099,7 +1108,7 @@ public class UnaryOperator : Terminal
             case TokenType.DeckOfPlayer:
             case TokenType.GraveYardOfPlayer:
             case TokenType.FieldOfPlayer:
-            case TokenType.Find:
+            
             case TokenType.Pop:
             
             object value = null!;
@@ -1108,6 +1117,20 @@ public class UnaryOperator : Terminal
             Value = Api.InvokeMethodWithParameters(Before, Operator.ToString(), value);
             return Value;
 
+
+
+                //Find
+            case TokenType.Find:
+                if (Before is CustomList<Card> list)
+                {
+                    return list.Find(Operand, scope);
+                }
+                else if(Before is CustomList<ICard> listI)
+                {
+                    return listI.Find(Operand, scope);
+                }
+                else
+                    throw new Exception("Solo se aplica Find en una Lista");
             //Numbers
 
             case TokenType.RDECREMENT:

@@ -10,48 +10,25 @@ using JetBrains.Annotations;
 
 namespace LogicalSide
 {
-    public class SavedData : MonoBehaviour
+    internal class CompilationMaster: MonoBehaviour
     {
-        public string name_1 = "";
-        public string name_2 = "";
-        public int faction_1 = 0;
-        public int faction_2 = 0;
-
-        public bool debug = false;
-
-        public static SavedData Instance;
-        public TMP_InputField Name1;
-        public TMP_InputField Name2;
-        
-
-        void Awake()
+        SavedData data;
+        private void Start()
         {
-            if (Instance == null)
-            {
-                Instance = this;
-                DontDestroyOnLoad(gameObject);
-            }
-            else if (Instance != this)
-            {
-                Destroy(gameObject);
-            }
+            data = GameObject.Find("SoundManager").GetComponent<SavedData>();
         }
         public TMP_InputField Path;
-
-        public List<ICard> CartasCompiladas1;
         public string FilePath1 = @"C:\Users\luisj\Desktop\Compiler\Gwent-Compiler\Input.txt";
         public string FilePath2 = @"C:\Users\luisj\Desktop\Compiler\Gwent-Compiler\Input.txt";
-        public List<ICard> CartasCompiladas2;
-
         public void Simulation()
         {
             currentPlayer = 1;
-            faction_1 = 4;
-            name_1 = "Jean";
+            data.faction_1 = 4;
+            data.name_1 = "Jean";
             Compile();
             currentPlayer = 2;
-            faction_2 = 4;
-            name_2 = "Deiny";
+            data.faction_2 = 4;
+            data.name_2 = "Deiny";
             Compile();
         }
 
@@ -81,15 +58,15 @@ namespace LogicalSide
                 if (currentPlayer == 1)//Agregar aqui logica de solo compilar si rellenaste nombre, para debugear puede permanecer asi
                 {
                     Temporal = Compiler.Compile(FilePath1);
-                    CartasCompiladas1 = new List<ICard>();
-                    Real = CartasCompiladas1;
+                    data.CartasCompiladas1 = new List<ICard>();
+                    Real = data.CartasCompiladas1;
                     Downboard = true;
                 }
                 else
                 {
                     Temporal = Compiler.Compile(FilePath2);
-                    CartasCompiladas2 = new List<ICard>();
-                    Real = CartasCompiladas2;
+                    data.CartasCompiladas2 = new List<ICard>();
+                    Real = data.CartasCompiladas2;
                     Downboard = false;
                 }
 
@@ -208,6 +185,6 @@ namespace LogicalSide
         }
 
     }
-    
-    
+
 }
+

@@ -33,8 +33,18 @@ public class GameManager : MonoBehaviour
     public GameObject prefabLeader;
     private bool _Turn=true;
     public MenuGM Sounds;
-    public Player P1;
-    public Player P2;
+    private Player _p1;
+    public Player P1 
+    { 
+        get { return _p1; } 
+        set { _p1 = value; } 
+    }
+    private Player _p2;
+    public Player P2
+    {
+        get { return _p2; }
+        set { _p2 = value; }
+    }
     public GameObject PlayerZone;
     public GameObject EnemyZone;
     public bool CardFilter = false;
@@ -377,6 +387,9 @@ public class GameManager : MonoBehaviour
     }
     public void SendPrincipal(string s)
     {
+        string previus; 
+        SMS.TryPeek(out previus);
+        if(previus!= s)
         SMS.Enqueue(s);
         Message.gameObject.SetActive(true);
         MessagePanel.SetActive(true);
@@ -400,7 +413,6 @@ public class GameManager : MonoBehaviour
         if(P1==null)
         {
             UnityEngine.Debug.Log("Player nulo");
-            P1= new Player("Invalido", "jua", true);
         }
         if (b == P1.Turn)
             return P1;

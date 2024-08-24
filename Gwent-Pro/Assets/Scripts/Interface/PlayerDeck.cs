@@ -16,14 +16,14 @@ public class PlayerDeck : MonoBehaviour
     public Transform playerZone; // El lugar donde se colocar� la carta del jugador
     public GameObject PlayerHand;
     public Transform Leaderzone;
-    [SerializeField]public List<Card> deck; // Tu lista de cartas
-    public List<Card> cement;
+    [SerializeField]public List<ICard> deck; // Tu lista de cartas
+    public List<ICard> cement;
 
 
     private void Start()
     {
-        deck = new List<Card>();
-        cement = new List<Card>();
+        deck = new List<ICard>();
+        cement = new List<ICard>();
     }
     // M�todo para instanciar la �ltima carta del mazo
     public void Instanciate(Card card, Transform zone, GameObject prefab, bool Rota=false)
@@ -35,13 +35,16 @@ public class PlayerDeck : MonoBehaviour
                 GameObject instanciaCarta = Instantiate(prefab, zone);
                 CardDisplay disp = instanciaCarta.GetComponent<CardDisplay>();
                 disp.cardTemplate = card;
-
-                deck.Remove(card); 
                 if (Rota)
                 {
                     zone.GetChild(zone.childCount - 1).Rotate(0, 0, 180);
                 }
 
+            }
+            else
+            {
+                GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
+                GM.SendPrincipal("Trataste de instanciar más de 10 cartas en una mano, lo cual no es permitido");
             }
             
         }
@@ -50,7 +53,7 @@ public class PlayerDeck : MonoBehaviour
     {
         if (deck.Count > 0 && n>0)
         {
-            Card card = deck[deck.Count - 1];
+            Card card = (Card)deck[deck.Count - 1];
             if (playerZone.childCount <= 9 || exception)
             {
                 GameObject instanciaCarta = Instantiate(prefabCarta, playerZone);
@@ -79,7 +82,7 @@ public class PlayerDeck : MonoBehaviour
     {
         if (cement.Count > 0)
         {
-            Instanciate(cement[cement.Count-1],PlayerHand.transform,prefabCarta);
+            Instanciate((Card)cement[cement.Count - 1],PlayerHand.transform,prefabCarta);
         }
         if(cement.Count==0)
             gameObject.transform.GetChild(0).gameObject.SetActive(false);
@@ -89,10 +92,11 @@ public class PlayerDeck : MonoBehaviour
         if(deck.Count > 0)
         InstanciateLastOnDeck(1,false);
     }
-    public void Shuffle(List<Card> deck, bool Debug=false)
+    public void Shuffle(List<ICard> deck, bool Debug=false)
     {
         System.Random random = new System.Random();
-        Instanciate(deck[0],Leaderzone, prefabLeader);
+        Instanciate((Card)deck[0],Leaderzone, prefabLeader);
+        deck.RemoveAt(0);
         if(Leaderzone.name == "LeaderplaceEnemy")
             Leaderzone.transform.GetChild(0).Rotate(0, 0, 180);
         if(!Debug)

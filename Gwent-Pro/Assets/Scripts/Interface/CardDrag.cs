@@ -55,11 +55,11 @@ public class CardDrag : MonoBehaviour
                 {
                     Debug.Log("Light");
                 }
-                if (AssociatedCard.Type != "D")
+                if (AssociatedCard.TypeInterno != "D")
                 {
                     if (AssociatedCard.Eff != "Light")
                         transform.SetParent(dropzone.transform, false);
-                    if (AssociatedCard.Type.IndexOf("C") == -1 && AssociatedCard.Type.IndexOf("A") == -1)
+                    if (AssociatedCard.TypeInterno.IndexOf("C") == -1 && AssociatedCard.TypeInterno.IndexOf("A") == -1)
                         AssociatedCard.current_Rg = dropzone.tag;
                     else
                     {
@@ -81,22 +81,22 @@ public class CardDrag : MonoBehaviour
                     GM.P1.Surrender = false;
                 else
                     GM.P2.Surrender = false;
-                if (AssociatedCard.Type == "U")
+                if (AssociatedCard.TypeInterno == "U")
                     efectos.PlayCard(AssociatedCard);
                 GM.Sounds.PlaySoundButton();
-                if(AssociatedCard.Type!="D" )
+                if(AssociatedCard.TypeInterno!="D" )
                     efectos.ListEffects[AssociatedCard.Eff].Invoke(AssociatedCard);
                 if (!(AssociatedCard.Effects == null || AssociatedCard.Effects.Count == 0))
                 {
-                    try
-                    {
+                    //try
+                    //{
                         AssociatedCard.Execute(efectos); 
-                    }
-                    catch(System.Exception ex) 
-                    {
-                        GM.SendPrincipal("Error en la ejecución del efecto:");
-                        GM.SendPrincipal(ex.Message);
-                    }
+                    //}
+                    //catch(System.Exception ex) 
+                    //{
+                    //    GM.SendPrincipal("Error en la ejecuciï¿½n del efecto:");
+                    //    GM.SendPrincipal(ex.Message);
+                    //}
                 }
                 GM.Turn = !GM.Turn;
                 if (AssociatedCard.Eff == "Light")
@@ -117,10 +117,10 @@ public class CardDrag : MonoBehaviour
     private GameObject IsPosible()
     {
         foreach(GameObject drop in dropzones)
-        if (AssociatedCard.Type.IndexOf("C") == -1)
-            if (AssociatedCard.Type.IndexOf("A") == -1)
+        if (AssociatedCard.TypeInterno.IndexOf("C") == -1)
+            if (AssociatedCard.TypeInterno.IndexOf("A") == -1)
             {
-                if (AssociatedCard.Type.IndexOf('D') == -1)
+                if (AssociatedCard.TypeInterno.IndexOf('D') == -1)
                 {
                     if (drop.transform.childCount < 6 && AssociatedCard.Range.IndexOf(drop.tag) != -1 && efectos.RangeMap[(AssociatedCard.DownBoard, drop.tag)] == drop)
                     {
@@ -139,7 +139,7 @@ public class CardDrag : MonoBehaviour
             }
             else
             {
-                if (drop.tag == AssociatedCard.Type && efectos.RangeMap[(AssociatedCard.DownBoard, drop.tag)] == drop&& drop.transform.childCount<1)
+                if (drop.tag == AssociatedCard.TypeInterno && efectos.RangeMap[(AssociatedCard.DownBoard, drop.tag)] == drop&& drop.transform.childCount<1)
                     return drop;
             }
         else
@@ -215,23 +215,26 @@ public class CardDrag : MonoBehaviour
             }
         }
     }
+    bool acted = false;
     public void LeaderAction()
     {
         if(AssociatedCard != null)
         {
-            if(AssociatedCard.Type== "L")
+            if(AssociatedCard.TypeInterno== "L" && GM.Turn== AssociatedCard.DownBoard && !acted)
             {
                 if (!(AssociatedCard.Effects == null || AssociatedCard.Effects.Count == 0))
                 {
                     try
                     {
+                        acted = true;
                         AssociatedCard.Execute(efectos);
                     }
                     catch (System.Exception ex)
                     {
-                        GM.SendPrincipal("Error en la ejecución del efecto:");
+                        GM.SendPrincipal("Error en la ejecuciï¿½n del efecto:");
                         GM.SendPrincipal(ex.Message);
                     }
+                    GM.Turn= !GM.Turn;
                 }
             }
         }

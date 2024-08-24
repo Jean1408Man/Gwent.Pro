@@ -8,7 +8,7 @@ namespace LogicalSide
 {
     public class Card: ICard
     {
-        private IPlayer _player;
+        [SerializeField]private IPlayer _player;
         public override IPlayer Owner
         {
             get { return _player; }
@@ -21,7 +21,7 @@ namespace LogicalSide
                     GameObject Object = GameObject.Find("GameManager");
                     if (Object != null)
                         GM = Object.GetComponent<GameManager>();
-                    GM.SendPrincipal("El dueño(Owner) de las cartas es de solo lectura");
+                    GM.SendPrincipal("El dueï¿½o(Owner) de las cartas es de solo lectura");
                 }
             }
         }
@@ -29,7 +29,7 @@ namespace LogicalSide
         public Sprite Artwork;
         public Sprite Fondo;
         public Sprite FactionIcon;
-        private string _nombre;
+        [SerializeField]private string _nombre;
         public override string Name
         {
             get { return _nombre; }
@@ -47,9 +47,9 @@ namespace LogicalSide
             }
         }
         public int Id;
-        private int _pwr; // Campo de respaldo
+        [SerializeField] private int _pwr; // Campo de respaldo
         public bool Removable;
-        private bool _Destroy;
+        [SerializeField] private bool _Destroy;
         public bool Destroy
         {
             get
@@ -58,11 +58,16 @@ namespace LogicalSide
             }
             set
             {
-                if(Displayed&& value==true)
+                if(value==true)
                 {
-                    _Destroy= true;
-                    Displayed = false;
+                    if (Displayed)
+                    {
+                        _Destroy = true;
+                        Displayed = false;
+                    }
                 }
+                else
+                    _Destroy = false;
             }
         }
         public bool Displayed=false;
@@ -82,7 +87,7 @@ namespace LogicalSide
                         GM= Object.GetComponent<GameManager>();
                     if (_pwr != value)
                     {
-                        if (GM != null && Type != null && (Type == "C" || Type.IndexOf("A") != -1))
+                        if (GM != null && TypeInterno != null && (TypeInterno == "C" || TypeInterno.IndexOf("A") != -1))
                             GM.SendPrincipal("Has tratado de modificar el poder de un clima o un aumento, lo cual no es permitido pues no tienen");
                         else
                         {
@@ -105,7 +110,7 @@ namespace LogicalSide
             }
 
         }
-        private string _faccion;
+        [SerializeField] private string _faccion;
         public override string Faction{ 
             get { return _faccion; } 
             set 
@@ -117,14 +122,14 @@ namespace LogicalSide
                     GameObject Object = GameObject.Find("GameManager");
                     if (Object != null)
                         GM = Object.GetComponent<GameManager>();
-                    GM.SendPrincipal("La facción de las cartas es de solo lectura");
+                    GM.SendPrincipal("La facciï¿½n de las cartas es de solo lectura");
                 }
             } 
         }
 
         public int OriginPwr;
         public string description;
-        private string _rango;
+        [SerializeField] private string _rango;
         public override string Range
         {
             get { return _rango; }
@@ -142,9 +147,8 @@ namespace LogicalSide
             }
         }
         public string current_Rg;
-        private string _tipo;
-        public override string Type
-        {
+
+        public override string Type{
             get { return _tipo; }
             set
             {
@@ -159,6 +163,12 @@ namespace LogicalSide
                 }
             }
         }
+        [SerializeField] private string _tipo;
+        public string TypeInterno
+        {
+            get;
+            set;
+        }
         public TypeUnit unit;
         public string Eff;
         public bool DownBoard;
@@ -167,46 +177,16 @@ namespace LogicalSide
         public override List<IEffect> Effects{get; set;}
         public override ICard CreateCopy()
         {
-            Card card = new Card(DownBoard, Name, Id, OriginPwr, description, (Player)Owner, unit, Type, Eff, Range, Artwork, Removable);
+            Card card = new Card(DownBoard, Name, Id, OriginPwr, description, (Player)Owner, unit, TypeInterno, Eff, Range, Artwork, Removable, Type);
             CardDataBase.CustomizeCard(card);
             card.Effects= Effects;
+            card.OnConstruction = true;
+            card.Faction = Faction;
+            card.OnConstruction = false;
             return card;
         }
-        public bool Igual(Card obj)
-        {
-            if(obj is Card card)
-            {
-                if(this.Name != card.Name)
-                    return false;
-                if(this.Id != card.Id)
-                    return false;
-                if(this.Power != card.Power)
-                return false;
-                if(this.description != card.description)
-                    return false;
-                if(this.Range != card.Range)
-                    return false;
-                if(this.Artwork != card.Artwork)
-                    return false;
-                if(this.Type != card.Type)
-                    return false;
-                if(this.unit != card.unit)
-                    return false;
-                if(this.Eff != card.Eff)
-                    return false;
-                if(this.Removable != card.Removable)
-                    return false;
-                if(this.Owner != card.Owner)
-                    return false;
-                if(!Effects.Equals(card.Effects))
-                    return false;
-
-                return true;
-            }
-            return false;
-        }
         public Card(bool DownBoard ,string name , int id ,int pwr, string description,Player Owner,TypeUnit unit
-        ,string type ,string Eff,string atk_Rg, Sprite Img, bool Removable)
+        ,string type ,string Eff,string atk_Rg, Sprite Img, bool Removable, string Type)
         {
             this.Name = name;
             this.Id = id;
@@ -215,12 +195,13 @@ namespace LogicalSide
             this.description = description;
             this.Range = atk_Rg;
             this.Artwork = Img;
-            this.Type = type;
+            this.TypeInterno = type;
             this.unit = unit;
             this.Eff = Eff;
             this.DownBoard = DownBoard;
             this.Removable = Removable;
             this.Owner = Owner;
+            this.Type= Type;
             OnConstruction = false;
         }
     }

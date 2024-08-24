@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor.Build;
 using UnityEngine;
 namespace LogicalSide
 {
@@ -18,20 +17,24 @@ namespace LogicalSide
         }
         
         public List<T> list = new List<T>();
-        public CustomList<T> Find(Expression pred)
+        public CustomList<T> Find(Expression pred, EvaluateScope scope)
         {
             if(pred is PredicateExp predicate)
             {
                 CustomList<T> custom= new(true,null);
                 foreach(var item in this.list)
                 {
-                    if((bool)predicate.Evaluate(null, item))
+                    if((bool)predicate.Evaluate(scope, item))
                         custom.list.Add(item);
                 }
                 return custom;
             }
             else
-                throw new Exception("Find Argument must be a predicate");
+            {
+                GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
+                GM.SendPrincipal("Para usar el método Find de una lista, debes introducir un predicate");
+                throw new Exception("Para usar el método Find de una lista, debes introducir un predicate");
+            }
         }
         public void Add(T item)
         {
@@ -60,7 +63,11 @@ namespace LogicalSide
                 list.Add(item);
             }
             else
-                throw new Exception(MyName+ " list, is not available to Add elements, due to its Ambiguity");
+            {
+                GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
+                GM.SendPrincipal(MyName + " list, is not available to Add elements, due to its Ambiguity");
+                throw new Exception(MyName + " list, is not available to Add elements, due to its Ambiguity");
+            }
         }
 
         public void Remove(T item)
@@ -96,7 +103,11 @@ namespace LogicalSide
                 }
             }
             else
+            {
+                GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
+                GM.SendPrincipal("You are trying to Shuffle a not shuffable list, please read the instructions and check the shuffable lists");
                 throw new Exception("You are trying to Shuffle a not shuffable list, please read the instructions and check the shuffable lists");
+            }
         }
         public T Pop()
         {
@@ -106,6 +117,8 @@ namespace LogicalSide
                 Remove(obj);
                 return obj;
             }
+            GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
+            GM.SendPrincipal("Trying to Pop from an empty List");
             throw new Exception("Trying to Pop from an empty List");
         }
         public void Push(T card)=> Add(card);
