@@ -512,7 +512,7 @@ public class Parser
             switch (tokens[position].Type)
             {
                 case TokenType.SOURCE:
-                    selector.Source = ParseAssignment(true);//No Implementado
+                    selector.Source = ParseAssignment(true);
                     break;
                 case TokenType.SINGLE:
                     selector.Single= ParseAssignment(true);
@@ -643,7 +643,7 @@ public class Parser
         InstructionBlock block = new();
         do
         {
-            if(tokens[position].Type==TokenType.ID)
+            if(tokens[position].Type==TokenType.ID || tokens[position].Type == TokenType.INCREMENT || tokens[position].Type == TokenType.DECREMENT)
             {
                 block.Instructions.Add(ParseAssignment(true, false));
             }
@@ -655,8 +655,9 @@ public class Parser
             {
                 block.Instructions.Add(ParseWhile());
             }
-            else if(tokens[position++].Type== TokenType.RCURLY)
+            else if(tokens[position].Type== TokenType.RCURLY)
             {
+                position++;
                 break;
             }
             else

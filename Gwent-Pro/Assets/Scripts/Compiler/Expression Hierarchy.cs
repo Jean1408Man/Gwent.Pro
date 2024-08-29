@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection.Emit;
+using UnityEngine.UIElements;
 
 namespace LogicalSide
 {
@@ -22,7 +24,7 @@ public abstract class Expression
     }
     public abstract ValueType? Semantic(SemanticalScope? scope);
     //This is the method who will build the structure of the card
-    public abstract object Evaluate(EvaluateScope? scope,object Set, object Before= null);
+    public abstract object Evaluate(EvaluateScope? scope,object Set, object Before=null);
     //This is the method, that uses the structure given by the Evaluate Method, and will execute the functionality of the card in the game
     //public abstract void Execute();
  }
@@ -255,8 +257,12 @@ public class ForExpression: Expression
 
         if(Collection.Value is CustomList<ICard> list)
         {
-            foreach (ICard item in list.list)
+            int overflow = 60;
+            for (int i = 0; i < list.Count; i++ )
             {
+                if (overflow-- < 0)
+                    throw new Exception("Stack Overflow, tu codigo de efecto produce un bucle infinito");
+                ICard item = list.list[i];
                 Variable.Value= item;
                 Evaluator.AddVar(Variable, Variable.Value);
 
@@ -274,7 +280,7 @@ public class ForExpression: Expression
             SemanticScope.AddVar(Variable,Variable);
         }
         else throw new Exception("Semantic Error, For Variable is Empty");
-        if(Collection != null)
+        if(Collection != null && Collection.Semantic(scope)== ValueType.ListCard)
         {
             Collection.Type= ValueType.ListCard;
         }
@@ -302,8 +308,11 @@ public class WhileExpression: Expression
     {
         
         Evaluator = new EvaluateScope(scope);
+        int overflow = 60;
         while((bool)Condition.Evaluate(scope, null))
         {
+            if (overflow-- < 0)
+                throw new Exception("Stack Overflow, tu código de efecto produce un bucle infinito");
             Instructions.Evaluate(Evaluator, null);
         }
         return null;
@@ -640,7 +649,7 @@ public class SelectorExpression: Expression
     {
         PredicateExp predicate= (Predicate as PredicateExp)!;
         
-        Source!.Value= FormatSources((string)Source.Value!);
+        Source!.Value= FormatSources(((string)Source.Value!).ToLower());
         CustomList<ICard> SourceCards= (CustomList<ICard>)Api.GetProperty(context, (string)Source.Value);
         CustomList<ICard> Targets= new(false, false);
 
@@ -831,11 +840,29 @@ public class BinaryOperator : Expression
             case TokenType.POINT:
             ValueType? type = Left.Semantic(scope);
             Left.Type= type;
-            if(type != ValueType.Null && Right is Terminal right && SintaxFacts.PointPosibbles[type].Contains(right.ValueAsToken.Type))
+            if(type != ValueType.Null && Right is Terminal right )
             {
-                type= right.Semantic(scope);
-                Right.Type= type;
-                return SintaxFacts.TypeOf[right.ValueAsToken.Type];
+                #region Increments or Decrements
+                if (right is UnaryOperator unary && (unary.Operator == TokenType.RINCREMENT || unary.Operator == TokenType.LINCREMENT
+                || unary.Operator == TokenType.RDECREMENT || unary.Operator == TokenType.LDECREMENT))
+                {
+                    if (unary.Operand is Terminal T && SintaxFacts.PointPosibbles[type].Contains(T.ValueAsToken.Type))
+                    {
+                        type = right.Semantic(scope);
+                        Right.Type = type;
+                        return SintaxFacts.TypeOf[T.ValueAsToken.Type];
+                    }
+                    else throw new Exception("Semantic Error, you used a Increment or decrement on a point Expression but the operand wasnt terminal");
+                }
+                #endregion
+                else if (SintaxFacts.PointPosibbles[type].Contains(right.ValueAsToken.Type))
+                {
+                    type = right.Semantic(scope);
+                    Right.Type= type;
+                    return SintaxFacts.TypeOf[right.ValueAsToken.Type];
+                }
+                else
+                    throw new Exception("Semantic Error, Unreachable code entrance");
             }
             else if(type != ValueType.Null && Right is BinaryOperator binary && binary.Operator== TokenType.INDEXER )
             {
@@ -873,6 +900,19 @@ public class BinaryOperator : Expression
             //Two Points
             case TokenType.ASSIGN:
             case TokenType.TWOPOINT:
+            //Chequeos en cuanto a que en la parte izquierda de una asignacion no haya un operador de incremento o decremento
+            
+            if(Left is UnaryOperator un && (un.Operator == TokenType.RINCREMENT || un.Operator == TokenType.LINCREMENT
+            || un.Operator == TokenType.RDECREMENT || un.Operator == TokenType.LDECREMENT))
+            {
+                throw new Exception($"Semantic Error at assignment, the left side can't be an increment or decrement");
+            }
+            if(Left is BinaryOperator bin && bin.Right is UnaryOperator RightUn && (RightUn.Operator == TokenType.RINCREMENT || RightUn.Operator == TokenType.LINCREMENT
+                || RightUn.Operator == TokenType.RDECREMENT || RightUn.Operator == TokenType.LDECREMENT))
+            {
+                throw new Exception($"Semantic Error at assignment, the left side can't be an increment or decrement");
+            }
+
             ValueType? tipo = Right.Semantic(scope);
             Right.Type= tipo;
             ValueType? tempforOut;
@@ -1134,27 +1174,29 @@ public class UnaryOperator : Terminal
             //Numbers
 
             case TokenType.RDECREMENT:
-            Operand.Value= (int)Operand.Evaluate(scope,null)-1;
-            Value= (int)Operand.Value+1;
+            object Valor = (int)Operand.Evaluate(scope,(int)Operand.Evaluate(scope, null, Before)-1, Before);
+            Value= (int)Valor+1;
             EvaluateUtils.ActualizeScope(Operand, scope);
             return (int)Value;
+            
             case TokenType.LDECREMENT:
-            Operand.Value= (int)Operand.Evaluate(scope,null)-1;
-            Value= (int)Operand.Value;
+            object Val = (int)Operand.Evaluate(scope, (int)Operand.Evaluate(scope, null, Before) - 1, Before);
+            Value = (int)Val;
             EvaluateUtils.ActualizeScope(Operand, scope);
             return (int)Value;
-            
+
             case TokenType.RINCREMENT:
-            Operand.Value= (int)Operand.Evaluate(scope,null)+1;
-            Value= (int)Operand.Value-1;
+            object Valo = (int)Operand.Evaluate(scope, (int)Operand.Evaluate(scope, null, Before) + 1, Before);
+            Value = (int)Valo -1;
+            EvaluateUtils.ActualizeScope(Operand, scope);
+            return (int)Value;
+
+            case TokenType.LINCREMENT:
+            object V = (int)Operand.Evaluate(scope, (int)Operand.Evaluate(scope, null, Before) + 1, Before);
+            Value = (int)V;
             EvaluateUtils.ActualizeScope(Operand, scope);
             return (int)Value;
             
-            case TokenType.LINCREMENT:
-            Operand.Value= (int)Operand.Evaluate(scope,null)+1;
-            Value= (int)Operand.Value;
-            EvaluateUtils.ActualizeScope(Operand, scope);
-            return (int)Value;
             case TokenType.MINUS:
             Value= (int)Operand.Evaluate(scope, null)*-1;
             return (int)Value-1;
@@ -1219,10 +1261,18 @@ public class UnaryOperator : Terminal
             case TokenType.MINUS:
             case TokenType.PLUS:
             {
-                if(Operand.Semantic(scope)==ValueType.Number)
+                if(Operator==TokenType.RDECREMENT||Operator==TokenType.LDECREMENT || Operator== TokenType.RINCREMENT || Operator== TokenType.LINCREMENT)
+                {
+                    if(!(Operand is IdentifierExpression))
+                    {
+                        throw new Exception("Semantic Error, you can only use Decrement/Increment on Identifiers");
+                    }
+                }
+
+                if (Operand.Semantic(scope)==ValueType.Number)
                     return ValueType.Number;
                 else
-                    throw new Exception("Semantic Error, Expected Number Type");
+                    throw new Exception($"Semantic Error, Expected Number Type as an Operand of {Operator}");
             }
 
             //Boolean
@@ -1234,7 +1284,7 @@ public class UnaryOperator : Terminal
                     throw new Exception("Semantic Error, Expected Boolean Type");
             }
             case TokenType.Find:
-            if(Operand!= null && Operand.Semantic(scope)!= ValueType.Predicate)
+            if(Operand== null || Operand.Semantic(scope)!= ValueType.Predicate)
             {
                 throw new Exception("Semantic Error, Expected Predicate Type");
             }
@@ -1324,27 +1374,29 @@ public class IdentifierExpression : Terminal
         }
         else if(SintaxFacts.PointPosibbles[ValueType.Card].Contains(ValueAsToken.Type)&& Before is ICard card)
         {
-                if(Set!= null)//Este id se encuentra a la izquierda de una operacion de igualdad
-                switch(ValueAsToken.Type)
-                {
-                    case TokenType.Name:
-                    card.Name= (string)Set;
-                    break;
-                    case TokenType.Owner:
-                    card.Owner= (IPlayer)Set;
-                    break;
-                    case TokenType.Power:
-                    card.Power= (int)Set;
-                    break;
-                    case TokenType.Faction:
-                    card.Faction= (string)Set;
-                    break;
-                    case TokenType.Range:
-                    card.Range= (string)Set;
-                    break;
-                    case TokenType.Type:
-                    card.Type= (string)Set;
-                    break;
+                if(Set!= null){//Este id se encuentra a la izquierda de una operacion de igualdad
+                    switch (ValueAsToken.Type)
+                    {
+                        case TokenType.Name:
+                            card.Name = (string)Set;
+                            break;
+                        case TokenType.Owner:
+                            card.Owner = (IPlayer)Set;
+                            break;
+                        case TokenType.Power:
+                            card.Power = (int)Set;
+                            break;
+                        case TokenType.Faction:
+                            card.Faction = (string)Set;
+                            break;
+                        case TokenType.Range:
+                            card.Range = (string)Set;
+                            break;
+                        case TokenType.Type:
+                            card.Type = (string)Set;
+                            break;
+                    }
+                    return Set;
                 }
                 else//se encuentra a la derecha de una igualdad, solo se solicita su valor, no se pretende setear
                 switch(ValueAsToken.Type)

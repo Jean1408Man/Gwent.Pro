@@ -8,14 +8,14 @@ using Unity.VisualScripting;
 
 public class CardDrag : MonoBehaviour
 {
-    
-    private bool IsDragging= false;
+    public bool Avalancha;//Usado para cuando un efecto desencadena la invocacion de multiples cartas y no se desea que cada activacion provoque un cambio de turno
+    public bool IsDragging= false;
     public bool Played= false;
     private Vector2 startPos;
-    private GameObject dropzone;
-    private List<GameObject> dropzones = new List<GameObject>();
+    public GameObject dropzone;
+    public List<GameObject> dropzones = new List<GameObject>();
     private Efectos efectos;
-    private Card AssociatedCard;
+    public Card AssociatedCard;
     private GameManager GM;
     void Start()
     // Start is called before the first frame update
@@ -25,6 +25,11 @@ public class CardDrag : MonoBehaviour
         Visualizer = GameObject.Find("Visualizer");
         AssociatedCard = gameObject.GetComponent<CardDisplay>().cardTemplate;
         GM = GameObject.Find("GameManager").GetComponent<GameManager>();
+    }
+
+    public void Start2()
+    {
+        Start();
     }
     #region Drag
     public void StartDrag()
@@ -51,10 +56,6 @@ public class CardDrag : MonoBehaviour
             dropzone = IsPosible();
             if (dropzone != null)
             {
-                if(AssociatedCard.Eff== "Light")
-                {
-                    Debug.Log("Light");
-                }
                 if (AssociatedCard.TypeInterno != "D")
                 {
                     if (AssociatedCard.Eff != "Light")
@@ -88,16 +89,17 @@ public class CardDrag : MonoBehaviour
                     efectos.ListEffects[AssociatedCard.Eff].Invoke(AssociatedCard);
                 if (!(AssociatedCard.Effects == null || AssociatedCard.Effects.Count == 0))
                 {
-                    //try
-                    //{
-                        AssociatedCard.Execute(efectos); 
-                    //}
-                    //catch(System.Exception ex) 
-                    //{
-                    //    GM.SendPrincipal("Error en la ejecuci�n del efecto:");
-                    //    GM.SendPrincipal(ex.Message);
-                    //}
+                    try
+                    {
+                        AssociatedCard.Execute(efectos);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        GM.SendPrincipal("Error en la ejecuci�n del efecto:");
+                        GM.SendPrincipal(ex.Message);
+                    }
                 }
+                if(!Avalancha)
                 GM.Turn = !GM.Turn;
                 if (AssociatedCard.Eff == "Light")
                 {
@@ -135,7 +137,7 @@ public class CardDrag : MonoBehaviour
                                 return drop;
 
                         }
-                    }
+                }
             }
             else
             {

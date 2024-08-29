@@ -113,6 +113,7 @@ public class GameManager : MonoBehaviour
         Sounds = GameObject.Find("Menus").GetComponent<MenuGM>();
         Turn = true;
     }
+    private bool DeletedAll = true;
     private void Update()
     {
         if (SMS != null)
@@ -121,7 +122,8 @@ public class GameManager : MonoBehaviour
             {
                 Send(SMS.Peek(), Message);
             }
-            if (Input.anyKey && SMS.Count != 0)
+            
+            if (Input.anyKey && SMS.Count >= 0 && !DeletedAll)
             {
                 GetPrincipal();
                 Delay(1);
@@ -391,14 +393,17 @@ public class GameManager : MonoBehaviour
         SMS.TryPeek(out previus);
         if(previus!= s)
         SMS.Enqueue(s);
+        DeletedAll = false;
         Message.gameObject.SetActive(true);
         MessagePanel.SetActive(true);
     }
     public string GetPrincipal()
     {
-        if (SMS.Count == 1)
+        if (SMS.Count == 0)
         {
+            DeletedAll = true;
             MessagePanel.gameObject.SetActive(false);
+            return "end";
         }
         return SMS.Dequeue();
     }

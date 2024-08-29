@@ -115,12 +115,14 @@ namespace LogicalSide
             if((player.Turn && !InvertDecksLocally)|| (!player.Turn && InvertDecksLocally))
             {
                 discrimininant= 0;
-                list= new(false, true);
+                list= new(true, true);
+                list.MyName = "Field";
             }
             else
             {
                 discrimininant= 6;
-                list= new(false, false);
+                list= new(true, false);
+                list.MyName = "OtherField";
             }
 
             for(int i = discrimininant; i<6+discrimininant ; i++)
@@ -187,8 +189,8 @@ namespace LogicalSide
         {
             get
             {
-                CustomList<ICard> list= new(false,null);
-
+                CustomList<ICard> list= new(true,null);
+                list.MyName = "Board";
                 foreach(GameObject zone in BoardOfGameObject)
                 {
                     GameObject Var= null;
@@ -211,10 +213,129 @@ namespace LogicalSide
         }
 
         #endregion
+        #region Add in Fields and Board
 
 
+        public bool AddInField(Card card,bool side)
+        {//Este método se encarga de setear la instancia de la carta, de forma que se pueda reutilizar el metodo EndDrag asociado al prefab de la carta.
+            PlayerDeck Deck = GameObject.Find("Deck").GetComponent<PlayerDeck>();
+            GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
+            List<GameObject> PosiblePlaces = new List<GameObject>();
+            GameObject Destiny;
+            System.Random random = new System.Random();
+            //Añadiendo un clima
+            if (card.TypeInterno== "C")
+            {
+                if (Clima.transform.childCount <= 2 || card.Eff== "Light")
+                {
+                    GameObject Card = Deck.Instanciate(card, null, Deck.prefabCarta, !side);
+                    CardDrag drag= Card.GetComponent<CardDrag>();
+                    drag.Avalancha = true;
+                    card.OnConstruction = true;
+                    drag.Start2();
+                    drag.dropzones = new(){ Clima};
+                    drag.Played = false;
+                    drag.IsDragging = true;
+                    drag.AssociatedCard = card;
+                    card.DownBoard = side;
+                    card.Owner = GM.WhichPlayer(card.DownBoard);
+                    card.OnConstruction = false;
+                    drag.EndDrag();
+                    drag.Avalancha = false;
+                    //Destroy(Card);
+                    return true;
+                }
+                else
+                {
+                    GM.SendPrincipal("En ejecución has tratado de agregar un clima al campo, pero ya existían 3");
+                }
+            }
+
+            //Añadiendo un aumento
+            if(card.TypeInterno.IndexOf("A")!= -1)
+            {
+                for (int i = 0; i < card.TypeInterno.Length; i= i+2)
+                {
+                    string s= card.TypeInterno[i].ToString()+ card.TypeInterno[i+1].ToString();
+                    if (RangeMap.ContainsKey((side, s)))
+                    {
+                        GameObject zone = RangeMap[(side, s)];
+                        if(zone.transform.childCount==0)
+                            PosiblePlaces.Add(zone);
+                    }
+                    else
+                        throw new Exception("Problemas añadiendo un aumento no justificados");
+                }
+
+                if (PosiblePlaces.Count > 0)
+                {
+                    Destiny = PosiblePlaces[random.Next(0, PosiblePlaces.Count)];
+                    GameObject Card = Deck.Instanciate(card, null, Deck.prefabCarta, !side);
+                    CardDrag drag = Card.GetComponent<CardDrag>();
+                    drag.Avalancha = true;
+                    card.OnConstruction = true;
+                    drag.Start2();
+                    drag.dropzones = new() { Destiny };
+                    drag.Played = false;
+                    drag.AssociatedCard = card;
+                    drag.IsDragging = true;
+                    card.DownBoard = side;
+                    card.Owner = GM.WhichPlayer(card.DownBoard);
+                    card.OnConstruction = false;
+                    drag.EndDrag();
+                    drag.Avalancha = false;
+                    //Destroy(Card);
+                    return true;
+                }
+                else
+                    GM.SendPrincipal($"No hay un lugar disponible para la carta: {card.Name} en el campo de {GM.WhichPlayer(side).name}");
+
+            }
+
+            if (card.TypeInterno== "U")
+            {
+                for (int i = 0; i < card.Range.Length; i++)
+                {
+                    string s = card.Range[i].ToString();
+                    if (RangeMap.ContainsKey((side, s)))
+                    {
+                        GameObject zone = RangeMap[(side, s)];
+                        if (zone.transform.childCount <= 6)
+                            PosiblePlaces.Add(zone);
+                    }
+                    else
+                        throw new Exception("Problemas añadiendo una carta de unidad no justificados");
+                }
+                if (PosiblePlaces.Count > 0)
+                {
+                    Destiny = PosiblePlaces[random.Next(0, PosiblePlaces.Count)];
+                    GameObject Card = Deck.Instanciate(card, null, Deck.prefabCarta, !side);
+                    CardDrag drag = Card.GetComponent<CardDrag>();
+                    card.OnConstruction = true;
+                    drag.Avalancha = true;
+                    drag.Start2();
+                    drag.dropzones = new() { Destiny };
+                    drag.Played = false;
+                    drag.AssociatedCard= card;
+                    drag.IsDragging = true;
+                    card.DownBoard = side;
+                    card.Owner = GM.WhichPlayer(card.DownBoard);
+                    card.OnConstruction = false;
+                    drag.EndDrag();
+                    drag.Avalancha= false;
+                    //Destroy(Card);
+                    return true;
+
+                }
+                else
+                    GM.SendPrincipal($"No hay un lugar disponible para la carta: {card.Name} en el campo de {GM.WhichPlayer(side).name}");
+
+            }
+            return false;
+        }
 
 
+        #endregion
 
         //todos los objetos a los que puede afectar un efecto
         #region

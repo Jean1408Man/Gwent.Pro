@@ -27,7 +27,7 @@ namespace LogicalSide
         {
             if (cardTemplate != null)
             {
-                if(cardTemplate.Destroy)
+                if (cardTemplate.Destroy)
                 {
                     Efectos ef = GameObject.Find("Effects").GetComponent<Efectos>();
                     ef.Decoy(cardTemplate);

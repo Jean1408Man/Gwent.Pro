@@ -18,36 +18,26 @@ public class PlayerDeck : MonoBehaviour
     public Transform Leaderzone;
     [SerializeField]public List<ICard> deck; // Tu lista de cartas
     public List<ICard> cement;
-
+    GameManager GM;
 
     private void Start()
     {
+        GM = GameObject.Find("GameManager").GetComponent<GameManager>();
         deck = new List<ICard>();
         cement = new List<ICard>();
     }
     // M�todo para instanciar la �ltima carta del mazo
-    public void Instanciate(Card card, Transform zone, GameObject prefab, bool Rota=false)
+    public GameObject Instanciate(Card card, Transform zone, GameObject prefab, bool Rota= false)
     {
-        if (deck.Count > 0 )
+        GameObject instanciaCarta = Instantiate(prefab, zone);
+        CardDisplay disp = instanciaCarta.GetComponent<CardDisplay>();
+        disp.cardTemplate = card;
+        if (Rota)
         {
-            if ((playerZone.childCount <= 9))
-            {
-                GameObject instanciaCarta = Instantiate(prefab, zone);
-                CardDisplay disp = instanciaCarta.GetComponent<CardDisplay>();
-                disp.cardTemplate = card;
-                if (Rota)
-                {
-                    zone.GetChild(zone.childCount - 1).Rotate(0, 0, 180);
-                }
-
-            }
-            else
-            {
-                GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
-                GM.SendPrincipal("Trataste de instanciar más de 10 cartas en una mano, lo cual no es permitido");
-            }
-            
+            instanciaCarta.transform.Rotate(0, 0, 180);
         }
+        
+        return instanciaCarta;
     }
     public void InstanciateLastOnDeck( int n, bool exception)
     {
@@ -82,7 +72,7 @@ public class PlayerDeck : MonoBehaviour
     {
         if (cement.Count > 0)
         {
-            Instanciate((Card)cement[cement.Count - 1],PlayerHand.transform,prefabCarta);
+            Instanciate((Card)cement[cement.Count - 1], PlayerHand.transform, prefabCarta, ((Card)(cement[cement.Count-1])).DownBoard!= GM.Turn);
         }
         if(cement.Count==0)
             gameObject.transform.GetChild(0).gameObject.SetActive(false);

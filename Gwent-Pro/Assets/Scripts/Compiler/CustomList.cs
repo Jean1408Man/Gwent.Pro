@@ -38,34 +38,72 @@ namespace LogicalSide
         }
         public void Add(T item)
         {
-            if(AddPosibility!= null && (bool)AddPosibility&& item is Card Card)
-            {
-                Card card = (Card)Card.CreateCopy();
-                PlayerDeck Deck;
-                if(MyName== "Hand")
-                {
-                    Deck= GameObject.Find("Deck").GetComponent<PlayerDeck>();
-                    Deck.Instanciate(card, Deck.playerZone, Deck.prefabCarta);
-                }
-                else if(MyName== "OtherHand")
-                {
-                    Deck= GameObject.Find("DeckEnemy").GetComponent<PlayerDeck>();
-                    Deck.Instanciate(card, Deck.playerZone, Deck.prefabCarta, true);
-                }
-                if(PlayerOwner!= null)
+            if(MaxElements== null || list.Count< MaxElements){
+                if (AddPosibility != null && (bool)AddPosibility && item is Card Card)
                 {
                     GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
-                    card.DownBoard= (bool)PlayerOwner;
-                    card.OnConstruction = true;
-                    card.Owner= GM.WhichPlayer((bool)PlayerOwner);
-                    card.OnConstruction = false;
+                    bool allfine = true;
+                    Card card = (Card)Card.CreateCopy();
+                    PlayerDeck Deck;
+                    if (MyName == "Hand")
+                    {
+                        Deck = GameObject.Find("Deck").GetComponent<PlayerDeck>();
+                        Deck.Instanciate(card, Deck.playerZone, Deck.prefabCarta, false);
+                    }
+                    else if (MyName == "OtherHand")
+                    {
+                        Deck = GameObject.Find("DeckEnemy").GetComponent<PlayerDeck>();
+                        Deck.Instanciate(card, Deck.playerZone, Deck.prefabCarta, true);
+                    }
+                    else if (MyName == "Field")
+                    {
+                        Efectos efectos = GameObject.Find("Effects").GetComponent<Efectos>();
+                        allfine = efectos.AddInField(card, true);
+                    }
+                    else if (MyName == "OtherField")
+                    {
+                        Efectos efectos = GameObject.Find("Effects").GetComponent<Efectos>();
+                        allfine = efectos.AddInField(card, false);
+                    }
+                    else if (MyName == "Board")
+                    {//En este caso hay probabilidad de que se juegue a ambos lados, luego hay q sortear, y si el lado 
+                     //elegido al azar no se encuentra disponible, se añade al otro lado de ser posible(2 de cada 3 veces se elegirá el lado del propietario)
+
+                        bool[] luck = new bool[3] { card.DownBoard, card.DownBoard, !(card.DownBoard) };
+                        System.Random random = new System.Random();
+                        bool result = luck[random.Next(0, luck.Length)];
+                        Efectos efectos = GameObject.Find("Effects").GetComponent<Efectos>();
+
+                        if (!efectos.AddInField(card, result))
+                        {
+                            if (card.TypeInterno != "C" && !efectos.AddInField(card, !result))
+                            {
+                                GM.SendPrincipal($"Imposible añadir la carta {card.Name}");
+                                allfine = false;
+                            }
+                        }
+                    }
+                    if (allfine && PlayerOwner != null && MyName != "Board" && MyName != "OtherField" && MyName != "Field")
+                    {
+                        card.DownBoard = (bool)PlayerOwner;
+                        card.OnConstruction = true;
+                        card.Owner = GM.WhichPlayer((bool)PlayerOwner);
+                        card.OnConstruction = false;
+                    }
+                    if (allfine)
+                        list.Add(item);
                 }
-                list.Add(item);
+                else
+                {
+                    GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
+                    GM.SendPrincipal(MyName + " list, is not available to Add elements, due to its Ambiguity");
+                    throw new Exception(MyName + " list, is not available to Add elements, due to its Ambiguity");
+                }
             }
             else
             {
                 GameManager GM = GameObject.Find("GameManager").GetComponent<GameManager>();
-                GM.SendPrincipal(MyName + " list, is not available to Add elements, due to its Ambiguity");
+                GM.SendPrincipal(MyName + " list, is not available to Add elements, because you exceed the Max Elements it supports");
                 throw new Exception(MyName + " list, is not available to Add elements, due to its Ambiguity");
             }
         }
