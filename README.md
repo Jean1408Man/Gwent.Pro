@@ -1,4 +1,2 @@
 # Gwent.Pro
-Proyecto de Primer Semestre, que ambientado en una guerra interespacial, consiste en un juego de cartas donde la estrategia será un factor clave.
-NOTA AL EXAMINADOR:
-Profe el juego está en una carpeta dentro del proyecto llamada "Descomprimir"
+Para jugar el juego, y probar la nueva extensión con compilador, debe presionar el boton Customize dentro de la interfaz de jugador, luego, escribe la direccion local del archivo de texto que desea compilar y presionar el boton compilar, si su archivo tenia errores de compilacion se le anunciará en la consola de errores.

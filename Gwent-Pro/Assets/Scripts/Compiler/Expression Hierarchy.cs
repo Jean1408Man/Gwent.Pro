@@ -1265,6 +1265,7 @@ public class UnaryOperator : Terminal
                 {
                     if(!(Operand is IdentifierExpression))
                     {
+                        if(!(Operand is BinaryOperator bin && bin.Right is  IdentifierExpression))
                         throw new Exception("Semantic Error, you can only use Decrement/Increment on Identifiers");
                     }
                 }
