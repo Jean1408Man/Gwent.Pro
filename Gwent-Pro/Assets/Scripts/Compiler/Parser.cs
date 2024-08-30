@@ -111,7 +111,7 @@ public class Parser
                 ||tokens[position].Type == TokenType.SINGLE||tokens[position].Type == TokenType.Owner
                 ||tokens[position].Type == TokenType.Deck||tokens[position].Type == TokenType.GraveYard
                 ||tokens[position].Type == TokenType.Field||tokens[position].Type == TokenType.Board
-                ||tokens[position].Type == TokenType.Hand)
+                ||tokens[position].Type == TokenType.Hand || tokens[position].Type == TokenType.TriggerPlayer)
         {
             position++; 
             returned= new IdentifierExpression(tokens[position - 1]);

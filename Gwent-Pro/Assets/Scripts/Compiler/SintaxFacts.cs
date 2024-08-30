@@ -68,7 +68,7 @@ public static class SintaxFacts
 
         //Players
         {TokenType.Owner, ValueType.Player},
-        {TokenType.TriggerPlayer, ValueType.ListCard},
+        {TokenType.TriggerPlayer, ValueType.Player},
         
         //Numbers
         {TokenType.Power, ValueType.Number},

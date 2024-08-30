@@ -699,7 +699,7 @@ public class SelectorExpression: Expression
             Parent= (SelectorExpression)Set;
         }
         else
-            throw new Exception("Evaluate error, use of parent in a non Postaction statement");
+            throw new Exception("Evaluate error, use of parent in a non Postaction statement, or on aN Empty Selector");
         Single.Evaluate(scope, Set, Before);
         return null;
     }
