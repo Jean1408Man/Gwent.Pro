@@ -538,10 +538,13 @@ public class EffectAssignment: Expression
         Selector.Evaluate(scope, Set, Before);
         if(PostAction!= null)
         {
-            if(Selector!= null)
-                PostAction.Evaluate(scope, Selector.Source.Value, Before);
+            if (PostAction.Selector != null)
+                PostAction.Evaluate(scope, Selector, Before);
             else
-                PostAction.Evaluate(scope, null, Before);
+            {
+                PostAction.Selector = Selector;
+                PostAction.Evaluate(scope,Set, Before);
+            }
         }
         return null;
     }
@@ -583,6 +586,8 @@ public class EffectAssignment: Expression
 }
 public class SelectorExpression: Expression
 {
+
+    public SelectorExpression Parent;
     public Expression? Source;
     public Expression? Single;
     public Expression? Predicate;
@@ -650,7 +655,11 @@ public class SelectorExpression: Expression
         PredicateExp predicate= (Predicate as PredicateExp)!;
         
         Source!.Value= FormatSources(((string)Source.Value!).ToLower());
-        CustomList<ICard> SourceCards= (CustomList<ICard>)Api.GetProperty(context, (string)Source.Value);
+        CustomList<ICard> SourceCards;
+            if (Parent == null)
+                SourceCards = (CustomList<ICard>)Api.GetProperty(context, (string)Source.Value);
+            else
+                SourceCards = Parent.Execute(context);
         CustomList<ICard> Targets= new(false, false);
 
         if((bool)Single!.Value!)
@@ -684,9 +693,10 @@ public class SelectorExpression: Expression
         {
             throw new Exception($"You are giving an invalid source: {s}, check the available sources and try again");
         }
-        if(s== "parent")if( Set!= null)
+        if(s== "parent")
+        if( Set!= null)
         {//Is trying to use the source of its parent
-            Source.Value= Set;
+            Parent= (SelectorExpression)Set;
         }
         else
             throw new Exception("Evaluate error, use of parent in a non Postaction statement");

@@ -99,7 +99,7 @@ namespace LogicalSide
 
         void Execute(IContext context)
         {
-            Debug.Log($"Efecto {effect.Name.Value.ToString()} se está ejecutando");
+            Debug.Log($"Efecto {effect.Name.Value} se está ejecutando");
             CustomList<ICard> targets= new(null,null);
             if(Selector!= null)
             targets= Selector.Execute(context);

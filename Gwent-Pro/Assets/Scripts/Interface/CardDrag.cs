@@ -141,12 +141,12 @@ public class CardDrag : MonoBehaviour
             }
             else
             {
-                if (drop.tag == AssociatedCard.TypeInterno && efectos.RangeMap[(AssociatedCard.DownBoard, drop.tag)] == drop&& drop.transform.childCount<1)
+                if (AssociatedCard.TypeInterno.IndexOf(drop.tag)!= -1 && efectos.RangeMap[(AssociatedCard.DownBoard, drop.tag)] == drop&& drop.transform.childCount<1)
                     return drop;
             }
         else
         {
-            if ((drop.transform.childCount < 3 && drop.tag == "C") || (drop.tag != "P" && AssociatedCard.Eff == "Light"))
+            if ((drop.transform.childCount < 3 && drop.tag == "C") || (drop.tag != "P" && drop.tag != "E" && AssociatedCard.Eff == "Light"))
                 return drop;
         }
         return null;
